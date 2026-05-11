@@ -43,7 +43,7 @@ function readCiaData(projectDir) {
   return out.length ? out.join('\n\n') : null
 }
 
-function buildPrompt(stepIdx, projectDir, projectYaml) {
+export function buildPrompt(stepIdx, projectDir, projectYaml) {
   const step = STEPS[stepIdx]
   const template = readFileSync(path.join(TEMPLATES_DIR, `${step.slug}.md`), 'utf-8')
   const parts = [`## ContentOS Agent — Running Step ${step.n}: ${step.label}\n`]

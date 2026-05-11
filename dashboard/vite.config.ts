@@ -1,6 +1,6 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { readFileSync, readdirSync, statSync, existsSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync, existsSync, writeFileSync, mkdirSync, renameSync, appendFileSync } from 'node:fs'
 import { spawn } from 'node:child_process'
 import { join, relative, resolve } from 'node:path'
 import matter from 'gray-matter'
@@ -175,6 +175,81 @@ function gtmSwarmApi(): Plugin {
         }))
       })
 
+      server.middlewares.use('/api/promote-idea', (req, res) => {
+        if (req.method !== 'POST') { res.statusCode = 405; res.end(); return }
+        let body = ''
+        req.on('data', c => body += c.toString())
+        req.on('end', () => {
+          let p: { project?: string; agent?: string; idea_id?: string }
+          try { p = JSON.parse(body) } catch {
+            res.statusCode = 400; res.end(JSON.stringify({ error: 'bad json' })); return
+          }
+          const { project, agent, idea_id } = p
+          if (!project || !agent || !idea_id) {
+            res.statusCode = 400
+            res.end(JSON.stringify({ error: 'project + agent + idea_id required' }))
+            return
+          }
+          const ideaFile = join(PROJECTS_DIR, project, 'agents', agent, 'content-bank', 'new-idea', `${idea_id}.md`)
+          if (!existsSync(ideaFile)) {
+            res.statusCode = 404
+            res.end(JSON.stringify({ error: `idea not found: ${idea_id}` }))
+            return
+          }
+          let topic = ''
+          try {
+            const parsed = matter(readFileSync(ideaFile, 'utf-8'))
+            topic = (parsed.data.topic as string) || ''
+          } catch { /* ignore */ }
+          if (!topic) {
+            res.statusCode = 400
+            res.end(JSON.stringify({ error: 'idea has no topic in frontmatter' }))
+            return
+          }
+          const promotedDir = join(PROJECTS_DIR, project, 'agents', agent, 'content-bank', '.promoted')
+          mkdirSync(promotedDir, { recursive: true })
+          const promotedFile = join(promotedDir, `${idea_id}.md`)
+          renameSync(ideaFile, promotedFile)
+          const child = spawn('python3',
+            [join(REPO_ROOT, 'scripts/run-agent.py'), agent, '--project', project, '--topic', topic],
+            { cwd: REPO_ROOT, env: process.env })
+          let out = '', err = ''
+          child.stdout.on('data', d => out += d.toString())
+          child.stderr.on('data', d => err += d.toString())
+          child.on('close', code => {
+            res.setHeader('Content-Type', 'application/json')
+            res.statusCode = code === 0 ? 200 : 500
+            res.end(JSON.stringify({ code, topic, stdout: out, stderr: err }))
+          })
+        })
+      })
+
+      server.middlewares.use('/api/reject-idea', (req, res) => {
+        if (req.method !== 'POST') { res.statusCode = 405; res.end(); return }
+        let body = ''
+        req.on('data', c => body += c.toString())
+        req.on('end', () => {
+          let p: { project?: string; agent?: string; idea_id?: string; reason?: string }
+          try { p = JSON.parse(body) } catch { res.statusCode = 400; res.end(JSON.stringify({ error: 'bad json' })); return }
+          const { project, agent, idea_id, reason } = p
+          if (!project || !agent || !idea_id) {
+            res.statusCode = 400; res.end(JSON.stringify({ error: 'project + agent + idea_id required' })); return
+          }
+          const ideaFile = join(PROJECTS_DIR, project, 'agents', agent, 'content-bank', 'new-idea', `${idea_id}.md`)
+          if (!existsSync(ideaFile)) { res.statusCode = 404; res.end(JSON.stringify({ error: 'not found' })); return }
+          let topic = ''
+          try { topic = (matter(readFileSync(ideaFile, 'utf-8')).data.topic as string) || '' } catch {}
+          const antiFile = join(PROJECTS_DIR, project, 'agents', agent, 'anti-patterns.md')
+          const entry = `\n### ${new Date().toISOString().slice(0,10)} · ${topic || idea_id}\n- What: idea rejected at promotion gate\n- Why rejected: ${reason || 'No reason given'}\n- Avoid: TBD\n`
+          appendFileSync(antiFile, entry)
+          const rejectedDir = join(PROJECTS_DIR, project, 'agents', agent, 'content-bank', '.rejected-ideas')
+          mkdirSync(rejectedDir, { recursive: true })
+          renameSync(ideaFile, join(rejectedDir, `${idea_id}.md`))
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ ok: true, topic }))
+        })
+      })
+
       server.middlewares.use('/api/review', (req, res) => {
         if (req.method !== 'POST') { res.statusCode = 405; res.end(); return }
         let body = ''
@@ -329,5 +404,6 @@ export default defineConfig({
     port: 8082,
     strictPort: true,
     host: '127.0.0.1',
+    allowedHosts: ['gtm.solveaagent.com', '.solveaagent.com', 'localhost', '127.0.0.1'],
   },
 })

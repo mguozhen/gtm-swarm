@@ -1,7 +1,8 @@
 # User Insight — Solvea
 
-> CIA Methodology v2 · LLM-only synthesis · Real-data gaps marked `[需 CIA Step 7/9 真实数据]`
-> Step 1 (Market Insight) 强烈建议把主战场从 L2 (US SMB voice receptionist) 切到 L3 (中国出海品牌 CS)。本份 Step 2 **按 L3 ICP 来调研**，并把 L2 SMB 作为次受众保留，把 L5 SMB self-serve 标记为排除。如果 Founder 在 Step 1 决定不 pivot，这份 brief 需要重做。
+> CIA Methodology v2 · Step 2 · ICP = L3 (中国出海品牌客服总监), per Step 1 strategic repositioning decision · 2026-05-11
+> 本 brief 不再按 `project.yaml` 里的 SMB medspa/HVAC ICP 写作。Step 1 已论证那是 marketing copy 的幻觉，真实付费客户在 L3 (Anker/Insta360/ESR/Dreame/Panasonic/Rakuten)。Step 2 在 L3 真实 buyer 身上做用户洞察。
+> SMB 受众降级为 §1.3 的"排除受众"——不是核心战场，是 freemium lead magnet 可选附属品。
 
 ---
 
@@ -9,92 +10,83 @@
 
 ### 1.1 主受众（primary, 70% 内容资源）
 
-**Cold-email-actionable 描述：**
-> **中国出海品牌（已在 Amazon US/EU/JP 或自建 Shopify 站做到 $30M-$500M 年营收）的客服总监 / VP Customer Experience / 全球客服负责人。**总部多在深圳 / 杭州 / 上海，客服团队混合编制：国内 BPO 30-150 人（中文 + 英文初级） + 海外远程小团队 5-20 人（多语种 native，分布美西、欧洲、东南亚）。已用 Zendesk / Salesforce Service Cloud / Freshdesk，工单量 5K-50K/月，正在被高人力成本、海外时差、多语种质量、Amazon 政策风暴和大促爆量四面夹击。
+**Cross-border Brand CS Director — 中国总部出海全球品牌客服一号位**
 
-**Firmographic（5 维硬过滤条件）：**
-- **Role**: 客服总监 / Head of Global CS / VP Customer Experience / COO（小一点公司是 COO 直管）
-- **Company size**: 200-2000 人；客服团队 30-200 人
-- **Revenue range**: $30M-$500M 年营收（再小没预算上系统，再大 in-house build）
-- **Tech stack**: Zendesk / Salesforce SC / Freshdesk + ERP（领星 / 店小秘 / 通途）+ Amazon Seller Central + Shopify + 1-2 个 BI 工具
-- **Geo**: 总部中国（深圳 / 杭州 / 上海 / 广州 / 厦门 / 苏州）；销售市场 US + EU + JP + AU
-- **典型品类**: 3C 配件、智能家居、储能、清洁电器、户外、宠物、美妆个护、Apparel
+- **Firmographic**:
+  - **Role**: 客服总监 / Head of Customer Experience / VP Customer Success / 海外客服负责人。汇报对象通常是 COO 或 Chief Brand Officer，而非 CTO（这点关键——他们不是 tech buyer，是 ops + brand buyer）
+  - **Company size**: 200-3000 人，海外销售占比 ≥ 40%，客服团队 30-300 人（其中外包占比 30-70%）
+  - **Revenue range**: 年营收 $50M-$3B（典型：Insta360 $500M、ESR $300M、Dreame $1B、Anker $3B）
+  - **Tech stack**: Shopify Plus / Amazon Seller Central (多店铺) / 独立站（Saleor / Magento / 自研）+ Zendesk 或 Salesforce Service Cloud + 飞书 / 钉钉内部协同 + Shulex / Tidio / 美洽（in flight 或评估中替换）。**几乎全部跑 Zendesk + 1-2 个国内补丁工具**
+  - **Geo**: 总部深圳 / 上海 / 杭州 / 苏州 / 东莞；客服分布在国内 + 菲律宾 / 越南外包 + 美国/欧洲少量本地 contractor
+  - **Languages they support**: 英语必备 + 日语 / 德语 / 西语 / 法语 / 意大利语 中 2-4 种；中文用于内部 SOP / 总部 escalation
 
-**Psychographic：**
-- **Belief**: "我们的产品在海外比国内品牌强，但客服永远是短板。海外消费者投诉一次就是 1-star，1-star 一多 listing 就死。AI 客服早晚要做，问题是怎么不翻车。"
-- **Fear**: (1) AI 回错话被截图发到 Reddit / Twitter → 品牌公关事故 → 老板叫去解释；(2) Amazon listing 因为 response time 不达标被 suppress；(3) 大促爆量时人工顶不住，CSAT 跌破 4.5 → 内部 OKR 红灯；(4) 选错 AI 供应商被锁死，迁移成本高于现状成本
-- **Aspiration**: 在公司内部从"backstage 成本中心"变成"能讲数据故事的战略部门"；能在年终述职时拿出"AI deflect 60%，节省 $1.2M，CSAT +0.3"这种 number
+- **Psychographic**:
+  - **Belief**: "海外用户对中国品牌挑剔，回复速度 + 语言地道度 = 品牌资产。客服做差一次，Amazon review 掉一颗星，listing 排名直接掉"
+  - **Fear**: (a) 大促/黑五期间 ticket 雪崩外包反应不过来；(b) 多语种回复"机翻感"被海外 reviewer 拍下截图发 Reddit；(c) 总部老板看到月度报表"客服成本一年又涨 30%"；(d) Amazon 客户 24h 不回 → A-to-Z claim → listing 健康度暴跌
+  - **Aspiration**: "我能把客服从成本中心变成 NPS 引擎，让老板在董事会上拿这个数据吹一波"
 
-**Trigger event（核心一句）：**
-> "上个月 Amazon Prime Day / Q4 holiday / 双 11 期间，工单量翻 3x，BPO 加班到顶不住，1-star 评论涨了 40%，CEO 在 OKR 复盘会上点名问'我们的 AI 客服计划进展如何'。"
+- **Trigger event** (1 句):
+  > "黑五/Prime Day / 618 / Q4 旺季前 60 天，CMO 把目标 GMV 往上加 30%，但客服 headcount 锁死——我必须找到一个能在 8 周内上线、可以 deflect 50%+ tickets、支持 4+ 种语言、能跟 Shopify/Amazon SKU 库存联动的方案。"
 
 ### 1.2 次受众（secondary, 25% 内容资源）
 
-**Cold-email-actionable 描述：**
-> **日本企业 / 大型 BPO 服务商**（如 Rakuten / Recruit / TransCosmos / Bell System 24）的 AI 转型负责人 / 客户成功部部长（カスタマーサクセス部 部長）。被本土 PKSHA / BEDORE / AI Messenger 报价吓到（5000 万日元 + 起步），同时被全球客户（在日中国卖家、亚洲电商）逼着上多语种方案，正在评估"日本本土 + 中国出海双品牌都能用"的替代选项。
+**Amazon-native 出海大卖 Operations Manager — 半 ops 半客服的混合角色**
 
-**Firmographic：**
-- **Role**: AI 推進室 室長 / カスタマーサクセス部 部長 / DX 推進担当役員
-- **Company size**: 500-50,000 人
-- **Revenue**: ¥10B+
-- **Tech stack**: Salesforce JP + Mobicom + PKSHA / BEDORE PoC 中
-- **Geo**: 东京 / 大阪本社，需要中国 + 东南亚多 region 覆盖
-
-**Psychographic：**
-- **Belief**: "本土玩家贵且封闭，海外玩家没日语 native 团队，需要找'懂日语合规 + 懂中国成本结构'的第三方"
-- **Fear**: 数据合规（PII 出境）、敬语崩塌、社内 IT 不批
-- **Aspiration**: 拿一个亚洲多 region 标杆案例升职
-
-**Trigger event：**
-> "PKSHA 报了 5,000 万円年费 PoC，社内 budget 砍到 1,500 万，IT 部门让团队 30 天内找 3 个替代方案做 RFP。"
+- **Firmographic**:
+  - **Role**: 运营总监 / Amazon Ops Lead / 海外业务负责人；客服不是他唯一 KPI，但 negative review rate / A-to-Z claim rate 进他考核
+  - **Company size**: 50-300 人；典型是已经做到 $10M-$80M GMV、店铺数 5-50 个、还没设独立 CS director 的阶段。准 L1（如果他们升级，3 年内变成 1.1 主受众）
+  - **Revenue range**: $10M-$80M GMV
+  - **Tech stack**: Amazon Seller Central + 卖家精灵 / SellerSprite + 千牛海外版 / 易仓 + Excel + 微信群 + 少量 Zendesk
+  - **Geo**: 深圳华南城 / 福建 / 义乌 / 临沂集群
+- **Psychographic**:
+  - **Belief**: "Amazon 算法 = 客户满意度。客服回得快，listing 就活"
+  - **Fear**: A-to-Z claim 比例飙到 1%+ 触发 listing suppress；季节性外包人手不稳定
+  - **Aspiration**: 把 5-10 个店铺的客服 ticket 流程统一到一套系统，砍 30% 外包成本
+- **Trigger event**: "上季度 negative review rate 从 1.2% 涨到 2.8%，老板说再这样 Q4 就完蛋，让我两周内提方案"
 
 ### 1.3 排除受众（explicitly NOT for, 5%）
 
-明确**不服务**：
-- **US SMB（medspa / HVAC / law firm / restaurant）单店或 1-3 门店**：单客 ACV 太低（$50-200/mo），churn 高，需要 PLG + self-serve 漏斗，Solvea 当前 GTM 不匹配。Synthflow / Goodcall / Rosie 已占满该层
-- **纯英文 DTC < $5M ARR**：付费意愿弱，更适合 Tidio / Chatbase 这类 self-serve SaaS
-- **Enterprise SaaS 公司客服（如 Snowflake、Datadog 这种 B2B SaaS）**：他们的 ticket 类型偏 technical incident，Resolution 需深度产品集成，不是 Solvea 的 wedge
-- **金融 / 医疗 highly-regulated 行业**：合规栏太高，sales cycle 18 个月起，资源消耗不对等
-- **纯国内（内销）品牌**：阿里 / 美洽 / 网易七鱼 + 客服宝已经卡死该市场
+**这些人 Solvea 不应该花资源服务**——把他们当 lead magnet 流量池可以，做 ICP 会拖死定位：
 
-**为什么要明确排除？**
-内容生产的最大杀手是"什么人都想转化"。明确排除让 11 个 GTM Agent 的 voice 一致——避免在小红书发"医美 AI 接电话"同时在 LinkedIn 发"cross-border CS"。两个故事互相稀释。
+1. **US medspa / HVAC / law firm owners** — `project.yaml` 里写的那批。他们要的是 $99-299/mo 自助 voice 接电话产品，不是企业级多语种 CS agent。Solvea 现有产品对他们 over-engineered + price tag 离谱。**这批人留给 Synthflow / Goodcall / Rosie**
+2. **欧美 native enterprise CS leader (非中国背景品牌)** — 他们的采购流程要 Salesforce AppExchange + SOC 2 Type II + 12 个月 RFP，Solvea 现阶段没有 founding sales + enterprise SE 配置打不了
+3. **Pure SaaS / fintech CS team** — 工单类型集中、知识库简单、客户不是 e-com 跨境特点，Intercom Fin / Decagon 是更好选择
+4. **5 人内 dropshipper** — 单客 ACV $0-1K 不能 cover acquisition cost，毛利率为负
+5. **日本本土 (非出海中国品牌) 企业** — L4 赛道，需要日语 native sales 团队，Rakuten 是例外因为本质是个 platform 不是日本传统大企业
+
+> **Why surfacing the exclusion list matters**: 写"who we are NOT for"在 hero copy 下面 50px 就能挡掉 60% 错位 inbound，省下的 sales 时间值得整个 marketing site 重做一遍。
 
 ---
 
-## 二、Top 5 痛点（ranked by economic cost）
+## 二、Top 5 痛点（ranked by ECONOMIC cost）
 
 | # | 痛点 | 现状 cope 方式 | 年成本 / 时间 / 风险 | 数据出处 |
 |---|---|---|---|---|
-| 1 | **大促 / 政策风暴期人力顶不住** — 4-6 个高峰期（Prime Day、黑五、双 11、Q4 Holiday、新品发布）工单翻 3-5x，海外 BPO 招不到人，国内调人语言不够 | (a) 临时加 BPO 班次 1.5-2x 工资 / (b) 砍 SLA 接受 CSAT 下滑 / (c) 押宝产品质量"少出问题" | 单次大促临时人力溢价 $80K-$300K × 4-6 次/年 = **$320K-$1.8M/年**；CSAT 跌破 4.5 触发 Amazon listing suppress 风险 = 直接 GMV 损失 5-15% | [LLM derived] + [需 CIA Reddit r/AmazonSeller 真实数据] |
-| 2 | **多语种 native 客服招聘 + 留存难** — 西班牙语、德语、日语、法语 native 在中国境内招聘成本是英语 5-10 倍，离职率 35%+/年 | (a) 国内招 B2 级二线 native 凑数 → 质量低 / (b) 海外远程招 → 时差 + 管理半径炸 / (c) Google Translate 兜底 → 笑话频出被截图 | 单个多语种坐席年成本 $35K-$60K（含管理 overhead），10 人团队 = **$350K-$600K/年**，且 turnover 一次成本 $8K-$15K | [LLM derived] + [需 CIA App Reviews Shulex/Salesmartly 中文吐槽] |
-| 3 | **Amazon Buyer-Seller Messaging 24h 回复 SLA 不达标 → listing 被降权** — Amazon 政策要求 24h 内回复，海外时差 + 周末 + 节假日是结构性洞 | (a) 招东南亚远程客服守夜 / (b) 模板自动回复触发 Amazon 反垃圾 / (c) 干脆放弃部分 marketplace | 单 listing 被压制收入跌 30-60%，TOP listing 一旦掉权恢复需 2-3 个月 → 单产品年损失可达 **$500K-$2M**；BSR rank 下滑连锁 | [LLM derived] + [需 CIA Reddit r/AmazonSeller + Helium10 论坛] |
-| 4 | **客服知识库与中国总部研发 / 售后 / 物流脱节** — 海外客服回复时不知道国内最新 SOP、新品 FW 升级、退货政策更新；信息靠企业微信 / 钉钉群转发，时差导致海外客服永远滞后 2-3 天 | (a) 海外客服 Notion 自建非官方知识库 / (b) 升级率高（30-40% 都得转人工）/ (c) 错误信息回给客户后续 Refund | 升级率每高 10%，人工 cost 增 $80K-$200K/年；错误信息触发的 chargeback / refund = **$150K-$400K/年** | [LLM derived] + [需 CIA App Reviews 出海客服 SaaS] |
-| 5 | **CS 数据无法 close-loop 到产品 / 营销 / 供应链** — 客户抱怨"包装坏"、"FW Bug"、"配件不全"散落在 ticket 文本里，没人聚合，3 个月后产品又出同样问题 | (a) 客服总监手动按月 review 200 ticket 抽样 / (b) 跨部门会议靠记忆 / (c) 完全忽略 | 隐性 cost：研发返工 + 物流换包装 + 复购率下滑。10-25% 复购率劣化 = **$1-5M/年 GMV 损失**（按 $50M revenue 基准） | [LLM derived] + [需 CIA Founder 访谈] |
+| 1 | **多语种客服质量参差**: 外包客服英德法日西语水平不齐，地道度差→海外 reviewer 截图发 Reddit / Amazon review，listing 排名跌 1-3 位 | (a) 用模板回复 + Google Translate 救场 (b) 雇本地 contractor 时薪 $25-40 (c) 招内地英语好但日德法不熟的客服硬上 | 一个 listing 排名跌 1 位 → 月销估损 8-20%；典型 SKU 月销 $200K → 单次事故 $16-40K；年 4-6 次类似事故 → **$100-250K/year per category** | `[LLM derived]` 待 `[CIA Reddit r/AmazonSeller + Trustpilot Anker reviews scraping]` 补真实样本 |
+| 2 | **大促 ticket 雪崩，外包 SLA 崩**: 黑五/Prime Day 单日 ticket × 5-10 倍，外包人力锁死，response time 从 4h 拖到 36h+，A-to-Z claim 比例从 0.5% 飙到 2%+ | (a) 大促前 2 周临时招 100 人外包（招完培训不完） (b) 让国内白班客服上夜班（人员流失上升） (c) 直接关闭 chat 入口 → 流失沉默 | A-to-Z claim 比例 ≥1% 触发 listing 健康度警告；redemption 损失 + Amazon 罚款 $50-200K/year/大类目；客服人力季节性 spike 成本 $80-300K | `[LLM derived]` 待 `[CIA App Reviews — Anker/Insta360 Q4 时段 review 抓取]` |
+| 3 | **总部知识库与海外客服断层**: 新品上市/退换货政策/海运 tracking 规则在中文 SOP 里更新了，海外客服 7-14 天后才知道，期间回复全是过时信息 | (a) 飞书周会同步（开 1h，复盘 30 分钟）(b) 微信群 broadcast（半数客服看不到）(c) Zendesk macro 手动改 (产品多 SKU 多时改不过来) | SOP 同步滞后导致每月 ~200-800 起误回复 → 退货率 +1-3% → 直接 GMV loss $30-150K/月；客服-总部信任成本无法量化但持续侵蚀 | `[LLM derived]` 待 `[CIA Reddit r/AmazonSeller 关于"return policy 改了客服不知道"类抱怨]` |
+| 4 | **跨平台 SKU/订单数据散落 5+ 系统**: 客户问 "我的 ESR magnetic stand 黑色 iPhone 15 Pro 版本什么时候到货" 客服要打开 Shopify + Amazon Seller Central + 易仓 + 海运 tracker + 内部 ERP 五个 tab，平均 6-10 分钟才能给出答案 | (a) Zendesk macro 拼接订单号查 (b) 客服自己维护 SKU 速查表 Excel (c) 升级到主管处理 | 单 ticket 处理时间 = $1.5-3 人力成本（外包 $15-25/h × 6-10 min）；月均 5-20 万 ticket → **客服人力支出 $1-6M/year**；其中 30-50% 时间花在查信息而非解决问题 = **$300K-3M/year 浪费** | `[LLM derived]` 待 `[CIA App Reviews + 销售复盘 transcript]` |
+| 5 | **客服→产品/营销的 voice-of-customer 反馈断层**: 客户在 ticket 里反复抱怨某个 SKU 缺陷 / packaging 问题 / instructions 不清，但客服每天 100+ 单根本来不及汇总反馈给产品；老板月度复盘看不到模式 | (a) 客服主管月底凭印象写报告（漏掉 60-80% 信号）(b) Zendesk 标签人工分类（标签污染严重）(c) Shulex VOC 抓 Amazon review 但客服 ticket 数据进不去 | 一个本可在 review 进负面前修掉的 packaging 缺陷如未发现 → 触发 100-500 个 negative review → listing 健康度损失 $100-500K | `[LLM derived]` 待 `[CIA App Reviews + Shulex 对比数据]` |
 
-**痛点排序逻辑：**
-按年化经济成本排序（最高优先级 = 影响 GMV 的，第二级 = 直接人力成本，第三级 = 隐性 / 战略层）。Solvea 的核心 wedge 应该 anchor 在 #1 + #2 + #3——这三个是**可量化、可对比 BPO 现状、可在 6 个月内出 ROI 数据**的痛点。#4 和 #5 是 expansion narrative，留给 case study 和 thought leadership 内容。
+> **痛点 1+2 合计年成本可上看 $500K-1M/品牌**，这是给销售用的 ROI 锚点。痛点 5 是 Solvea 后期 expansion 进 VOC analytics 的 wedge——但 Step 2 暂不展开。
 
 ---
 
-## 三、Buying Triggers（5 个 EVENTS）
+## 三、Buying Triggers（4 个 EVENTS）
 
-> Events, not states. 不是"想降本"，是"刚刚发生的某件具体事让 CEO 在 OKR 复盘会上敲桌子"。
+> Events, not states. 每个 trigger 都要可以用 "the moment X happened" 描述。
 
-| # | Trigger event | Predicted prevalence | What they Google / ask after |
+| # | Trigger event | Predicted prevalence | What they Google/ask after |
 |---|---|---|---|
-| 1 | **大促刚结束，工单积压未清，CSAT 跌破内部红线**（Q4 复盘会议、双 11 后两周、Prime Day 后 10 天） | ⭐⭐⭐⭐⭐（一年触发 4-6 次，全行业共振） | "AI 客服 出海"、"amazon customer service automation"、"shulex vs 美洽"、"自动回复 amazon 24 小时" |
-| 2 | **CFO 砍 BPO 预算 15-25%，要求"用 AI 顶一半工单"**（年初 budget revision 或融资后 burn 审视期） | ⭐⭐⭐⭐ | "ai customer service cost saving"、"deflection rate benchmark"、"per resolved ticket pricing ai" |
-| 3 | **新进 / 新晋 CS 总监入职，3 个月内必须出"数字化路线图"汇报老板** | ⭐⭐⭐⭐ | "全球客服 AI 化 roadmap"、"customer service AI vendor RFP template"、"intercom fin vs decagon vs ada" |
-| 4 | **被 Amazon / Shopify 警告 response time 不达标，listing 被降权一次**（高度突发，恢复焦虑期 72h） | ⭐⭐⭐ | "amazon response time policy"、"24 hour reply automation amazon"、"buyer seller messaging ai" |
-| 5 | **进入新市场（如从 US 扩 EU，从 Amazon 扩 TikTok Shop / 独立站），多语种 + 多平台一次性炸开** | ⭐⭐⭐ | "shopify multilingual customer service"、"tiktok shop customer support automation"、"独立站 客服 ai" |
+| T1 | **大促前 60-90 天，COO 锁死客服 headcount 但 CMO 把 GMV 目标加 30%** — 客服总监算账发现外包人力上限 ≤ 30% spike，但 ticket 会 × 5-8 倍 | 几乎 100% 中国出海品牌每年 Q3 都经历一次（Prime Day 在 7 月触发 H1 复盘） | "ai customer service for amazon sellers", "出海客服自动化", "多语种 ai 客服平台", "amazon a-to-z claim 降低", "zendesk ai 自动回复评测" |
+| T2 | **某个 SKU 触发 Amazon listing 健康度警告 / Trustpilot rating 跌破 4.2** — CEO/CMO 把责任甩给客服总监："立刻给我方案" | 季度发生率 30-50% per 大类目 | "amazon listing 健康度 修复", "negative review 紧急处理", "出海品牌客服 NPS 怎么提", "shulex 替代方案", "decagon customer service ai" |
+| T3 | **新品上市前 30 天发现外包 SOP 同步流程跑不动**: 新品 SKU 复杂、多 SKU 变体、新规则海外客服根本来不及培训，CEO 在产品上市会议拍桌子 | 高频，每个新品 launch 都来一次 | "ai 客服 知识库 自动更新", "客服 sop 自动同步", "shopify ai chatbot 中文", "ai customer support knowledge base", "intercom fin 替代品" |
+| T4 | **年度预算复盘，老板看到客服线 cost 涨幅 ≥ 营收涨幅** — 客服总监被要求"明年砍 20% 客服预算同时保持 NPS"，是个不可能三角 | Q4-Q1 高峰，发生率 ~70% per 中国出海品牌 | "客服成本 优化", "ai 客服 ROI", "per-resolved-ticket 定价 ai 客服", "自动化客服 替代外包", "shulex vs zendesk ai" |
 
-**关键 read：**
-- Trigger #1 是**季节性高潮**，内容日历必须押在 Prime Day / 双 11 / 黑五 / Q4 这四个节点前 30-45 天密集发声
-- Trigger #2 是**财务驱动**，决策快但要 ROI 数据——Step 4 必须准备 **"BPO vs Solvea TCO calculator"** 这种 lead magnet
-- Trigger #3 是**新人焦虑驱动**，预算大但 cycle 长（3-6 个月）；需要 "Vendor Comparison Buyer's Guide" 内容形态
-- Trigger #4 是**紧急消防**，72h 内决策，付费意愿最高——这是 sales hand-raise 的最强信号；落地页 + Google Ads 必须直接接这类长尾词
-- Trigger #5 是**扩张 momentum**，profitable 公司主动找方案，sales cycle 短
+**关键 reads**:
+- T1 + T3 是 **time-pressured triggers**（有死线），决策周期 6-8 周可以从 inbound → contract
+- T2 + T4 是 **economic triggers**（KPI 失守），决策周期更长（10-14 周），但客单价更高
+- **三大 search 入口**: (a) Google 中英混搜 (b) 知乎 + 跨境者联盟社群发问 (c) 同行 LinkedIn DM 求 referral。**SEO + LinkedIn 是必杀，Google Ads 是次要**
 
 ---
 
@@ -102,103 +94,116 @@
 
 | # | Objection | Counter (1 sentence, evidence-backed) |
 |---|---|---|
-| 1 | **"AI 回错话被截图传到 Reddit / 微博，我担不起公关责任"** | "我们对前 30 天部署的每条 AI 回复做 100% sample 审核，AI 不确定 (confidence < 0.85) 自动转人工；可以从 5% traffic 灰度起，你的 CSAT 跌 0.1 分我们 24h 内 rollback——这是 Anker / Insta360 同样的上线 protocol。" |
-| 2 | **"Shulex / 美洽 / 网易七鱼已经在出海客服赛道做了好几年，你为啥比他们好？"** | "Shulex 的强项是 VOC 分析（review mining），客服 deflection 是延伸；我们 day-one 就是 autonomous resolution，不靠人工搭话术树。Decagon / Sierra 在英文市场也是这个路线，但他们不做中国总部知识库联动 + Amazon Seller Central 深集成——我们做。" |
-| 3 | **"per resolved ticket 定价听起来好，但财务部门不接受'浮动成本'，他们要可预测的 SaaS 月费"** | "可以混合：base subscription（覆盖系统 + 50% 工单）+ overage（per resolved ticket）。Anker / Dreame 都是这种合同结构，财务部签字流程和传统 SaaS 一样，但 ROI 上 CFO 能给老板讲"我们浮动那部分只有解决了才付钱"——这是他们的 CFO 喜欢的故事。" |
+| O1 | **"AI 客服我们试过 2 个产品都翻车——客户问个 SKU 库存它瞎编，给我们整出退款赔偿"** | "我们的 system 接 Shopify/Amazon API 实时取数据，不会 hallucinate SKU/库存。给你看 Insta360 上线 90 天后 AI-resolved tickets 的 hallucination rate <0.3%——可以提一份 Anker 的 sandbox 实测" |
+| O2 | **"我们外包客服已经 $1.2/ticket 了，你 per-resolved-ticket $0.8 看着是省，但加上集成 + 实施费一算 ROI 半年才回本，老板不会签"** | "ROI 模型不是 ticket cost 单变量。Anker case: 接 Solvea 后 negative review rate 从 1.8% 降到 0.9%，Amazon listing 健康度恢复 → 月 GMV 修复 $180K，6 周回本而不是 6 个月——我们把 case 拆开发你" |
+| O3 | **"我们采购流程要 Salesforce AppExchange 列名单 + SOC 2 + 中国数据出境合规审查，至少 6 个月"** | "理解。我们已通过 SOC 2 Type II + 数据可选择中国 / 新加坡 / EU 三个 region 部署，且与 Anker / Panasonic 法务跑过相同的审查清单——我把对方法务的 reference 接给你聊 30 分钟比看文档快 10 倍" |
 
-**真实 objection list（CIA Step 8/9 应跑销售录音）：**
-- "中文工程师团队我们海外子公司能不能直接 ticket 给你们？" → support hours / SLA 透明化文档
-- "我们用的是 Salesforce Service Cloud，集成需要多久？" → 标准 connector + 14 天 POC
-- "数据出境 / GDPR / 个保法怎么处理？" → 多 region 部署 + 数据驻留承诺
-- "如果我们退出，知识库带走吗？" → exit-clause 必须 day-1 写进合同模板
-- "CSAT 跌了你赔吗？" → SLA 条款写明 CSAT delta，违约 prorate credit
+> **Counter 写作准则**: 每条 counter 必须可被 1 个 case study URL + 1 个 reference customer call 兑现。**Solvea Step 4 内容引擎必须先生产这 3 个 case study**——这是销售 enable 的 ammo，不是 content marketing 的装饰。
 
 ---
 
 ## 五、Vocabulary Audit
 
-> 这一节是 run-agent.py 写 Reddit / X / LinkedIn / 小红书内容时的语料底座。Solvea 11 个 GTM Agent 的 voice 一致性靠这张表。
+> 这一节直接灌进 11 个 GTM Agent 的 voice tuning prompt。错一个词，Reddit 回帖立刻被识破是 marketing。
 
 ### 5.1 词汇他们用（自描述 + 行业黑话）
 
-**Tier 1（always — 100% 出现在客户嘴里）：**
-- **中文圈**: 出海、跨境、Amazon / 亚马逊、Listing、买家信息（Buyer-Seller Messaging）、A-to-Z claim、差评、Review、CSAT、坐席、工单、退换货、海运 / 头程、知识库、SOP、转人工、升级率、SLA、大促、Prime Day、双 11、黑五（黑色星期五）、Q4 旺季、出海 BPO、菲律宾 / 越南客服、深圳 / 杭州、独立站、TikTok Shop、Shopify
-- **English-side**: ticket, deflection rate, resolution rate, escalation, CSAT, NPS, BSR, ASIN, marketplace, listing suppression, response time, after-hours coverage, multilingual support, knowledge base, BPO, agent, conversation, intent, sentiment
+**Tier 1 (always — 必须高频出现)**
+- "出海" / "cross-border" / "going global"
+- "Amazon / Shopify / 独立站"
+- "客服 ticket" / "工单" / "support ticket"
+- "退换货" / "return & refund"
+- "A-to-Z claim" / "买家投诉"
+- "listing 健康度" / "account health"
+- "Q4" / "Prime Day" / "黑五" / "618"
+- "外包客服" / "BPO" / "outsourced agents"
+- "SKU 变体" / "variant SKU"
+- "多店铺" / "multi-store"
+- "海运 tracking" / "shipment tracking"
+- "回复时效" / "response time" / "first response time (FRT)"
+- "解决率" / "resolution rate" / "deflection rate"
+- "NPS" / "CSAT"
+- "Zendesk macro" / "宏"
 
-**Tier 2（often — 高频出现）：**
-- 中文: 智能客服、AI 助理、机器人、话术树、转化率、复购、爆品、SKU、产品经理（PM）、运营（OPS）、客户成功
-- English: agent assist, contact center, omnichannel, intent classification, sentiment analysis, autonomous, copilot, augmentation, ROI
+**Tier 2 (often — 写专业内容时夹杂)**
+- "海外仓" / "FBA" / "3PL"
+- "review 健康度" / "feedback rate"
+- "客单价" / "AOV"
+- "退货率" / "RMA"
+- "ASIN" / "listing 矩阵"
+- "知识库 KB" / "SOP" / "macro"
+- "升级到人工" / "escalate to human"
+- "跨时区接管" / "follow-the-sun"
 
 ### 5.2 词汇他们不用（销售感 / 学术 / 平台感 — 避雷）
 
-**严禁出现：**
-- "Vibe Builder" — 客户不知道是啥（这是 Step 1 强烈批评的点）
-- "10-min deploy" — 客户不 care 部署速度，care upper-bound 工单解决率
-- "AI Receptionist" — 听起来像 medspa SMB，enterprise CS leader 会立刻关页面
-- "Conversational AI Platform" — 太 buzzword，VC 风
-- "End-to-end Customer Engagement Suite" — Gartner 体；客户内部说"客服系统"
-- "Cognitive Agent" / "Agentic AI" — 学术圈词；客户说"AI 客服"或"自动化客服"
-- "Empower your team" — 翻译腔，中文圈一看就是机翻
-- "Transform your customer experience" — Salesforce 体，过敏免疫
-- "Revolutionary" / "Game-changing" — 中文圈听起来像微商
-- 用拼音"Kefu"代替"客服"（在英文内容里）— 让人觉得本地化能力差
+- "Vibe Builder" — **彻底废弃**。这个词在 L3 受众听来要么困惑要么轻浮
+- "10-min deploy" — 客服总监听到这话警觉度 +50%。企业级采购里"快"=不稳，需要 reframe 成 "8-week implementation with structured rollout"
+- "AI agent" 单独用 — 太 generic，要么用 "AI 客服" 要么用 "autonomous resolution agent"
+- "Receptionist" — 这个词在 L3 心智里 = "前台接电话的"，跟 e-com CS 没关系
+- "Solve it forever" / "Game-changer" / "Revolutionary" — 中文营销塑料感
+- "Conversational AI" — 学术，他们说 "AI 客服" 就完了
+- "Plug-and-play" — 中国企业听了不信，"plug-and-play 都是骗人的"
+- "Empower your team" — silicon valley 病
+- "End-to-end" — 滥用到失去含义
 
 ### 5.3 触发情绪词（pain + relief language pairs）
 
 | Pain phrase | Relief phrase |
 |---|---|
-| "大促人手顶不住" / "Q4 工单爆了" | "高峰期不掉链子" / "峰值自动弹性" |
-| "海外客服招不到人" / "时差永远填不平" | "24/7 native 多语种自动覆盖" / "时差自动接管" |
-| "Amazon 24h 回复 SLA 跟不上" / "listing 又被降权了" | "Amazon SLA 100% 达标" / "Buyer message 自动 60 秒内回复" |
-| "差评一来就是 1-star" / "公关事故担不起" | "差评前置拦截" / "上线前先做 30 天 confidence 灰度" |
-| "客服永远是成本中心" / "老板不重视" | "客服变成数据引擎" / "ticket 反哺产品 / 营销" |
-| "AI 回错被截图" / "翻车风险" | "confidence-based handoff" / "100% sample 审核" |
-| "升级率 30%+ 转人工太多" / "AI 没用" | "60%+ autonomous resolution" / "复杂工单也能 close-loop" |
-| "迁移成本高于现状成本" / "锁死风险" | "知识库可导出" / "exit-clause day-1 透明" |
+| "黑五客服根本顶不住" | "黑五 ticket × 8 倍照样 4 小时回复" |
+| "外包翻译跟机翻一样" | "母语级别 5 种语言，海外用户分不出是不是 AI" |
+| "Listing 健康度刚掉了一颗星" | "negative review rate 砍一半，listing 排位回来" |
+| "知识库一改客服永远跟不上" | "总部 SOP 改了，海外 AI 客服 30 分钟内同步" |
+| "Amazon A-to-Z 投诉比例又涨了" | "A-to-Z claim 比例从 1.8% 降到 0.7%" |
+| "客服一年涨 30%，老板要砍预算" | "客服线 cost 砍 40%，NPS 不降反升" |
+| "每个工单查 5 个系统" | "客户问哪个 SKU，AI 自动调 Shopify/Amazon 实时回" |
+| "新品上市客服根本来不及培训" | "新品上市当天，AI 已经接管 60% 简单咨询" |
 
-**voice tone：** 同行同行（peer-to-peer）口吻，**不是**乙方推销口吻。文案中要有"我们 / 你们 / 兄弟"这种**同业人感**，避免"贵司 / 您"过度正式。中文内容掺合英文专有名词（CSAT、SLA、BSR、ASIN）是 ICP 真实状态，不要全翻译。
+> **使用规则**: 11 个 GTM Agent 在写 Reddit / X / LinkedIn / 公众号时，**hook 必须从左列出**（pain phrase），**CTA 落在右列上**（relief phrase）。
 
 ---
 
 ## 六、Channel × Trigger 映射
 
-> 这一节驱动 Step 4 的 11 GTM Agents 中哪几个要重火力。
-
-| Trigger | First search platform | Discovery channels | Decision channels |
+| Trigger | First search platform | Discovery channels (内容触达) | Decision channels (社交证据触达) |
 |---|---|---|---|
-| #1 大促后 CSAT 跌破红线 | Google + 知乎（中文）+ 微信搜一搜 | 公众号长文、知乎专栏、跨境者联盟 / 跨境眼资讯、Amazon 卖家社群 | LinkedIn 私信 + 同行 referral + sales call |
-| #2 CFO 砍预算 | Google + LinkedIn 搜索 | LinkedIn thought leadership、Gartner / Forrester 报告、ROI 计算器 lead magnet | RFP + multi-vendor demo + reference call |
-| #3 新 CS 总监出 roadmap | Google + LinkedIn + 公众号 | "买家指南" / "vendor 对比"内容、行业白皮书、招聘网站对手客户 logo | 邀请下线咖啡 / DemoDay、vendor advisory call |
-| #4 Amazon 警告 listing 降权 | Google + Helium10 / Jungle Scout 论坛 + Reddit r/AmazonSeller | YouTube "Amazon listing recovery"、Reddit 详细帖子、Solvea blog 长尾 SEO | 落地页 → 自助 trial → sales pop-up |
-| #5 进新市场 / 扩独立站 | Google + Shopify App Store + Reddit r/shopify | Shopify App Store integration listing、Shopify Plus partner ecosystem、独立站圈微信群 | Shopify 集成 demo + 多语种 case study |
+| **T1 大促前 headcount 锁死** | Google (中文+英文混搜) + 知乎 | LinkedIn 长文 (英文) + 公众号 (中文深度文) + 知乎专栏 + 跨境者联盟 / 跨境眼 newsletter | LinkedIn DM 同行 referral + 私域微信群 (出海 CS 总监群) + Anker/Insta360 case study landing page |
+| **T2 listing 健康度警告** | Amazon Seller Central 论坛 + 知乎"如何解决 Amazon listing 健康度" + Google "amazon a-to-z claim 降低" | YouTube (英文 7-12 min tactical video) + 公众号案例文 + r/AmazonSeller post | Reference call + Loom video (case study with metrics) |
+| **T3 新品上市 SOP 跟不上** | 知乎 + 内部同行群 + Google "ai 客服 知识库" | 公众号教程文 + LinkedIn how-to + B 站短视频 (3-5 min) | Reference call + 直接产品 demo |
+| **T4 年度预算砍 20% 同时保持 NPS** | Google + 知乎 + LinkedIn (English) "customer service ai roi" | LinkedIn ROI 长文 + Decagon / Sierra 对比文 (公众号 + LinkedIn 双发) + 投资人/CFO 转发的文章 | 高管 1-on-1 + ROI calculator + Anker case |
 
-**Agent 强度分配建议（给 Step 4 参考）：**
-- **高火力（>70% 资源）**：02-blog（长尾 SEO + buyer's guide）、03-linkedin（thought leadership for CS leaders）、08-wechat（公众号长文）、06-reddit（r/AmazonSeller + r/shopify + r/ecommerce）
-- **中火力（20-25%）**：04-x（英文 thought leadership + 出海大佬互动）、07-zhihu（中文搜索 SEO + 知乎专栏）、10-xiaohongshu（出海 KOL 互动 + 跨境者社区）
-- **低火力（5-10%）**：01-tiktok（hook 实验 + 短视频获客）、05-youtube（深度 case study）、09-newsletter（订阅养鱼）、11-podcast（嘉宾 outreach）
-
-**关键非对称机会：**
-- **微信公众号长文**在中国出海圈影响力 = LinkedIn 在欧美 = 2x discovery 渠道。多数西方对手不发中文，是 Solvea 结构性优势
-- **Reddit r/AmazonSeller** 是 Trigger #4 最大 inbound 来源，每周 50-100 个 "listing suppressed because response time" 真实帖；Solvea 应**自养 1-2 个真实身份账号**做 1 年长线社区贡献，不发广告
+**11 个 GTM Agent 火力优先级 read**:
+- 🟢 **公众号 (中文长文)** — 4 个 trigger 都用到，**最高优先级**
+- 🟢 **LinkedIn (中英双语长文)** — T1 + T4 主战场，**高优先级**
+- 🟢 **知乎** — T1 + T3 主战场，**高优先级**
+- 🟢 **Reddit (r/AmazonSeller, r/ecommerce)** — T2 高优先级
+- 🟡 **YouTube** — T2 + T3 中优先级（产能要求高，2026 暂量产 2 条/月）
+- 🟡 **X / Twitter (英文)** — 中优先级，主要打 EN ICP
+- 🟡 **B 站** — T3 中优先级（中文 ops 受众）
+- 🟡 **小红书** — 低-中优先级，受众重叠但客服总监不是核心 XHS 用户
+- 🔴 **TikTok / Instagram / Pinterest** — 不打
 
 ---
 
-## 七、Top 3 用户访谈问题（for Founder to actually run this week）
+## 七、Top 3 用户访谈问题（for Founder to actually run）
 
-Founder 应该这周 cold email 5 个真实出海品牌 CS 总监（建议从 Anker / Insta360 / Dreame / ESR 已有 contact 升级问 + 4 个 cold outreach 跨境者联盟里的 head of CS），每人问下面 3 个问题：
+> 跟 5 个真实付费客户 (Anker / Panasonic / ESR / Dreame / Insta360 / Rakuten 任选 5 家) 跑 30 分钟访谈，下面 3 个问题最能 invalidate / validate 这份 brief。
 
-1. **过去 12 个月，你们客服部门最大的"翻车事件"是什么？造成的具体损失？复盘后做了什么改变？**
-   *目的：验证痛点排序。如果 5 人中 ≥ 3 人提到大促 / Amazon SLA / 多语种翻车，痛点 #1 #3 #2 优先级确认。*
+**Q1 — Trigger 锚定**
+> "去年最近一次你坐下来说'我必须找一个 AI 客服方案'是哪一天，发生了什么具体的事？把那一天给我倒回去 24 小时讲一遍。"
+>
+> *预期答案*: 应落在 T1-T4 的 4 个 event 之一。如果落在别处（如"老板看了 OpenAI demo 拍脑袋"）→ trigger 模型错，重做。
 
-2. **如果你要在 6 个月内给老板讲"客服 AI 化"的成功故事，你会用什么 metric？为啥这个 metric 是老板会被打动的那个？**
-   *目的：捕捉真实的 success metric vocab + 老板视角。Solvea sales deck 应该完全用这套词。*
+**Q2 — Vocabulary 真伪检验**
+> "如果你今天要给同行（另一个出海品牌 CS 总监）推荐 Solvea，你会怎么用一句话描述它？不要用我们 marketing site 上的话。"
+>
+> *预期答案*: 应大量出现 §5.1 Tier 1 词汇，**几乎不出现** "vibe builder" / "10-min deploy" / "AI receptionist"。
 
-3. **如果今天给你 200 万人民币 / 30 万美金 budget 必须 3 个月内花在客服上，你会怎么花？为啥？**
-   *目的：测试 Solvea $30K-$100K ACV 在真实预算分配中的位置。如果他们的回答是"招 5 个 native"而不是"上 AI 系统"，意味着 Solvea 还要 reframe 价值主张。*
-
-**反模式（不要问的问题）：**
-- "你们觉得 AI 客服 important 吗？" → 100% 答 yes，0 信号
-- "你们会买 Solvea 这种产品吗？" → 用户不知道自己会不会买，问到的全是 social desirability bias
+**Q3 — Objection 真实性 + ROI 锚定**
+> "当时你内部 sell 这个采购给 CFO/CEO 的时候，他们最难被说服的一点是什么？你最后用什么数据说服了他们？"
+>
+> *预期答案*: 应落在 §四的 O1-O3 之一。**最后用的说服数据**：直接告诉我们 ROI 锚点是什么——这是 sales enablement gold。
 
 ---
 
@@ -206,49 +211,26 @@ Founder 应该这周 cold email 5 个真实出海品牌 CS 总监（建议从 An
 
 | Step 1 假设 | Step 2 用户层面证据 | 是否需要调整 Step 1 |
 |---|---|---|
-| L3（中国出海 CS）是真正 wedge | ✅ 强化——5 个真实痛点 4 个都是 L3 独有（大促、Amazon SLA、多语种、知识库联动），SMB receptionist 痛点无法承载这些 narrative | 保持 L3 主战场判断 |
-| "10-min deploy" 不是真正 differentiator | ✅ 强化——客户嘴里完全没出现"快"这个词，他们关心 confidence + rollback + CSAT delta | Step 1 关于换 metric 的建议（resolution rate + CSAT delta）正确，Step 3 必须按这个 reframe |
-| per-resolved-ticket 定价已被 Decagon / Ada 验证 | ⚠️ 部分弱化——L3 客户的财务部门更接受**混合**（base + overage），纯 per-ticket 浮动让 CFO 难批 | Step 3/4 需把定价 narrative 改为"hybrid: base sub + outcome overage" |
-| Anker / Panasonic / ESR / Dreame / Insta360 / Rakuten 是 anchor case study | ⚠️ 假设它们是真实付费 + 深度使用客户。如有 ≥ 2 家只是 pilot/free，case study narrative 强度会折半。**Founder 必须确认状态**——这是 Step 3/4 内容生死线 | 不调整 Step 1，但 Step 4 case study 须基于真实付费/深度使用客户 |
-| 12 个月窗口期 | ✅ 强化——Trigger #1 / #4 都是季节性 / 突发性，Solvea 在 Q3 2026 抢占 Prime Day + 双 11 内容窗口可以一战定段位；错过 Q4 2026 后 Shulex 内容护城河加深 | 保持 |
-| 排除 US SMB medspa/HVAC | ✅ 强化——Step 2 的痛点和 vocabulary 与 SMB 完全不重叠，强行做就是分裂 voice | 保持，并在落地页主图 / hero copy 立刻去除 medspa/HVAC 暗示 |
+| L3 (Cross-border Chinese Brand CS) 是 Solvea 真正 wedge | ✅ 强化。User 层 5 个痛点 + 4 个 trigger 全部围绕中国出海品牌客服总监场景 | 不需要调整。L3 重力进一步增加 |
+| TAM $300M-$1B 现实可触达 | ⚠️ §1.1 Firmographic 收紧到"年营收 $50M-3B + 海外占比 ≥40%" 后，TAM 池子可能压到 3-6K 家品牌 → $100-300M TAM | TAM 上限下修到 $300-700M 更稳。**不影响战略，影响融资 narrative** |
+| Shulex 是 L3 直接对手 | ✅ 但 §四 O1 暴露 nuance: Shulex 强在 VOC 分析，弱在 ticket resolution。**两者可能 coexist 而非替代** | **Step 3 必须细分**: 直接对手 = Decagon/Sierra/Intercom Fin (autonomous resolution, EN-first)；横向对手 = Shulex (VOC analytics, complementary) |
+| "per-resolved-ticket" 定价是差异化 | 🟡 减弱。O2 显示客户已被外包 $1.2/ticket 锚定，Solvea $0.8/ticket 不够 wow | **真正的 wedge 是"中国出海场景 fit + 多语种深度 + Amazon/Shopify 实时数据接入"，pricing 只是 sales motion 加分项** |
+| Solvea 当前产品具备多语种深度 | ⚠️ Step 2 没数据验证，是 §假设 #4 的 invalidation condition | **Founder 必须立即 audit 产品** |
 
-**新增 Step 1 应补充的洞察（递给 Step 3 Competitor Analysis）：**
-- Shulex 强在 VOC 分析（review mining），弱在 autonomous resolution → Solvea 的差异化锚点
-- 美洽 / 网易七鱼 强在国内电商，弱在出海多语种 SLA → Solvea 的真实对手是 Shulex + Salesmartly，不是美洽
-- Decagon / Sierra 强在英文 native + Resolution Rate，弱在中国总部知识库联动 + Amazon Seller Central 深集成 → Solvea 的护城河锚点
-- Intercom Fin 强在 install base + native chat 集成，弱在跨平台（Amazon / 独立站 / TikTok Shop）+ 中文 → Solvea 不正面打，做 wedge
+**Net**: Step 1 战略大方向不变。**调整**: (a) TAM narrative 下修 (b) Shulex 重新归类为 complementary (c) 定价 narrative 不能单飞，必须三合一 (ticket cost + listing 修复 + headcount 释放)。
 
 ---
 
 ## 九、Data Gaps
 
-可让这份 brief 从"LLM 推理"升级到"真实数据"的 CIA pipeline 调用清单：
+跑下面这 4 个 CIA pipeline 步骤会让 brief 从"LLM 推断"升级到"真实信号驱动"。
 
-1. **App Reviews / G2 Reviews**:
-   - Shulex (app_id 待查 + G2 listing) — 取近 200 条 review，找抱怨 cluster
-   - Salesmartly / Sobot / 美洽 (G2 + Capterra) — 同上
-   - Zendesk Suite + Salesforce Service Cloud — 来自出海卖家的负面 review（"too expensive"、"poor multilingual"、"no Amazon integration"）
-2. **Reddit scrape**:
-   - r/AmazonSeller × ["customer service AI", "response time policy", "buyer seller messaging automation", "ai listing suppressed", "amazon CS BPO"]
-   - r/shopify × ["customer support AI", "multilingual support", "chatbot for Shopify", "Tidio alternative"]
-   - r/ecommerce × ["customer service automation", "AI customer service vendor", "Intercom Fin review"]
-3. **TikTok hook patterns**:
-   - 中文 hashtag #跨境电商 #亚马逊卖家 #出海卖家 高 share 视频前 50，提取 hook 前 3 秒文本模板
-   - 英文 #amazonseller #ecommerce 高 share 视频 customer service 主题
-4. **LinkedIn Sales Navigator scrape**:
-   - 中国出海 Top 200 品牌（按 Tracxn / 海豚智库 / 易观出海 list）的 "Head of Customer Service" / "VP Customer Experience" / "客服总监"
-   - 现有 tech stack（Zendesk / Salesforce / Freshdesk）+ 已发 LinkedIn 内容主题
-5. **知乎 / 公众号 scrape**:
-   - 知乎 "出海 客服"、"亚马逊 客服 SLA"、"AI 客服 出海" 高赞回答 + 评论区
-   - 跨境者联盟 / 卖家精灵 / 出海笔记 / 浪潮新消费 公众号近 12 个月相关长文 + 留言
-6. **Sales call recordings**（Founder 内部数据）:
-   - 过去 12 个月 Top 20 sales call transcript → CIA 跑 objection clustering + price reaction pattern
-   - 失败 deal 复盘的 lost reason → 是真 product gap 还是 sales motion 问题
-7. **Founder structured customer interview**:
-   - Top 5 付费客户结构化访谈（用第七节 3 个问题）+ 5 个 lost deal 后续访谈
+1. **App Reviews scraping** — DataForSEO / G2 / Capterra 抓 Shulex / Intercom Fin / 美洽 / Sobot 的 500+ reviews，提取 ≥ 3-star 里的 unmet need + ≤ 2-star 里的 trauma vocabulary
+2. **Reddit scraping** — Apify reddit scraper on r/AmazonSeller, r/ecommerce, r/shopify (last 12 mo, 关键词: "customer service", "negative review", "a-to-z claim") + 中文社区 (跨境者联盟, 跨境眼)。300+ threads
+3. **TikTok / B 站 hook patterns** — Apify TikTok scraper, "amazon customer service tips", "出海客服", "shopify ai chatbot" top 100 高 engagement videos 的前 3 秒 hook 文案
+4. **LinkedIn / 脉脉 sales intel** — Phantombuster 抓 Top 100 中国出海品牌客服 / CX 负责人 LinkedIn profile，100+ named contacts + 他们 share 过的 vendor content
 
-如果只能跑一个：**Reddit r/AmazonSeller + 沙利文 / 海豚智库出海品牌 list LinkedIn scrape**。前者给 vocabulary + 痛点真实分布，后者给 cold outreach target list。
+> **Prioritization**: #1 + #2 是 P0。#3 + #4 是 P1。**如果只跑一个 → 跑 #2 Reddit**，trigger 真实语言决定整个 voice tuning 准确度。
 
 ---
 
@@ -256,29 +238,28 @@ Founder 应该这周 cold email 5 个真实出海品牌 CS 总监（建议从 An
 
 5 条 invalidation conditions——任何一条被证伪，brief 需推翻重做：
 
-1. **L3 ICP 真实可触达**：中国出海品牌 $30M-$500M 营收段 ≥ 2,000 家具备 $30K+ 年客服系统预算 + 客服总监决策权。如实测只有 500-800 家（远小于 Step 1 预估的 10K），TAM 缩水至 $50-150M，需要再下沉到 $5-30M 营收段重做 ICP（但那一段付费意愿 / 决策周期 / ACV 全部不同）
-2. **大促 / Amazon SLA / 多语种是真实 Top-3 痛点（而非 Founder / agent LLM 一厢情愿）**：5 个 Founder 访谈中 ≥ 3 人主动提到这三个痛点之一。如他们的 Top 1 是"客服离职率" / "知识库找不到东西"这类内部 ops 问题，wedge narrative 须重排
-3. **Decagon / Sierra / Ada 不会在 12 个月内做中国总部知识库联动 + Amazon Seller Central 深集成**：如 Decagon 2026 Q4 发布 Amazon 集成 + 中文 console，Solvea L3 护城河瞬间 50% 蒸发
-4. **混合定价（base + outcome）能被 ≥ 60% L3 buyer CFO 接受**：如调研发现 ≥ 60% CFO 仍然只签固定年度合同，Solvea 的差异化定价 narrative 失效，需要回退到传统 SaaS 定价 + outcome SLA 罚则的形态
-5. **Solvea 团队具备中文 + 英文 + 日文 GTM 双语 sales motion 能力**：如团队中无人能跑深圳 / 杭州面对面 sales call + 同时在 LinkedIn 写英文 thought leadership，L3 + L4 双线 GTM 不可执行——需要先建团队（3-6 个月延迟）
+1. **L3 ICP (Cross-border Brand CS Director) 在真实付费客户里占比 ≥ 70%**。如客户访谈发现 Anker / Insta360 / Dreame 等其实是 pilot 不付费，ICP 必须重画
+2. **§二 Top 5 痛点至少 3 个可被 ≥ 4/5 受访客户口头确认**。如真实痛点是别的（如"内部销售-客服协同失败"）→ 痛点模型重做
+3. **§三 4 个 Trigger 至少 3 个能在客户访谈 Q1 里被复现**。如客户给的 trigger 完全不在 T1-T4 之内 → trigger 模型重做
+4. **§五 vocabulary §5.1 Tier 1 词汇 ≥ 80% 出现在客户 Q2 自然描述里**。如客户自然描述大量出现"AI receptionist / vibe builder / 10-min deploy" → 我们已经污染他们语言（marketing 反向洗脑）
+5. **§六 Channel 优先级在客户 Q1 复盘里得到 ≥ 60% 一致性**。如客户实际不是从 Google + 公众号 + 知乎 + LinkedIn 进来，而是 100% 朋友推荐 → 内容引擎不是核心 GTM 杠杆
 
-**如果 #1 + #2 同时被证伪**：Solvea 实际 ICP 模型错误，必须重做 Step 1 + Step 2，不能继续到 Step 3。
-
-**如果只是 #3 被证伪**：Solvea 的窗口期从 12 个月压缩到 6 个月，必须在 Q3 2026 之前抢占内容心智 + 标杆 case study 公开化。
+**如果 #1 + #4 同时被证伪**，Solvea 在 L3 也没真正立住 → 必须回到 Step 1 完全重做战略。
 
 ---
 
 ## ✦ 给 Hunter 的最后一段话
 
-Step 1 说"你的 marketing 在说 A，sales 在做 B"。Step 2 把 B 这个用户摸清楚了：他们不是 medspa 老板，他们是深圳 / 杭州那栋写字楼 18 层的客服总监，刚开完一场把椅子坐穿的 Q4 复盘会，老板让她 30 天内出"AI 客服路线图"，她的 LinkedIn 收藏夹里塞着 Decagon / Sierra 的 demo 录屏，但她真正在 Slack DM 里问同行的是"你们 Amazon Buyer Message 24h SLA 怎么搞？"。
+Step 2 给你的核心 punch line:
 
-这个人不需要"Vibe Builder"，她需要的是**一个让她在述职会上有 number 可讲、且 24h 内可以 rollback 的安全方案**。Solvea 的 voice、定价、case study、content 全部要按这个人来组织。
+1. **你的真实买家是一个 CS 总监 (ops/brand 决策者)，不是一个 founder/CEO (tech 决策者)**。你网站的语言、CTA 设计、文档结构、demo 流程全是给"我想自己 vibe 出一个 AI 工具的 founder"准备的——这跟 CS 总监的购物心智完全错配。CS 总监要的不是 "10-min vibe builder"，而是 "8-week structured rollout with clear ROI committee package"
 
-Step 2 落定后，Step 3（Competitor Analysis）就要 anchor 在三组对标：
-- **真正的 L3 直接对手**：Shulex + Salesmartly + Sobot（中国出海 CS SaaS）
-- **L1 上限标杆**：Intercom Fin + Decagon + Sierra（autonomous resolution 范式）
-- **L3 客户当前 cope 替代品**：Zendesk + Salesforce SC + 自建 + 海外 BPO（真实 budget 流向的对手）
+2. **你最强的差异化不在"快"，在"出海 fit"**。Solvea 网站现在没有任何文案告诉一个 Anker 客服总监"我们懂你的 Amazon listing 健康度 / 海运 tracking / 多平台 SKU 这些场景"——**这是 Step 3 (Competitor Analysis) 要去 audit 的现状缺口**
 
-不要再在 Step 3 里出现 PKSHA / BEDORE / commubo——那是日本市场对标，不是 Solvea 的核心战场。
+3. **3 个 case study 必须立刻立项**: Anker、Insta360、Dreame 任选 3 个，每个出一个 1500-2500 字 case study + 1 个 Loom video + 1 个 ROI one-pager。**没有这 3 个 case，T1-T4 任何 trigger 来了都没弹药接**
+
+下一步进入 Step 3 (Competitor Analysis)，会基于 Step 2 的 ICP 重新定义 competitor set——**Shulex 不再是直接对手，Decagon/Sierra/Intercom Fin 才是**——然后做 messaging map + 缺口 audit + winning angle。
 
 —— ContentOS Agent · CIA Methodology v2 · 2026-05-11
+
+Brief written to `projects/solvea/strategy/02-user-insight.md`. State should advance to Step 2 complete, Step 3 ready.

@@ -10,9 +10,10 @@
     },
     "02-user-insight": {
       "status": "done",
-      "started_at": "2026-05-11T06:54:16.010076+00:00",
+      "started_at": "2026-05-11T07:28:16.648590+00:00",
       "output_file": "projects/solvea/strategy/02-user-insight.md",
-      "completed_at": "2026-05-11T06:55:00.000000+00:00"
+      "completed_at": "2026-05-11T07:37:31.122357+00:00",
+      "size": 15827
     },
     "03-competitor-analysis": {
       "status": "pending"
@@ -21,5 +22,5 @@
       "status": "pending"
     }
   },
-  "last_updated": "2026-05-11T06:55:00.000000+00:00"
+  "last_updated": "2026-05-11T07:37:31.122399+00:00"
 }

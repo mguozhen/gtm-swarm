@@ -7,6 +7,7 @@ import { SectionToolbar } from './components/SectionToolbar'
 import { ContentTable } from './components/ContentTable'
 import { PreviewPane } from './components/PreviewPane'
 import { ProjectOverview } from './components/ProjectOverview'
+import { IdeasPool } from './components/IdeasPool'
 import { useContent } from './hooks/useContent'
 import { useProjects } from './hooks/useProjects'
 import { useRole } from './hooks/useRole'
@@ -26,7 +27,7 @@ function App() {
   const [filterCategory, setFilterCategory] = useState<string>('all')
   const [filterCore, setFilterCore] = useState<string>('all')
 
-  const { data, refresh } = useContent({ project: slug, state: pipeline })
+  const { data, refresh } = useContent({ project: slug, state: tab === 'trending' ? 'new-idea' : pipeline })
   const items = data?.items ?? []
   const counts = data?.counts ?? { 'new-idea': 0, 'draft': 0, 'bank': 0, 'published': 0 }
 
@@ -100,6 +101,31 @@ function App() {
 
       {tab === 'dashboard' ? (
         <ProjectOverview slug={slug} />
+      ) : pipeline === 'new-idea' || tab === 'trending' ? (
+        <>
+          <StateFilter active={pipeline} onChange={setPipeline} counts={counts} />
+          <IdeasPool
+            items={items.filter(i => i.state === 'new-idea')}
+            onPromote={async item => {
+              const r = await fetch('/api/promote-idea', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ project: item.project, agent: item.agent, idea_id: item.id }),
+              }).then(r => r.json())
+              if (r.code !== 0) alert('Promote failed: ' + (r.stderr || r.stdout))
+              else alert('✓ Drafted: ' + r.topic.slice(0, 60))
+              refresh()
+            }}
+            onReject={async (item, reason) => {
+              await fetch('/api/reject-idea', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ project: item.project, agent: item.agent, idea_id: item.id, reason }),
+              })
+              refresh()
+            }}
+          />
+        </>
       ) : (
         <>
           <StateFilter active={pipeline} onChange={setPipeline} counts={counts} />

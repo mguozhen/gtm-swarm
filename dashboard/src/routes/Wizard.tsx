@@ -1,0 +1,211 @@
+import { useEffect, useState, useCallback } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import MDEditor from '@uiw/react-md-editor'
+import './Wizard.css'
+
+type StepKey = '01-market-insight' | '02-user-insight' | '03-competitor-analysis' | '04-content-strategy'
+type StepInfo = { status: 'pending' | 'running' | 'done'; output_file?: string; size?: number }
+
+const STEPS: { n: 1 | 2 | 3 | 4; key: StepKey; label: string; sub: string }[] = [
+  { n: 1, key: '01-market-insight',      label: 'Market Insight',       sub: 'TAM · SAM · SOM · trends · timing' },
+  { n: 2, key: '02-user-insight',        label: 'User Insight',         sub: 'ICP · pain · triggers · vocab' },
+  { n: 3, key: '03-competitor-analysis', label: 'Competitor Analysis',  sub: 'Top 5 · positioning · gap · risks' },
+  { n: 4, key: '04-content-strategy',    label: 'Content Strategy',     sub: 'Pillars · channels · 11-agent YAML' },
+]
+
+export default function Wizard() {
+  const { slug } = useParams<{ slug: string }>()
+  const nav = useNavigate()
+  const [state, setState] = useState<Record<StepKey, StepInfo>>({} as Record<StepKey, StepInfo>)
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1)
+  const [content, setContent] = useState('')
+  const [loading, setLoading] = useState<'idle' | 'running' | 'saving' | 'building'>('idle')
+  const [editing, setEditing] = useState(false)
+  const [building, setBuilding] = useState<{ output?: string; done?: boolean } | null>(null)
+
+  const refreshState = useCallback(async () => {
+    if (!slug) return
+    const r = await fetch(`/api/contentos/${slug}/state`).then(r => r.json())
+    setState(r.state.steps || {})
+    const cur = r.state.current_step || 0
+    const next = Math.min(4, cur + 1) as 1 | 2 | 3 | 4
+    if (cur >= 4) setCurrentStep(4)
+    else setCurrentStep(next)
+  }, [slug])
+
+  const loadStep = useCallback(async (step: 1 | 2 | 3 | 4) => {
+    if (!slug) return
+    const r = await fetch(`/api/contentos/${slug}/strategy?step=${step}`).then(r => r.json())
+    setContent(r.content || '')
+    setCurrentStep(step)
+    setEditing(false)
+  }, [slug])
+
+  useEffect(() => { refreshState() }, [refreshState])
+  useEffect(() => { loadStep(currentStep) }, [currentStep, loadStep])
+
+  const runStep = async (step: 1 | 2 | 3 | 4) => {
+    if (!slug) return
+    setLoading('running')
+    const r = await fetch(`/api/contentos/${slug}/run-step?step=${step}`, { method: 'POST' }).then(r => r.json())
+    setLoading('idle')
+    if (r.code !== 0) {
+      alert('Step run failed:\n' + (r.stderr || r.stdout))
+      return
+    }
+    await refreshState()
+    await loadStep(step)
+  }
+
+  const saveEdit = async () => {
+    if (!slug) return
+    setLoading('saving')
+    await fetch(`/api/contentos/${slug}/save-edit?step=${currentStep}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content }),
+    })
+    setLoading('idle')
+    setEditing(false)
+  }
+
+  const build = async () => {
+    if (!slug) return
+    setLoading('building')
+    setBuilding({ output: 'Hydrating 11 agents...' })
+    const r = await fetch(`/api/contentos/${slug}/build`, { method: 'POST' }).then(r => r.json())
+    setLoading('idle')
+    if (r.code !== 0) {
+      setBuilding({ output: 'Build failed:\n' + (r.stderr || r.stdout), done: false })
+      return
+    }
+    setBuilding({ output: r.stdout, done: true })
+  }
+
+  const allDone = STEPS.every(s => state[s.key]?.status === 'done')
+  const stepInfo = state[STEPS[currentStep - 1].key]
+  const stepDone = stepInfo?.status === 'done'
+
+  if (building?.done) {
+    return (
+      <div className="wizard wizard-success">
+        <div className="success-burst">
+          <div className="success-checkmark">✓</div>
+          <h1>11 GTM Agents Initialized</h1>
+          <p className="success-sub">{slug} swarm is ready to run.</p>
+          <pre className="success-log">{building.output}</pre>
+          <div className="success-actions">
+            <Link to={`/dashboard/${slug}`} className="btn btn-primary">Open Control Panel →</Link>
+            <Link to="/" className="btn btn-ghost">Back to projects</Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="wizard">
+      <header className="wizard-header">
+        <Link to="/" className="wizard-back">← projects</Link>
+        <div className="wizard-title">
+          <span className="wt-label">DISCOVERY</span>
+          <h1>{slug}</h1>
+        </div>
+        <div className="wizard-meta">{allDone ? 'Ready to build' : `Step ${currentStep} of 4`}</div>
+      </header>
+
+      <div className="wizard-grid">
+        <aside className="wizard-rail">
+          {STEPS.map(s => {
+            const info = state[s.key]
+            const status = info?.status || 'pending'
+            const isActive = currentStep === s.n
+            return (
+              <button
+                key={s.n}
+                className={`rail-step rail-step-${status} ${isActive ? 'is-active' : ''}`}
+                onClick={() => setCurrentStep(s.n)}
+              >
+                <span className="rs-num">{status === 'done' ? '✓' : s.n}</span>
+                <span className="rs-text">
+                  <span className="rs-label">{s.label}</span>
+                  <span className="rs-sub">{s.sub}</span>
+                </span>
+              </button>
+            )
+          })}
+
+          {allDone && (
+            <button className="rail-build-btn" onClick={build} disabled={loading === 'building'}>
+              {loading === 'building' ? '⟳ Building…' : '⚡ Build 11 Agents'}
+            </button>
+          )}
+        </aside>
+
+        <main className="wizard-main">
+          {!stepDone && loading !== 'running' && (
+            <div className="step-empty">
+              <div className="empty-icon">▱▱▱▱</div>
+              <h2>Step {currentStep}: {STEPS[currentStep - 1].label}</h2>
+              <p>{STEPS[currentStep - 1].sub}</p>
+              <button className="btn btn-primary" onClick={() => runStep(currentStep)}>
+                Run ContentOS Agent →
+              </button>
+            </div>
+          )}
+
+          {loading === 'running' && (
+            <div className="step-running">
+              <div className="running-spinner">⟳</div>
+              <h2>ContentOS Agent thinking...</h2>
+              <p>Step {currentStep}: {STEPS[currentStep - 1].label}</p>
+              <div className="running-hint">~2-3 min. claude --print is assembling 40KB+ context.</div>
+            </div>
+          )}
+
+          {stepDone && content && (
+            <div className="step-done">
+              <div className="step-toolbar">
+                <div className="st-info">
+                  <span className="st-size">{(content.length / 1024).toFixed(1)}KB</span>
+                  <span className="st-status">✓ done</span>
+                </div>
+                <div className="st-actions">
+                  {!editing ? (
+                    <>
+                      <button className="btn btn-ghost" onClick={() => setEditing(true)}>✏️ Edit</button>
+                      {currentStep < 4 ? (
+                        <button className="btn btn-primary" onClick={() => runStep((currentStep + 1) as 2 | 3 | 4)} disabled={loading !== 'idle'}>
+                          Approve & Run Step {currentStep + 1} →
+                        </button>
+                      ) : (
+                        <button className="btn btn-primary" onClick={build} disabled={loading !== 'idle'}>
+                          ⚡ Build 11 Agents
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <button className="btn btn-ghost" onClick={() => { setEditing(false); loadStep(currentStep) }}>Cancel</button>
+                      <button className="btn btn-primary" onClick={saveEdit} disabled={loading === 'saving'}>
+                        {loading === 'saving' ? 'Saving…' : '💾 Save Edit'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="step-content" data-color-mode="dark">
+                {editing ? (
+                  <MDEditor value={content} onChange={v => setContent(v || '')} height={700} preview="edit" />
+                ) : (
+                  <MDEditor.Markdown source={content} style={{ background: 'transparent' }} />
+                )}
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  )
+}

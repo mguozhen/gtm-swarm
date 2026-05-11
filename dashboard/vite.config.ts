@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync, existsSync, writeFileSync } from 'node:fs'
+import { spawn } from 'node:child_process'
 import { join, relative, resolve } from 'node:path'
 import matter from 'gray-matter'
 
@@ -128,6 +129,108 @@ function gtmSwarmApi(): Plugin {
         try { const parsed = matter(raw); data = parsed.data; body = parsed.content } catch {}
         res.setHeader('Content-Type', 'application/json')
         res.end(JSON.stringify({ frontmatter: data, body, file: rel }))
+      })
+
+      // ContentOS Agent endpoints
+      server.middlewares.use('/api/contentos', async (req, res) => {
+        const url = new URL(req.url || '', 'http://x')
+        const m = url.pathname.match(/^\/([^/]+)\/(state|run-step|save-edit|build|strategy)/)
+        if (!m) { res.statusCode = 404; res.end('not found'); return }
+        const [, slug, action] = m
+        const projectDir = join(PROJECTS_DIR, slug)
+        if (!existsSync(projectDir)) {
+          res.statusCode = 404; res.end(JSON.stringify({ error: 'project not found' })); return
+        }
+        res.setHeader('Content-Type', 'application/json')
+
+        if (action === 'state' && req.method === 'GET') {
+          const stateFile = join(projectDir, '.contentos-state.json')
+          const state = existsSync(stateFile) ? JSON.parse(readFileSync(stateFile, 'utf-8'))
+            : { current_step: 0, steps: {} }
+          const project = existsSync(join(projectDir, 'project.yaml'))
+            ? readFileSync(join(projectDir, 'project.yaml'), 'utf-8') : ''
+          res.end(JSON.stringify({ slug, state, project_yaml: project }))
+          return
+        }
+
+        if (action === 'strategy' && req.method === 'GET') {
+          const step = url.searchParams.get('step')
+          if (!step) { res.statusCode = 400; res.end(JSON.stringify({ error: 'step required' })); return }
+          const slugMap: Record<string, string> = {
+            '1': '01-market-insight', '2': '02-user-insight',
+            '3': '03-competitor-analysis', '4': '04-content-strategy',
+          }
+          const fname = slugMap[step]
+          if (!fname) { res.statusCode = 400; res.end(JSON.stringify({ error: 'bad step' })); return }
+          const f = join(projectDir, 'strategy', `${fname}.md`)
+          const exists = existsSync(f)
+          res.end(JSON.stringify({
+            step, file: relative(REPO_ROOT, f), exists,
+            content: exists ? readFileSync(f, 'utf-8') : '',
+          }))
+          return
+        }
+
+        if (action === 'run-step' && req.method === 'POST') {
+          const step = url.searchParams.get('step')
+          if (!step || !['1','2','3','4'].includes(step)) {
+            res.statusCode = 400; res.end(JSON.stringify({ error: 'step 1..4 required' })); return
+          }
+          const child = spawn('python3',
+            [join(REPO_ROOT, 'scripts/contentos-agent.py'), '--project', slug, '--step', step],
+            { cwd: REPO_ROOT, env: process.env })
+          let out = '', err = ''
+          child.stdout.on('data', d => out += d.toString())
+          child.stderr.on('data', d => err += d.toString())
+          child.on('close', code => {
+            res.statusCode = code === 0 ? 200 : 500
+            res.end(JSON.stringify({ code, stdout: out, stderr: err }))
+          })
+          req.on('close', () => child.kill('SIGTERM'))
+          return
+        }
+
+        if (action === 'save-edit' && req.method === 'POST') {
+          const step = url.searchParams.get('step')
+          const slugMap: Record<string, string> = {
+            '1': '01-market-insight', '2': '02-user-insight',
+            '3': '03-competitor-analysis', '4': '04-content-strategy',
+          }
+          if (!step || !slugMap[step]) {
+            res.statusCode = 400; res.end(JSON.stringify({ error: 'bad step' })); return
+          }
+          let body = ''
+          req.on('data', c => body += c.toString())
+          req.on('end', () => {
+            try {
+              const payload = JSON.parse(body)
+              const f = join(projectDir, 'strategy', `${slugMap[step]}.md`)
+              writeFileSync(f, payload.content)
+              res.end(JSON.stringify({ ok: true, file: relative(REPO_ROOT, f), size: payload.content.length }))
+            } catch (e: unknown) {
+              res.statusCode = 500
+              res.end(JSON.stringify({ error: String(e) }))
+            }
+          })
+          return
+        }
+
+        if (action === 'build' && req.method === 'POST') {
+          const child = spawn('python3',
+            [join(REPO_ROOT, 'scripts/hydrate-agents.py'), '--project', slug],
+            { cwd: REPO_ROOT, env: process.env })
+          let out = '', err = ''
+          child.stdout.on('data', d => out += d.toString())
+          child.stderr.on('data', d => err += d.toString())
+          child.on('close', code => {
+            res.statusCode = code === 0 ? 200 : 500
+            res.end(JSON.stringify({ code, stdout: out, stderr: err }))
+          })
+          return
+        }
+
+        res.statusCode = 405
+        res.end(JSON.stringify({ error: 'method not allowed' }))
       })
     },
   }

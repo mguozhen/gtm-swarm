@@ -20,10 +20,18 @@ MAX_COLS = 12
 MAX_CELL_LEN = 200
 
 
+def _strip_non_bmp(s):
+    # Strip non-BMP code points (4-byte UTF-8 / emojis) — some upstream JSON
+    # parsers (seen in Anthropic via flatkey CF proxy) reject long bodies
+    # containing them with "invalid escaped character".
+    return "".join(c for c in s if ord(c) < 0x10000)
+
+
 def cell_str(v):
     if v is None:
         return ""
     s = str(v).replace("|", "/").replace("\n", " ").strip()
+    s = _strip_non_bmp(s)
     return s[:MAX_CELL_LEN] + "…" if len(s) > MAX_CELL_LEN else s
 
 

@@ -1,0 +1,18 @@
+id: 09-edm
+name: EDM Agent
+category: revenue
+platform: "Email"
+builder: ""
+reviewer: ""
+goal: "Capture email list, send campaigns, track data. Build owned audience pipeline."
+default_product: "voc-ai"
+kpi:
+  weekly_target: "TBD"
+  measure: "list growth, open rate, CTR, replies"
+schedule: TBD
+budget_monthly_usd: 0
+status: blocked
+blocked_reason: "Builder + Reviewer both missing (Principle 3: No Triangle = No Agent)"
+reuse:
+  - "~/google-ads/dropin"
+  - "~/google-ads/crm"

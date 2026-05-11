@@ -1,0 +1,16 @@
+id: 06-reddit
+name: Reddit Agent
+category: distribution
+platform: "Reddit"
+builder: "Wayne"
+reviewer: "Ivy Chen"
+goal: "Auto-publish Reddit posts at scale. Drive community engagement and inbound traffic."
+default_product: "voc-ai"
+kpi:
+  weekly_target: "5 native posts in r/AmazonSeller / r/FulfillmentByAmazon / r/Entrepreneur"
+  measure: "upvotes, comments, inbound clicks to voc.ai"
+schedule: "cron: 0 11 * * 1-5"
+budget_monthly_usd: 0
+status: pilot
+reuse: []
+notes: "Pilot agent — runs the full Iron Triangle loop end-to-end first. Pattern from here replicates to other distribution agents."

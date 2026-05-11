@@ -1,0 +1,17 @@
+id: 01-foundation
+name: GTM Foundation
+category: foundation
+platform: "Internal Dashboard"
+builder: "钟石龙"
+reviewer: "Boyuan"
+goal: "All agents connected. Execution monitoring, version mgmt, cost mgmt. Review via dashboard only."
+default_product: "all"
+kpi:
+  weekly_target: "All 11 agents pingable, cost report up-to-date"
+  measure: "agents online %, weekly cost drift"
+schedule: "always-on"
+budget_monthly_usd: 0
+status: deployable
+reuse:
+  - "~/agent-teams (Paperclip) schema for agents/goals/issues/approvals"
+  - "dashboard/ in this repo"

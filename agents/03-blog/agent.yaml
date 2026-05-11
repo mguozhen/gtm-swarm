@@ -1,0 +1,17 @@
+id: 03-blog
+name: Blog Agent
+category: content
+platform: "Official Website"
+builder: "张基琳"
+reviewer: "彭静"
+goal: "Auto-generate SEO blogs for all product lines. Monthly topic map. Drive Google ranking + social media traffic growth."
+default_product: "voc-ai"
+kpi:
+  weekly_target: "5 blog posts published, 1 monthly topic map"
+  measure: "indexed pages, organic clicks, ranking positions"
+schedule: "cron: 0 9 * * 1,3,5"
+budget_monthly_usd: 0
+status: deployable
+reuse:
+  - "engines/voc-ai (Ronin Skill Graph)"
+  - "engines/solvea"

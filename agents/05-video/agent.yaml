@@ -1,0 +1,19 @@
+id: 05-video
+name: Video Agent
+category: content
+platform: "YouTube · TikTok"
+builder: "张基琳"
+reviewer: "庄可欣"
+goal: "Auto-generate videos from scratch (trending topics) or from blog posts. Reviewer owns total likes, views, engagement."
+default_product: "voc-ai"
+kpi:
+  weekly_target: "10 short videos, 1 long video"
+  measure: "likes, views, watch-through %, engagement"
+schedule: "cron: 0 14 * * *"
+budget_monthly_usd: 0
+status: deployable
+reuse:
+  - "~/MKT/MoneyPrinterTurbo"
+  - "~/MKT/ShortGPT"
+  - "~/MKT/CosyVoice"
+  - "~/autopost.video"

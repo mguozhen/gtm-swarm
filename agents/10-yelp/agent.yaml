@@ -1,0 +1,17 @@
+id: 10-yelp
+name: Yelp Agent
+category: revenue
+platform: "Yelp"
+builder: ""
+reviewer: ""
+goal: "Auto-find leads across platforms. Identify potential users from Yelp reviews & complaints."
+default_product: "solvea"
+kpi:
+  weekly_target: "TBD"
+  measure: "qualified leads found, outreach reply rate"
+schedule: TBD
+budget_monthly_usd: 0
+status: blocked
+blocked_reason: "Builder + Reviewer both missing (Principle 3: No Triangle = No Agent)"
+reuse:
+  - "295 TX leads pilot (existing data)"

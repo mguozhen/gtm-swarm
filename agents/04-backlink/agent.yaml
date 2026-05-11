@@ -1,0 +1,16 @@
+id: 04-backlink
+name: Backlink Agent
+category: content
+platform: "Official Website"
+builder: ""
+reviewer: "彭静"
+goal: "Find, evaluate & secure quality backlinks. Outreach, negotiate & publish. Build domain authority."
+default_product: "voc-ai"
+kpi:
+  weekly_target: "XX backlinks acquired"
+  measure: "DR-weighted backlink count, referring domains"
+schedule: TBD
+budget_monthly_usd: 0
+status: blocked
+blocked_reason: "Builder missing (Principle 3: No Triangle = No Agent)"
+reuse: []

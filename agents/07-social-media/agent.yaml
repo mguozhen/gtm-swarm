@@ -1,0 +1,17 @@
+id: 07-social-media
+name: Social Media Agent
+category: distribution
+platform: "X · GitHub · LinkedIn · All Platforms"
+builder: "Wayne"
+reviewer: "Ivy Chen"
+goal: "Auto-publish across all platforms: brand content, product updates, trending content. Ivy owns brand voice & user channel."
+default_product: "voc-ai"
+kpi:
+  weekly_target: "5 X / 3 LinkedIn / 1 GitHub (per active product)"
+  measure: "impressions, engagement rate, profile clicks"
+schedule: "cron: 0 8,17 * * *"
+budget_monthly_usd: 0
+status: deployable
+reuse:
+  - "engines/voc-ai platform native rewrite"
+  - "~/social-bot LinkedIn API memo"

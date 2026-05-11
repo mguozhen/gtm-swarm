@@ -1,0 +1,18 @@
+id: 08-ads
+name: Ads Agent
+category: revenue
+platform: "Google · iOS · Android"
+builder: "高博远"
+reviewer: ""
+goal: "Manage paid ads on iOS App Store, Google Play, Google Search. Optimize for CAC & conversion."
+default_product: "solvea"
+kpi:
+  weekly_target: "CAC ≤ target, ROAS ≥ target"
+  measure: "CAC, ROAS, conversions, QS"
+schedule: "always-on"
+budget_monthly_usd: 0
+status: blocked
+blocked_reason: "Reviewer missing (Principle 3: No Triangle = No Agent)"
+reuse:
+  - "~/google-ads (Google Ads Sprint stack — most mature reuse)"
+  - "~/.ads-skill/tokens.json (OAuth)"

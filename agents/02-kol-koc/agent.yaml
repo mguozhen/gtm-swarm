@@ -1,0 +1,17 @@
+id: 02-kol-koc
+name: KOL / KOC Agent
+category: distribution
+platform: "YouTube · TikTok · Instagram"
+builder: "张基琳"
+reviewer: "Ivy"
+goal: "Discover, outreach & partner with KOCs. XX KOC outreach/day. Target: publish XX KOC videos/week by 5/30."
+default_product: "voc-ai"
+kpi:
+  weekly_target: "XX KOC videos published"
+  measure: "videos published, reach, conversions"
+schedule: "cron: 0 10 * * 1-5"
+budget_monthly_usd: 0
+status: deployable
+reuse:
+  - "~/MKT/TiktokAutoUploader"
+  - "~/MKT/scripts (CosyVoice / ShortGPT)"

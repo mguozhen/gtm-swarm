@@ -41,11 +41,11 @@ list_pending() {
     local agent
     agent="$(echo "$target" | sed -E 's|.*/agents/([^/]+)/.*|\1|')"
     local first
-    first="$(grep -m1 '^# \|^title:' "$link" 2>/dev/null | head -1)"
+    first="$(grep -m1 -E '^(# |\*\*Title:\*\*|title:|topic:)' "$link" 2>/dev/null | head -1 || true)"
     printf "  %-12s  %s\n    %s\n    → %s\n\n" "$agent" "$id" "$first" "$target"
     found=1
   done
-  [[ $found -eq 0 ]] && echo "  (empty)"
+  if [[ $found -eq 0 ]]; then echo "  (empty)"; fi
 }
 
 resolve_draft() {
@@ -72,7 +72,23 @@ approve() {
   git -C "$REPO_ROOT" mv "${target#$REPO_ROOT/}" "${bank#$REPO_ROOT/}/$fname" 2>/dev/null \
     || mv "$target" "$bank/$fname"
   rm "$link"
+  bump_metric "$(dirname "$agent_dir")" approved
   echo "Approved → $bank/$fname"
+}
+
+bump_metric() {
+  local agent_dir="$1"; local field="$2"
+  local mfile="$agent_dir/metrics.json"
+  [[ -f "$mfile" ]] || return 0
+  python3 - "$mfile" "$field" <<'PY'
+import json, sys, datetime
+path, field = sys.argv[1], sys.argv[2]
+data = json.loads(open(path).read())
+r = data.setdefault("rolling_30d", {})
+r[field] = r.get(field, 0) + 1
+data["last_updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+open(path, "w").write(json.dumps(data, indent=2))
+PY
 }
 
 reject() {
@@ -100,6 +116,7 @@ reject() {
 - Avoid: TODO (Reviewer to refine)
 ENTRY
   rm "$target" "$link"
+  bump_metric "$(dirname "$agent_dir")" rejected
   echo "Rejected $TARGET — appended to $agent_id/anti-patterns.md"
 }
 

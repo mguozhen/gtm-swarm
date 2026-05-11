@@ -2,10 +2,10 @@
   "agent_id": "06-reddit",
   "status": "pilot",
   "rolling_30d": {
-    "drafted": 0,
-    "approved": 0,
+    "drafted": 4,
+    "approved": 2,
     "rejected": 0,
     "published": 0
   },
-  "last_updated": null
+  "last_updated": "2026-05-11T02:02:49.155472+00:00"
 }

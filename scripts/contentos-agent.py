@@ -141,7 +141,9 @@ def run_step(project_slug: str, step_n: int, dry_run: bool = False):
     out_file = strategy_dir / f"{step_slug}.md"
     out_file.write_text(output)
 
+    existing = state["steps"].get(step_slug, {})
     state["steps"][step_slug] = {
+        **existing,
         "status": "done",
         "output_file": str(out_file.relative_to(REPO_ROOT)),
         "completed_at": datetime.now(timezone.utc).isoformat(),

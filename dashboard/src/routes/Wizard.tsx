@@ -1,10 +1,16 @@
-import { useEffect, useState, useCallback } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useEffect, useState, useCallback, useRef } from 'react'
+import { useParams, Link } from 'react-router-dom'
 import MDEditor from '@uiw/react-md-editor'
 import './Wizard.css'
 
 type StepKey = '01-market-insight' | '02-user-insight' | '03-competitor-analysis' | '04-content-strategy'
-type StepInfo = { status: 'pending' | 'running' | 'done'; output_file?: string; size?: number }
+type StepInfo = {
+  status: 'pending' | 'running' | 'done'
+  output_file?: string
+  size?: number
+  started_at?: string
+  completed_at?: string
+}
 
 const STEPS: { n: 1 | 2 | 3 | 4; key: StepKey; label: string; sub: string }[] = [
   { n: 1, key: '01-market-insight',      label: 'Market Insight',       sub: 'TAM · SAM · SOM · trends · timing' },
@@ -13,15 +19,27 @@ const STEPS: { n: 1 | 2 | 3 | 4; key: StepKey; label: string; sub: string }[] = 
   { n: 4, key: '04-content-strategy',    label: 'Content Strategy',     sub: 'Pillars · channels · 11-agent YAML' },
 ]
 
+function fmtDuration(ms: number) {
+  const s = Math.floor(ms / 1000)
+  const m = Math.floor(s / 60)
+  return `${m}:${String(s % 60).padStart(2, '0')}`
+}
+
+function stepDurationMs(info?: StepInfo) {
+  if (!info?.started_at || !info?.completed_at) return null
+  return new Date(info.completed_at).getTime() - new Date(info.started_at).getTime()
+}
+
 export default function Wizard() {
   const { slug } = useParams<{ slug: string }>()
-  const nav = useNavigate()
   const [state, setState] = useState<Record<StepKey, StepInfo>>({} as Record<StepKey, StepInfo>)
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1)
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState<'idle' | 'running' | 'saving' | 'building'>('idle')
   const [editing, setEditing] = useState(false)
   const [building, setBuilding] = useState<{ output?: string; done?: boolean } | null>(null)
+  const [elapsedMs, setElapsedMs] = useState(0)
+  const runStartedAtRef = useRef<number | null>(null)
 
   const refreshState = useCallback(async () => {
     if (!slug) return
@@ -44,9 +62,19 @@ export default function Wizard() {
   useEffect(() => { refreshState() }, [refreshState])
   useEffect(() => { loadStep(currentStep) }, [currentStep, loadStep])
 
+  useEffect(() => {
+    if (loading !== 'running') { setElapsedMs(0); runStartedAtRef.current = null; return }
+    runStartedAtRef.current = Date.now()
+    const id = setInterval(() => {
+      if (runStartedAtRef.current) setElapsedMs(Date.now() - runStartedAtRef.current)
+    }, 250)
+    return () => clearInterval(id)
+  }, [loading])
+
   const runStep = async (step: 1 | 2 | 3 | 4) => {
     if (!slug) return
     setLoading('running')
+    setCurrentStep(step)
     const r = await fetch(`/api/contentos/${slug}/run-step?step=${step}`, { method: 'POST' }).then(r => r.json())
     setLoading('idle')
     if (r.code !== 0) {
@@ -82,9 +110,12 @@ export default function Wizard() {
     setBuilding({ output: r.stdout, done: true })
   }
 
-  const allDone = STEPS.every(s => state[s.key]?.status === 'done')
+  const doneCount = STEPS.filter(s => state[s.key]?.status === 'done').length
+  const allDone = doneCount === 4
   const stepInfo = state[STEPS[currentStep - 1].key]
   const stepDone = stepInfo?.status === 'done'
+  const durations = STEPS.map(s => stepDurationMs(state[s.key])).filter((d): d is number => d !== null)
+  const totalElapsedMs = durations.reduce((a, b) => a + b, 0)
 
   if (building?.done) {
     return (
@@ -110,8 +141,19 @@ export default function Wizard() {
         <div className="wizard-title">
           <span className="wt-label">DISCOVERY</span>
           <h1>{slug}</h1>
+          <span className="wt-progress">
+            <span className="wt-pcount">{doneCount}/4</span>
+            <span className="wt-pdots">
+              {STEPS.map(s => (
+                <span key={s.n} className={`wt-pdot wt-pdot-${state[s.key]?.status || 'pending'}`} />
+              ))}
+            </span>
+          </span>
         </div>
-        <div className="wizard-meta">{allDone ? 'Ready to build' : `Step ${currentStep} of 4`}</div>
+        <div className="wizard-meta">
+          {allDone ? '✓ Ready to build' : `Step ${currentStep} of 4`}
+          {totalElapsedMs > 0 && <span className="wt-elapsed"> · {fmtDuration(totalElapsedMs)} total</span>}
+        </div>
       </header>
 
       <div className="wizard-grid">
@@ -120,16 +162,19 @@ export default function Wizard() {
             const info = state[s.key]
             const status = info?.status || 'pending'
             const isActive = currentStep === s.n
+            const dur = stepDurationMs(info)
             return (
               <button
                 key={s.n}
                 className={`rail-step rail-step-${status} ${isActive ? 'is-active' : ''}`}
                 onClick={() => setCurrentStep(s.n)}
               >
-                <span className="rs-num">{status === 'done' ? '✓' : s.n}</span>
+                <span className="rs-num">{status === 'done' ? '✓' : status === 'running' ? '⟳' : s.n}</span>
                 <span className="rs-text">
                   <span className="rs-label">{s.label}</span>
                   <span className="rs-sub">{s.sub}</span>
+                  {dur !== null && <span className="rs-dur">{fmtDuration(dur)}</span>}
+                  {info?.size && <span className="rs-size">{(info.size / 1024).toFixed(1)}KB</span>}
                 </span>
               </button>
             )
@@ -159,7 +204,11 @@ export default function Wizard() {
               <div className="running-spinner">⟳</div>
               <h2>ContentOS Agent thinking...</h2>
               <p>Step {currentStep}: {STEPS[currentStep - 1].label}</p>
-              <div className="running-hint">~2-3 min. claude --print is assembling 40KB+ context.</div>
+              <div className="running-elapsed">⏱ {fmtDuration(elapsedMs)}</div>
+              <div className="running-hint">claude --print is assembling 40KB+ context. Usually 2-3 min.</div>
+              <div className="running-bar">
+                <div className="running-bar-fill" style={{ width: `${Math.min(95, elapsedMs / 1800)}%` }} />
+              </div>
             </div>
           )}
 

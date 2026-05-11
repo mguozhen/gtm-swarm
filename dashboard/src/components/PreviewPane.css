@@ -195,3 +195,17 @@
   font-weight: 600;
   color: var(--text);
 }
+
+.dj-preview-empty {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-faint);
+  background: var(--card);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+}
+.dj-preview-empty .pe-icon {
+  font-size: 28px;
+  color: var(--border-strong);
+  margin-bottom: 10px;
+}

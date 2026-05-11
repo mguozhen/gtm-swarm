@@ -117,6 +117,35 @@ function gtmSwarmApi(): Plugin {
         }))
       })
 
+      server.middlewares.use('/api/review', (req, res) => {
+        if (req.method !== 'POST') { res.statusCode = 405; res.end(); return }
+        let body = ''
+        req.on('data', c => body += c.toString())
+        req.on('end', () => {
+          let payload: { reviewer?: string; id?: string; action?: string; reason?: string }
+          try { payload = JSON.parse(body) } catch {
+            res.statusCode = 400; res.end(JSON.stringify({ error: 'bad json' })); return
+          }
+          const { reviewer, id, action, reason } = payload
+          if (!reviewer || !id || !action || !['approve', 'reject'].includes(action)) {
+            res.statusCode = 400
+            res.end(JSON.stringify({ error: 'reviewer/id/action required (action=approve|reject)' }))
+            return
+          }
+          const args = [join(REPO_ROOT, 'scripts/review-queue.sh'), reviewer, action, id]
+          if (action === 'reject') args.push(reason || 'No reason given')
+          const child = spawn('bash', args, { cwd: REPO_ROOT })
+          let out = '', err = ''
+          child.stdout.on('data', d => out += d.toString())
+          child.stderr.on('data', d => err += d.toString())
+          child.on('close', code => {
+            res.setHeader('Content-Type', 'application/json')
+            res.statusCode = code === 0 ? 200 : 500
+            res.end(JSON.stringify({ code, stdout: out.trim(), stderr: err.trim() }))
+          })
+        })
+      })
+
       server.middlewares.use('/api/file', (req, res) => {
         const url = new URL(req.url || '', 'http://x')
         const rel = url.searchParams.get('path') || ''

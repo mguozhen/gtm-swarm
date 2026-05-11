@@ -1,0 +1,22 @@
+{
+  "current_step": 1,
+  "steps": {
+    "01-market-insight": {
+      "status": "done",
+      "output_file": "projects/btcmind/strategy/01-market-insight.md",
+      "completed_at": "2026-05-11T06:27:25.295521+00:00",
+      "size": 14919
+    },
+    "02-user-insight": {
+      "status": "running",
+      "started_at": "2026-05-11T06:27:26.368901+00:00"
+    },
+    "03-competitor-analysis": {
+      "status": "pending"
+    },
+    "04-content-strategy": {
+      "status": "pending"
+    }
+  },
+  "last_updated": "2026-05-11T06:27:26.369056+00:00"
+}

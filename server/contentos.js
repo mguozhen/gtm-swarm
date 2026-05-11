@@ -24,12 +24,43 @@ function saveState(projectDir, state) {
   writeFileSync(path.join(projectDir, '.contentos-state.json'), JSON.stringify(state, null, 2))
 }
 
+function readCiaData(projectDir) {
+  // CIA integration: if `projects/<slug>/cia/synthesis.md` exists (produced
+  // by running `cia init/fetch-*/export` locally), include it as primary
+  // grounded-data source for Steps 1+2. Falls through silently if absent.
+  const ciaDir = path.join(projectDir, 'cia')
+  if (!existsSync(ciaDir)) return null
+  const out = []
+  const synth = path.join(ciaDir, 'synthesis.md')
+  if (existsSync(synth)) {
+    out.push(`### CIA synthesis.md (赛道矩阵 + TAM 估算)\n\n${readFileSync(synth, 'utf-8')}`)
+  }
+  // Also surface report.md if present (richer prose form)
+  const report = path.join(ciaDir, 'report.md')
+  if (existsSync(report) && !existsSync(synth)) {
+    out.push(`### CIA report.md\n\n${readFileSync(report, 'utf-8')}`)
+  }
+  return out.length ? out.join('\n\n') : null
+}
+
 function buildPrompt(stepIdx, projectDir, projectYaml) {
   const step = STEPS[stepIdx]
   const template = readFileSync(path.join(TEMPLATES_DIR, `${step.slug}.md`), 'utf-8')
   const parts = [`## ContentOS Agent — Running Step ${step.n}: ${step.label}\n`]
   parts.push('## PROJECT YAML\n')
   parts.push('```yaml\n' + yaml.dump(projectYaml, { sortKeys: false }) + '```\n')
+
+  // CIA real-data injection (Steps 1 + 2 benefit most; 3+4 inherit via prior outputs)
+  if (step.n <= 2) {
+    const cia = readCiaData(projectDir)
+    if (cia) {
+      parts.push('## 🕵️ CIA REAL DATA (Chief Intelligence Officer pipeline)\n')
+      parts.push('Below is real market data from Ahrefs / DataForSEO / Apify (TikTok+Reddit) / iTunes / YouTube via the CIA skill. **Treat this as primary source for TAM/SAM math, competitor counts, keyword volumes, and pain-point quantification.** Do not invent numbers — cite from CIA tables where possible.\n')
+      parts.push(cia)
+      parts.push('\n')
+    }
+  }
+
   for (const depSlug of step.deps) {
     const depFile = path.join(projectDir, 'strategy', `${depSlug}.md`)
     if (existsSync(depFile)) {

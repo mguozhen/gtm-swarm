@@ -10,11 +10,11 @@ You are the ContentOS Agent. This step adopts the **CIA (首席情报官)** meth
 
 `project.yaml` describing the product (positioning, customers, competitors).
 
-## Data Limitations (be explicit)
+## Data Source Priority
 
-We do NOT yet have live Ahrefs / DataForSEO / Apify access in this session. So Sections that would normally cite real volumes / CPC / SERP rankings must be marked `[需 CIA Step 2-8 真实数据]` and use defensible LLM-derived estimates.
+**If a `## 🕵️ CIA REAL DATA` section appears above this template**: that data is from the CIA pipeline (real Ahrefs keyword vols / DataForSEO App Store SERP / Apify TikTok+Reddit / iTunes / YouTube). **TREAT IT AS PRIMARY SOURCE**. Your TAM/SAM math, competitor counts, hook seeds, and pain-point quantification should cite numbers FROM CIA tables. Do not invent volumes if CIA has them.
 
-The Founder will see both your LLM reasoning AND the data gap markers, and decide whether to install CIA Python implementation for real numbers.
+**If no CIA section is present**: mark estimated numbers as `[需 CIA 真实数据]` and use defensible LLM-derived estimates. The Founder can run `scripts/cia-for-project.sh <slug> "<topic>"` locally to enrich.
 
 ## Your Job — Output Structure
 

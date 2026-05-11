@@ -24,10 +24,12 @@ engine:
   source_path: null
   variant: custom (to be created by ContentOS Agent)
 contentos_agent:
-  state: step_1_done
-  last_run: '2026-05-11T06:27:25.295781+00:00'
+  state: built
+  last_run: '2026-05-11T06:50:15.432893+00:00'
   notes: Live product but engine not yet built. ContentOS Agent will produce strategy
     then derive a fresh 17-file skill graph.
+  built_at: '2026-05-11T06:50:15.522116+00:00'
+  agents_hydrated: 11
 paperclip:
   company_id: null
   synced_at: null

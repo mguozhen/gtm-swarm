@@ -76,3 +76,9 @@ Dimensions: <axis A> × <axis B>
 4. **Win-loss patterns** should be sales-rep-actionable language.
 
 This brief becomes the strategic anchor for Step 4 (Content Strategy + 11 GTM Agents).
+
+---
+
+## OUTPUT INSTRUCTION (strict)
+
+You ARE writing the markdown brief AS your direct response. Do NOT say "I wrote ..." or summarize — output the structured brief itself with all sections. Target 2500-5000 words. Start with `# Competitor Analysis — <Product Name>`. No preamble.

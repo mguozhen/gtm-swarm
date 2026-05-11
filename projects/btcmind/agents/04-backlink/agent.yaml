@@ -1,0 +1,32 @@
+id: 04-backlink
+name: Backlink Agent
+category: content
+platform: Official Website
+builder: ''
+reviewer: 彭静
+goal: Earn 2 high-authority editorial backlinks per week from DR 60+ crypto media
+  (CoinDesk, Decrypt, The Defiant, Bankless, Crypto Briefing) by being the source
+  of forensic data the press wants to cite — not by guest-posting promotional fluff.
+default_product: btcmind
+kpi:
+  weekly_target: 2 placed backlinks/week from DR 60+ crypto publications; 1 data-asset
+    report/quarter that gets independently cited
+  measure: Ahrefs referring-domains growth; specific high-value placements logged
+    with citation context
+schedule: TBD
+budget_monthly_usd: 0
+status: blocked
+blocked_reason: 'Builder missing (Principle 3: No Triangle = No Agent)'
+reuse: []
+activate: true
+topics:
+- Op-ed pitches on major liquidation cascade events — strip product, keep methodology
+- Quarterly 'State of BTC Perp Risk' data report — original research, freely downloadable,
+  becomes the press-citation asset
+- Founder quotes for journalists covering BTC cycle / liquidation / whale events —
+  be the go-to source
+- Data-collaboration pitches to The Block Pro and Bankless — exchange our perp+on-chain
+  dataset for editorial coverage
+- Reactive press outreach within 2 hours of major market events — be the cited analyst,
+  not the unmentioned one
+contentos_hydrated_at: '2026-05-11T06:50:15.509362+00:00'

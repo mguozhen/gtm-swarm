@@ -1,0 +1,32 @@
+id: 02-kol-koc
+name: KOL / KOC Agent
+category: distribution
+platform: YouTube · TikTok · Instagram
+builder: 张基琳
+reviewer: Ivy
+goal: Build a vetted bench of 30+ BTC-perp-native KOL/KOC collaborators across English,
+  Korean, Vietnamese, Turkish, and Portuguese Twitter + Telegram so trigger-event
+  content lands inside trader communities through trusted voices, not paid ads.
+default_product: btcmind
+kpi:
+  weekly_target: 4 KOL collaborations published per week (2 paid placements + 2 organic
+    mention-trades); 30+ active partners by Month 6
+  measure: Tracked UTMs from each KOL post → BTCMind signup attribution; partner CSAT
+    (do they want to collaborate again)
+schedule: 'cron: 0 10 * * 1-5'
+budget_monthly_usd: 0
+status: deployable
+reuse:
+- ~/MKT/TiktokAutoUploader
+- ~/MKT/scripts (CosyVoice / ShortGPT)
+activate: true
+topics:
+- Korean perp X accounts — paid post about funding-anomaly case study from prior week
+- Vietnamese Telegram channel collaborations — weekly whale-wallet digest in Vietnamese
+- Turkish + Brazilian X micro-KOL mention-trades — they post about BTCMind's transparency
+  log, we feature their analysis
+- X Spaces co-hosting — 2/month with English-language perp KOLs (Will Clemente, Checkmate-tier)
+  on cycle-thesis topics
+- Vetting framework — public criteria for which KOLs we work with (must have visible
+  track record, no success-fee shilling history)
+contentos_hydrated_at: '2026-05-11T06:50:15.506190+00:00'

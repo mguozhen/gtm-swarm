@@ -1,0 +1,35 @@
+id: 05-video
+name: Video Agent
+category: content
+platform: YouTube · TikTok
+builder: 张基琳
+reviewer: 庄可欣
+goal: Build the canonical video archive of BTC perp forensics — long-form post-mortems
+  of cascade events, whale wallet case studies, and cycle-thesis walkthroughs — so
+  YouTube becomes BTCMind's 6-18 month evergreen retention engine.
+default_product: btcmind
+kpi:
+  weekly_target: 1 long-form (15-25 min) per week + 3 shorts repurposed from it; channel
+    subs target 25k by Month 6; avg view duration >50%
+  measure: YouTube channel subs, avg view duration, click-through to BTCMind from
+    end-screens and pinned comments
+schedule: 'cron: 0 14 * * *'
+budget_monthly_usd: 0
+status: deployable
+reuse:
+- ~/MKT/MoneyPrinterTurbo
+- ~/MKT/ShortGPT
+- ~/MKT/CosyVoice
+- ~/autopost.video
+activate: true
+topics:
+- Forensic post-mortems of major liquidation cascades — chronology with TradingView
+  + Coinglass + Arkham data overlays
+- Whale wallet case studies — pick one wallet per video, show 6-month behavior, classify
+  as smart money vs decoy
+- Cycle thesis walkthroughs — quarterly state-of-cycle with on-chain + ETF flow +
+  perp positioning data
+- Funding-rate mechanics explainers — short evergreen tutorials with real numbers
+- Founder commentary shorts — 60s reactions to major Crypto Twitter narratives, calibrated
+  to weekly news cycle
+contentos_hydrated_at: '2026-05-11T06:50:15.511197+00:00'

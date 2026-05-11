@@ -1,0 +1,35 @@
+id: 03-blog
+name: Blog Agent
+category: content
+platform: Official Website
+builder: 张基琳
+reviewer: 彭静
+goal: Capture trigger-event long-tail search traffic (T1 liquidation + T3 funding-anomaly
+  searches) and competitor-comparison bottom-funnel searches with evergreen educational
+  content that ranks 18+ months without re-promotion.
+default_product: btcmind
+kpi:
+  weekly_target: 3 evergreen posts published per week; 12 in pipeline; 25% of published
+    posts target >500/mo SV keywords from Step 1 §8 list; organic blog → signup conversion
+    rate >2% by Month 6
+  measure: Ahrefs/GSC ranking position for target keywords; published cadence; conversion
+    rate from blog landing pages
+schedule: 'cron: 0 9 * * 1,3,5'
+budget_monthly_usd: 0
+status: deployable
+reuse:
+- engines/voc-ai (Ronin Skill Graph)
+- engines/solvea
+activate: true
+topics:
+- Long-tail liquidation education — 'stop loss vs liquidation distance', 'why did
+  BTC funding go to 0.1%', 'how cascade liquidations work mechanically'
+- Competitor comparison bottom-funnel — 'Coinglass vs BTCMind', 'Nansen alternative
+  for BTC traders', 'CryptoQuant alternative for perp traders'
+- Whale forensics case studies — 'how to tell decoy whales from real smart money'
+  methodology + named historical examples
+- Cycle navigation reference — 'BTC cycle exit checklist (not a prediction)', halving-cycle
+  mechanics, ETF flow interpretation
+- Transparency content — 'why BTCMind doesn't auto-trade', 'why we publish our misses',
+  'the case against using BTCMind'
+contentos_hydrated_at: '2026-05-11T06:50:15.507690+00:00'

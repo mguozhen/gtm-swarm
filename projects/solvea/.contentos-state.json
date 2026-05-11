@@ -1,0 +1,22 @@
+{
+  "current_step": 1,
+  "steps": {
+    "01-market-insight": {
+      "status": "done",
+      "started_at": "2026-05-11T06:39:19.502593+00:00",
+      "output_file": "projects/solvea/strategy/01-market-insight.md",
+      "completed_at": "2026-05-11T06:47:14.207962+00:00",
+      "size": 13729
+    },
+    "02-user-insight": {
+      "status": "pending"
+    },
+    "03-competitor-analysis": {
+      "status": "pending"
+    },
+    "04-content-strategy": {
+      "status": "pending"
+    }
+  },
+  "last_updated": "2026-05-11T06:47:14.207997+00:00"
+}

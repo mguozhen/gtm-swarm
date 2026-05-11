@@ -1,0 +1,62 @@
+{
+  "$schema": "./_schema.json",
+  "version": "v2",
+  "default": "voc-ai",
+  "projects": {
+    "voc-ai": {
+      "name": "VOC AI",
+      "slug": "voc-ai",
+      "url": "https://voc.ai",
+      "category": "AI customer review analytics",
+      "tagline": "2B+ Amazon reviews. AI-powered sentiment + opportunity discovery.",
+      "engine_source": "~/solvea-content-engine",
+      "status": "live",
+      "founder_role": "CEO Hunter",
+      "primary_audience": "Amazon sellers / e-commerce brands"
+    },
+    "solvea": {
+      "name": "Solvea",
+      "slug": "solvea",
+      "url": "https://solvea.cx",
+      "category": "AI receptionist / customer service",
+      "tagline": "AI Receptionist Vibe Builder. 10-min deploy. 100+ brands.",
+      "engine_source": "~/solvea-content-engine-original",
+      "status": "live",
+      "founder_role": "CEO Hunter",
+      "primary_audience": "SMB owners / multi-location services / SaaS support teams"
+    },
+    "btcmind": {
+      "name": "BTCMind",
+      "slug": "btcmind",
+      "url": "https://btcmind.ai",
+      "category": "AI crypto market intelligence",
+      "tagline": "BTC market mind. AI-driven crypto signals.",
+      "engine_source": null,
+      "status": "live",
+      "founder_role": "CEO Hunter",
+      "primary_audience": "Crypto traders / retail investors"
+    },
+    "flatkey": {
+      "name": "Flatkey",
+      "slug": "flatkey",
+      "url": null,
+      "category": "TBD",
+      "tagline": "TBD — awaiting Founder brief",
+      "engine_source": null,
+      "status": "stub",
+      "founder_role": "TBD",
+      "primary_audience": "TBD"
+    },
+    "paircode": {
+      "name": "PairCode",
+      "slug": "paircode",
+      "url": null,
+      "category": "TBD",
+      "tagline": "TBD — awaiting Founder brief",
+      "engine_source": null,
+      "status": "stub",
+      "founder_role": "TBD",
+      "primary_audience": "TBD"
+    }
+  }
+}

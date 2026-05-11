@@ -1,0 +1,40 @@
+slug: btcmind
+name: BTCMind
+url: https://btcmind.ai
+category: AI crypto market intelligence
+tagline: "BTC market mind. AI-driven crypto signals."
+status: live
+
+founder:
+  name: Hunter Guo
+  role: CEO
+
+audience:
+  primary: "Crypto retail traders watching BTC daily"
+  secondary: "Crypto-curious tech professionals exploring on-chain analysis"
+
+positioning:
+  one_liner: "TBD — Founder to refine via ContentOS Agent"
+  vs_status_quo: "TBD"
+  vs_competitors: []
+
+customers:
+  active: []
+  case_studies: []
+
+competitors:
+  direct: []
+  adjacent: []
+
+engine:
+  source_path: null
+  variant: "custom (to be created by ContentOS Agent)"
+
+contentos_agent:
+  state: not_started
+  last_run: null
+  notes: "Live product but engine not yet built. ContentOS Agent will produce strategy then derive a fresh 17-file skill graph."
+
+paperclip:
+  company_id: null
+  synced_at: null

@@ -16,8 +16,10 @@ and symlinks them into reviews/<reviewer>/ for the Reviewer queue.
 
 Usage:
   scripts/run-agent.py <agent-id> --topic "..."
-  scripts/run-agent.py <agent-id> --source agents/<id>/content-bank/new-idea/<file>.md
+  scripts/run-agent.py <agent-id> --project voc-ai --topic "..."
   scripts/run-agent.py 06-reddit --topic "the #1 complaint in wireless earbuds" --dry-run
+
+Default project = voc-ai. Pass --project to switch.
 """
 
 from __future__ import annotations
@@ -230,19 +232,23 @@ def update_metrics(agent_dir: Path, drafted: int):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("agent_id")
+    ap.add_argument("--project", default="voc-ai", help="project slug (default: voc-ai)")
     ap.add_argument("--topic")
     ap.add_argument("--source", help="path to a new-idea/*.md file to use as topic source")
     ap.add_argument("--dry-run", action="store_true", help="print prompt, do not call claude")
     args = ap.parse_args()
 
-    agent_dir = REPO_ROOT / "agents" / args.agent_id
+    project_dir = REPO_ROOT / "projects" / args.project
+    if not project_dir.exists():
+        sys.exit(f"project not found: {project_dir} (check projects/_registry.json)")
+
+    agent_dir = project_dir / "agents" / args.agent_id
     if not agent_dir.exists():
         sys.exit(f"agent dir not found: {agent_dir}")
 
     cfg = yaml.safe_load((agent_dir / "agent.yaml").read_text())
     builder = cfg.get("builder", "")
     reviewer = cfg.get("reviewer", "")
-    product = cfg.get("default_product", "voc-ai")
     status = cfg.get("status", "")
 
     if not builder or not reviewer:
@@ -250,9 +256,11 @@ def main():
     if status == "blocked":
         sys.exit(f"agent {args.agent_id} is blocked: {cfg.get('blocked_reason', '?')}")
 
-    engine_dir = REPO_ROOT / "engines" / product
+    engine_dir = project_dir / "engine"
     if not engine_dir.exists():
-        sys.exit(f"engine not found: {engine_dir} (run: ln -s ~/solvea-content-engine engines/voc-ai)")
+        sys.exit(f"engine not found: {engine_dir} (project {args.project} engine symlink missing)")
+
+    product = args.project  # for prompt context
 
     platforms = parse_platforms(cfg.get("platform", "reddit"))
 

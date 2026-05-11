@@ -39,10 +39,28 @@ echo "→ CIA discovery for $SLUG / $TOPIC ($COUNTRY)"
 
 "$CIA_BIN" init "$TOPIC" --country "$COUNTRY"
 
-# Example data pulls (Founder customizes for the project)
+# 1. App Store SERP — populates appstore_serp; later fetches auto-pick from this
 "$CIA_BIN" fetch-itunes-serp --topic "$TOPIC" --keywords "$TOPIC" --limit 20 || echo "  (itunes skipped/failed)"
+
+# 2. Competitor metadata for top SERP apps (developer / install / category)
+"$CIA_BIN" fetch-competitors-meta --topic "$TOPIC" --country "$COUNTRY" || echo "  (competitors-meta skipped/failed)"
+
+# 3. App reviews → pain-point mining (auto-picks top-N from SERP)
+"$CIA_BIN" fetch-app-reviews --topic "$TOPIC" --top 5 --depth 100 || echo "  (app-reviews skipped/failed)"
+
+# 4. ASO keywords for top apps (reverse-engineer their keyword strategy)
+"$CIA_BIN" fetch-aso-keywords --topic "$TOPIC" --top 5 --limit 50 || echo "  (aso-keywords skipped/failed)"
+
+# 5. Ahrefs Google keyword vol/CPC (hub must have Ahrefs key — may 402 otherwise)
+"$CIA_BIN" fetch-ahrefs-kw --topic "$TOPIC" --keywords "$TOPIC" --country "$COUNTRY" --limit 50 || echo "  (ahrefs-kw skipped/failed)"
+
+# 6. Social signals
 "$CIA_BIN" fetch-tiktok --topic "$TOPIC" --queries "$TOPIC" --max-items 30 || echo "  (tiktok skipped/failed)"
 "$CIA_BIN" fetch-reddit --topic "$TOPIC" --queries "$TOPIC" --subreddits "Entrepreneur,smallbusiness,startups" --max-items 30 || echo "  (reddit skipped/failed)"
+"$CIA_BIN" fetch-youtube --topic "$TOPIC" --queries "$TOPIC" --per-query 10 || echo "  (youtube skipped/failed)"
+
+# 7. Cluster competitors (uses sklearn on assembled meta)
+"$CIA_BIN" cluster-competitors --topic "$TOPIC" || echo "  (cluster skipped/failed)"
 
 "$CIA_BIN" status --topic "$TOPIC" || true
 "$CIA_BIN" export --topic "$TOPIC" || true

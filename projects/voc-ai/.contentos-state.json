@@ -1,5 +1,5 @@
 {
-  "current_step": 1,
+  "current_step": 2,
   "steps": {
     "01-market-insight": {
       "status": "done",
@@ -8,7 +8,10 @@
       "size": 20909
     },
     "02-user-insight": {
-      "status": "pending"
+      "status": "done",
+      "output_file": "projects/voc-ai/strategy/02-user-insight.md",
+      "completed_at": "2026-05-11T05:54:03.395360+00:00",
+      "size": 18827
     },
     "03-competitor-analysis": {
       "status": "pending"
@@ -17,5 +20,5 @@
       "status": "pending"
     }
   },
-  "last_updated": "2026-05-11T05:31:53.272852+00:00"
+  "last_updated": "2026-05-11T05:54:03.395400+00:00"
 }

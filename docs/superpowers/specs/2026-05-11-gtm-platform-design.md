@@ -130,13 +130,153 @@ content generation context assembly:
 - Drag-to-reassign for agent assignments
 - Highlight channels with zero coverage (staffing gaps)
 
-## Layer 5: Database Schema
+## Layer 5: Channel-Specific Agent Profiles
+
+Each channel (Reddit, X, Blog, KOL/KOC, Video, etc.) has fundamentally different content formats, review criteria, and success metrics. Channel profiles make this heterogeneity first-class — defining the template for each channel type, which product-level agent instances then customize.
+
+### Profile Structure
+
+Channel profiles live in code (`channel_profiles/`) and are seeded into PostgreSQL on deploy. A profile defines everything a Builder, Agent, and Reviewer need for that channel:
+
+| Field | Purpose | Example (Reddit) |
+|---|---|---|
+| `review_checklist` | Reviewer's per-item audit checklist | No spam feel? Rule-compliant for target subs? Value-first or self-promo ratio? |
+| `content_template` | Output format for the agent runner | Post title + body, comment vs thread type |
+| `dashboard_widgets` | Metrics displayed on dashboard per agent | Karma in target subs, saved/upvoted ratio, ban warnings |
+| `kpi_defaults` | Default KPI that products can override | 5 posts/week, 2 saved-posts/week, 0 ban warnings |
+
+### Per-Channel Examples
+
+```
+channel_profiles/
+  reddit/
+    review_checklist:    # Ivy sees this sidebar when reviewing Reddit drafts
+      - Native fit — does it read like a redditor wrote it?
+      - Subreddit rule check — r/CryptoMarkets vs r/Bybit rules differ
+      - Value ratio — >80% helpful, <20% product mention
+      - Anti-spam — no link-dropping, no karma-farming language
+    content_template:     # Agent runner uses this to structure output
+      type: post | comment
+      structure: "hook (1 line) → context (2-3 lines) → value body → optional tail mention"
+    dashboard_widgets:
+      - karma_trend: { source: metrics.karma_by_sub, chart: line }
+      - ban_warnings: { source: metrics.ban_warnings, chart: count }
+      - signup_attribution: { source: metrics.reddit_signups, chart: bar }
+    kpi_defaults:
+      weekly_target: "5 posts/comments"
+      measure: "karma in target subs, saved/upvoted ratio, 0 ban warnings"
+
+  x/
+    review_checklist:
+      - Hook sharpness — does line 1 stop the scroll?
+      - Thread structure — is the 1/7 format clear?
+      - Trending relevance — tied to current conversation?
+      - Brand voice — crypto-native but not cringe
+    content_template:
+      type: tweet | thread
+      structure: "hook → supporting data → insight → CTA or close"
+    dashboard_widgets:
+      - impressions: { chart: line }
+      - follower_growth: { chart: bar, period: weekly }
+      - thread_saves: { chart: count }
+      - spaces_attendance: { chart: count }
+    kpi_defaults:
+      weekly_target: "14 posts (2/day)"
+      measure: "impressions, follower growth >500/week, 1 viral thread/week"
+
+  kol-koc/
+    review_checklist:
+      - KOL fit — audience alignment with product?
+      - Personalization — does the outreach read human?
+      - Schedule — conflict with other campaigns?
+      - Deliverable clarity — video format, length, deadline explicit?
+    content_template:
+      type: outreach_dm | video_brief | collab_proposal
+      structure: "personal intro → why them specifically → collab idea → deliverables → timeline"
+    dashboard_widgets:
+      - kol_pipeline: { stages: [contacted, negotiating, confirmed, live, completed] }
+      - video_output: { chart: calendar, metric: views }
+      - engagement: { chart: bar, metric: avg views + interaction rate }
+    kpi_defaults:
+      weekly_target: "XX videos published by 5/30"
+      measure: "KOL count, video views, inbound traffic"
+
+  blog/
+    review_checklist:
+      - SEO target — does the keyword appear in H1/H2/first 100 words?
+      - Depth — real data/research vs thin AI summary?
+      - Internal linking — 2+ links to other blog posts?
+      - Competitor comparison — honest, data-backed, not FUD
+    content_template:
+      type: seo_post | comparison_post | case_study
+      structure: "H1 + meta desc → intro hook → body (H2 sections) → conclusion + CTA"
+    dashboard_widgets:
+      - ranking_positions: { chart: line, source: Ahrefs/GSC }
+      - organic_traffic: { chart: bar, period: weekly }
+      - conversion_rate: { source: blog→signup funnel }
+    kpi_defaults:
+      weekly_target: "3 posts"
+      measure: "Ahrefs rank, organic traffic, blog→signup conversion >2%"
+```
+
+### Agent Instantiation Flow
+
+```
+1. Product completes ContentOS → hydrate agents
+2. For each of the 11 agents:
+   a. Copy channel_profile defaults (review_checklist, content_template, dashboard_widgets, kpi)
+   b. Override with product-specific config from strategy output
+   c. Assign Builder + Reviewer from shared pool by channel match
+   d. Agent record in DB now has full operational config
+```
+
+### Reviewer Interaction Flow (Daily)
+
+```
+cron triggers agent → produces draft
+  → Reviewer opens queue (Dashboard /review)
+  → Sees draft content + channel-specific review_checklist in sidebar
+  → Checks each item, writes inline comments
+  → approve → moves to bank, metrics bump
+  → reject → writes anti-pattern note, which field(s) failed
+  → All actions recorded in audit_log
+```
+
+### Dashboard Per-Channel View
+
+Each agent card on the product detail page renders its own `dashboard_widgets`:
+
+```
+Product: BTCMind  |  🟢 active
+┌─────────────────────────────────────────────────────┐
+│  📊 Overview: 12 ideas | 8 drafts | 3 published    │
+│  👥 Pool: Wayne(2/3) Ivy(1/3) 张基琳(1/3)         │
+├────────────┬────────────┬────────────┬──────────────┤
+│ 06 Reddit  │ 07 X       │ 03 Blog    │ 02 KOL/KOC   │
+│ 🟢 active  │ 🟢 active  │ 🟢 active  │ 🟡 needs_ppl │
+│ karma ↑    │ impr 42k   │ rank #3    │ pipeline:    │
+│ 0 bans     │ +320 fol   │ 890 org    │ 3→1→0→0      │
+│ [查看队列] │ [查看队列]  │ [查看队列] │ [查看队列]    │
+└────────────┴────────────┴────────────┴──────────────┘
+```
+
+## Layer 6: Database Schema
 
 PostgreSQL on Railway.
 
 ### Tables
 
 ```sql
+-- Channel profiles (seeded from code on deploy, NOT user-editable)
+CREATE TABLE channel_profiles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  channel TEXT UNIQUE NOT NULL,      -- reddit, x, kol-koc, blog, video, etc.
+  review_checklist JSONB DEFAULT '[]',
+  content_template JSONB DEFAULT '{}',
+  dashboard_widgets JSONB DEFAULT '[]',
+  kpi_defaults JSONB DEFAULT '{}'
+);
+
 -- Workspaces (formerly projects/)
 CREATE TABLE workspaces (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -187,6 +327,7 @@ CREATE TABLE agents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   workspace_id UUID REFERENCES workspaces(id),
   channel TEXT NOT NULL,       -- reddit, blog, kol, video, etc.
+  channel_profile_id UUID REFERENCES channel_profiles(id),
   status TEXT DEFAULT 'active',
   config JSONB DEFAULT '{}',  -- agent.yaml as JSONB
   metrics JSONB DEFAULT '{}',
@@ -242,7 +383,9 @@ CREATE INDEX idx_audit_log_workspace ON audit_log(workspace_id, created_at DESC)
 
 One-time script: read all `projects/*/project.yaml`, `projects/*/agents/*/agent.yaml`, `projects/*/strategy/*.md`, `projects/*/agents/*/content-bank/**/*.md` → INSERT into corresponding tables. `_registry.json` → merged into `workspaces.project_config`.
 
-## Layer 6: API Changes
+Channel profiles: seeded from `channel_profiles/` directory in the repo on first deploy. No existing file data to migrate — this is new capability.
+
+## Layer 7: API Changes
 
 ### New endpoints
 
@@ -275,8 +418,9 @@ Existing `/api/projects`, `/api/agents`, `/api/content`, `/api/contentos/:slug/*
 - Product lifecycle state machine
 - Onboarding wizard (URL input + AI analysis + confirmation)
 - Shared human pool with auto-assignment
-- Engine inheritance (base skeleton + product overrides)
-- Multi-product dashboard home page
+- Engine inheritance (base skeleton + product overrides, async product-specific generation)
+- Channel-specific agent profiles (review checklists, content templates, dashboard widgets per channel)
+- Multi-product dashboard (home overview + per-product detail with per-channel widgets)
 - Adapted existing API endpoints
 
 **Out of scope for v1:**

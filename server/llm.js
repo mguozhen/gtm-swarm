@@ -1,7 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk'
 
-const MODEL = process.env.ANTHROPIC_MODEL || 'claude-opus-4-7'
+const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6'
 const MAX_TOKENS = parseInt(process.env.ANTHROPIC_MAX_TOKENS || '16000', 10)
+const BASE_URL = process.env.ANTHROPIC_BASE_URL || undefined
 
 export const hasAnthropic = () => Boolean(process.env.ANTHROPIC_API_KEY)
 
@@ -9,7 +10,9 @@ let client = null
 function getClient() {
   if (!client) {
     if (!hasAnthropic()) throw new Error('ANTHROPIC_API_KEY not set')
-    client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+    const opts = { apiKey: process.env.ANTHROPIC_API_KEY }
+    if (BASE_URL) opts.baseURL = BASE_URL
+    client = new Anthropic(opts)
   }
   return client
 }

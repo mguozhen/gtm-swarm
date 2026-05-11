@@ -34,4 +34,6 @@ app.listen(PORT, () => {
   console.log(`gtm-swarm listening on :${PORT}`)
   console.log(`REPO_ROOT = ${REPO_ROOT}`)
   console.log(`anthropic key set: ${Boolean(process.env.ANTHROPIC_API_KEY)}`)
+  console.log(`anthropic base url: ${process.env.ANTHROPIC_BASE_URL || '(default api.anthropic.com)'}`)
+  console.log(`anthropic model: ${process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6 (default)'}`)
 })

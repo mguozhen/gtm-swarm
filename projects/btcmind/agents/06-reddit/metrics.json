@@ -1,11 +1,11 @@
 {
   "agent_id": "06-reddit",
-  "status": "pilot",
+  "status": "hydrated",
   "rolling_30d": {
-    "drafted": 5,
-    "approved": 3,
+    "drafted": 0,
+    "approved": 0,
     "rejected": 0,
     "published": 0
   },
-  "last_updated": "2026-05-11T05:17:18.469275+00:00"
+  "last_updated": null
 }

@@ -1,6 +1,6 @@
 {
   "agent_id": "04-backlink",
-  "status": "blocked",
+  "status": "hydrated",
   "rolling_30d": {
     "drafted": 0,
     "approved": 0,

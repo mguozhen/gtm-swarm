@@ -102,6 +102,64 @@ function gtmSwarmApi(): Plugin {
         res.end(JSON.stringify({ registry: readRegistry(), discovered: listProjects() }))
       })
 
+      server.middlewares.use('/api/agents', (req, res) => {
+        const url = new URL(req.url || '', 'http://x')
+        const project = url.searchParams.get('project') || ''
+        const agentsDir = join(PROJECTS_DIR, project, 'agents')
+        if (!project || !existsSync(agentsDir)) {
+          res.statusCode = 404
+          res.end(JSON.stringify({ error: 'project agents dir not found' }))
+          return
+        }
+        const out = readdirSync(agentsDir)
+          .filter(n => existsSync(join(agentsDir, n, 'agent.yaml')))
+          .sort()
+          .map(id => {
+            const raw = readFileSync(join(agentsDir, id, 'agent.yaml'), 'utf-8')
+            let yaml: Record<string, unknown> = {}
+            try { yaml = (matter('---\n' + raw + '\n---\n').data) as Record<string, unknown> }
+            catch { /* ignore */ }
+            const metricsPath = join(agentsDir, id, 'metrics.json')
+            let metrics: Record<string, unknown> = {}
+            if (existsSync(metricsPath)) {
+              try { metrics = JSON.parse(readFileSync(metricsPath, 'utf-8')) } catch {}
+            }
+            return { id, yaml, metrics }
+          })
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ project, agents: out }))
+      })
+
+      server.middlewares.use('/api/project-meta', (req, res) => {
+        const url = new URL(req.url || '', 'http://x')
+        const project = url.searchParams.get('project') || ''
+        const projectDir = join(PROJECTS_DIR, project)
+        if (!project || !existsSync(projectDir)) {
+          res.statusCode = 404; res.end(JSON.stringify({ error: 'project not found' })); return
+        }
+        const projectYamlPath = join(projectDir, 'project.yaml')
+        const stateFile = join(projectDir, '.contentos-state.json')
+        const strategyDir = join(projectDir, 'strategy')
+        let projectYaml: Record<string, unknown> = {}
+        if (existsSync(projectYamlPath)) {
+          try { projectYaml = (matter('---\n' + readFileSync(projectYamlPath, 'utf-8') + '\n---\n').data) as Record<string, unknown> } catch {}
+        }
+        const state = existsSync(stateFile) ? JSON.parse(readFileSync(stateFile, 'utf-8'))
+          : { current_step: 0, steps: {} }
+        const briefs: Array<{ step: number; key: string; exists: boolean; size: number }> = []
+        const map: Array<[number, string]> = [
+          [1, '01-market-insight'], [2, '02-user-insight'],
+          [3, '03-competitor-analysis'], [4, '04-content-strategy'],
+        ]
+        for (const [step, key] of map) {
+          const f = join(strategyDir, `${key}.md`)
+          const exists = existsSync(f)
+          briefs.push({ step, key, exists, size: exists ? statSync(f).size : 0 })
+        }
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ project, project_yaml: projectYaml, state, briefs }))
+      })
+
       server.middlewares.use('/api/content', (req, res) => {
         const url = new URL(req.url || '', 'http://x')
         const project = url.searchParams.get('project') || undefined

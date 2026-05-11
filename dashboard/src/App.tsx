@@ -6,6 +6,7 @@ import { StateFilter } from './components/StateFilter'
 import { SectionToolbar } from './components/SectionToolbar'
 import { ContentTable } from './components/ContentTable'
 import { PreviewPane } from './components/PreviewPane'
+import { ProjectOverview } from './components/ProjectOverview'
 import { useContent } from './hooks/useContent'
 import { useProjects } from './hooks/useProjects'
 import { useRole } from './hooks/useRole'
@@ -19,7 +20,7 @@ function App() {
   const slug = routeSlug || defaultSlug
   const [role, setRole] = useRole()
 
-  const [tab, setTab] = useState<TabKey>('bank')
+  const [tab, setTab] = useState<TabKey>('dashboard')
   const [pipeline, setPipeline] = useState<PipelineState>('bank')
   const [filterType, setFilterType] = useState<string>('all')
   const [filterCategory, setFilterCategory] = useState<string>('all')
@@ -96,36 +97,43 @@ function App() {
 
       <Header />
       <TabBar active={tab} onChange={setTab} counts={tabCounts} />
-      <StateFilter active={pipeline} onChange={setPipeline} counts={counts} />
-      <div className="content-grid">
-        <div className="content-main">
-          <SectionToolbar
-            filterType={filterType}
-            filterCategory={filterCategory}
-            filterCore={filterCore}
-            onType={setFilterType}
-            onCategory={setFilterCategory}
-            onCore={setFilterCore}
-          />
-          <ContentTable
-            items={filtered}
-            selectedId={selected?.id || ''}
-            onSelect={setSelectedId}
-            onReview={role === 'reviewer' ? async (item, action, reason) => {
-              const reviewer = (item.frontmatter.reviewer as string) || ''
-              if (!reviewer) { alert('No reviewer in frontmatter'); return }
-              const r = await fetch('/api/review', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reviewer, id: item.id, action, reason: reason || '' }),
-              }).then(r => r.json())
-              if (r.code !== 0) alert('Review failed: ' + (r.stderr || r.stdout))
-              refresh()
-            } : undefined}
-          />
-        </div>
-        <PreviewPane item={selected} />
-      </div>
+
+      {tab === 'dashboard' ? (
+        <ProjectOverview slug={slug} />
+      ) : (
+        <>
+          <StateFilter active={pipeline} onChange={setPipeline} counts={counts} />
+          <div className="content-grid">
+            <div className="content-main">
+              <SectionToolbar
+                filterType={filterType}
+                filterCategory={filterCategory}
+                filterCore={filterCore}
+                onType={setFilterType}
+                onCategory={setFilterCategory}
+                onCore={setFilterCore}
+              />
+              <ContentTable
+                items={filtered}
+                selectedId={selected?.id || ''}
+                onSelect={setSelectedId}
+                onReview={role === 'reviewer' ? async (item, action, reason) => {
+                  const reviewer = (item.frontmatter.reviewer as string) || ''
+                  if (!reviewer) { alert('No reviewer in frontmatter'); return }
+                  const r = await fetch('/api/review', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reviewer, id: item.id, action, reason: reason || '' }),
+                  }).then(r => r.json())
+                  if (r.code !== 0) alert('Review failed: ' + (r.stderr || r.stdout))
+                  refresh()
+                } : undefined}
+              />
+            </div>
+            <PreviewPane item={selected} />
+          </div>
+        </>
+      )}
     </div>
   )
 }

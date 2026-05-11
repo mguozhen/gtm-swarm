@@ -1,6 +1,6 @@
 {
   "agent_id": "11-poster",
-  "status": "blocked",
+  "status": "hydrated",
   "rolling_30d": {
     "drafted": 0,
     "approved": 0,

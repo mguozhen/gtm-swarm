@@ -9,6 +9,8 @@ import { IdeasPool } from './components/IdeasPool'
 import { useContent } from './hooks/useContent'
 import { useProjects } from './hooks/useProjects'
 import { useRole } from './hooks/useRole'
+import { useToken, postJson } from './hooks/useToken'
+import { TokenGate } from './components/TokenGate'
 import './App.css'
 
 const TAB_TO_STATE: Record<Exclude<TabKey, 'overview' | 'review'>, 'new-idea' | 'draft' | 'bank' | 'published'> = {
@@ -24,6 +26,7 @@ function App() {
   const defaultSlug = registry?.default || 'voc-ai'
   const slug = routeSlug || defaultSlug
   const [role, setRole] = useRole()
+  const [token, setToken, clearToken] = useToken()
 
   const [tab, setTab] = useState<TabKey>('overview')
 
@@ -60,12 +63,8 @@ function App() {
   const reviewAction = role === 'reviewer' ? async (item: typeof items[number], action: 'approve' | 'reject', reason?: string) => {
     const reviewer = (item.frontmatter.reviewer as string) || ''
     if (!reviewer) { alert('No reviewer in frontmatter'); return }
-    const r = await fetch('/api/review', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reviewer, id: item.id, action, reason: reason || '' }),
-    }).then(r => r.json())
-    if (!r.ok && r.code !== 0) alert('Review failed: ' + (r.stderr || r.error || ''))
+    const r = await postJson<{ ok?: boolean; error?: string; stderr?: string }>('/api/review', { reviewer, id: item.id, action, reason: reason || '' }, token)
+    if (r.error) alert('Review failed: ' + r.error + (r.error.includes('401') ? ' — click 🔒 Sign in (top bar).' : ''))
     refresh()
   } : undefined
 
@@ -100,6 +99,7 @@ function App() {
             >👁️ Reviewer</button>
           </div>
         </div>
+        <TokenGate token={token} onSet={setToken} onClear={clearToken} />
         <a
           href="https://github.com/mguozhen/gtm-swarm"
           target="_blank"
@@ -120,24 +120,13 @@ function App() {
         <IdeasPool
           items={items.filter(i => i.state === 'new-idea')}
           onPromote={async item => {
-            const r = await fetch('/api/promote-idea', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ project: item.project, agent: item.agent, idea_id: item.id }),
-            }).then(r => r.json())
-            if (r.ok) {
-              alert('✓ Drafted: ' + (r.topic || '').slice(0, 60))
-            } else {
-              alert('Promote failed: ' + (r.error || r.stderr || 'unknown'))
-            }
+            const r = await postJson<{ ok?: boolean; topic?: string; error?: string }>('/api/promote-idea', { project: item.project, agent: item.agent, idea_id: item.id }, token)
+            if (r.ok) alert('✓ Drafted: ' + (r.topic || '').slice(0, 60))
+            else alert('Promote failed: ' + (r.error || 'unknown') + (String(r.error || '').includes('401') ? ' — click 🔒 Sign in (top bar).' : ''))
             refresh()
           }}
           onReject={async (item, reason) => {
-            await fetch('/api/reject-idea', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ project: item.project, agent: item.agent, idea_id: item.id, reason }),
-            })
+            await postJson('/api/reject-idea', { project: item.project, agent: item.agent, idea_id: item.id, reason }, token)
             refresh()
           }}
         />

@@ -3,6 +3,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { existsSync } from 'node:fs'
 import { mountApi, REPO_ROOT } from './api.js'
+import { startCron } from './cron.js'
+import { bootstrap } from './bootstrap.js'
+
+bootstrap()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -36,4 +40,6 @@ app.listen(PORT, () => {
   console.log(`anthropic key set: ${Boolean(process.env.ANTHROPIC_API_KEY)}`)
   console.log(`anthropic base url: ${process.env.ANTHROPIC_BASE_URL || '(default api.anthropic.com)'}`)
   console.log(`anthropic model: ${process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6 (default)'}`)
+  console.log(`writes auth: ${process.env.GTM_WRITES_TOKEN ? 'required (Bearer)' : 'OPEN (set GTM_WRITES_TOKEN env to protect)'}`)
+  startCron()
 })

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import MDEditor from '@uiw/react-md-editor'
+import { useToken, authHeaders } from '../hooks/useToken'
 import './Wizard.css'
 
 type StepKey = '01-market-insight' | '02-user-insight' | '03-competitor-analysis' | '04-content-strategy'
@@ -40,6 +41,7 @@ export default function Wizard() {
   const [building, setBuilding] = useState<{ output?: string; done?: boolean } | null>(null)
   const [elapsedMs, setElapsedMs] = useState(0)
   const runStartedAtRef = useRef<number | null>(null)
+  const [token] = useToken()
 
   const refreshState = useCallback(async () => {
     if (!slug) return
@@ -75,10 +77,12 @@ export default function Wizard() {
     if (!slug) return
     setLoading('running')
     setCurrentStep(step)
-    const r = await fetch(`/api/contentos/${slug}/run-step?step=${step}`, { method: 'POST' }).then(r => r.json())
+    const r = await fetch(`/api/contentos/${slug}/run-step?step=${step}`, {
+      method: 'POST', headers: { ...authHeaders(token) },
+    }).then(r => r.json())
     setLoading('idle')
-    if (r.code !== 0) {
-      alert('Step run failed:\n' + (r.stderr || r.stdout))
+    if (r.error) {
+      alert('Step run failed:\n' + r.error + (String(r.error).includes('Bearer') ? '\n\n→ Click 🔒 Sign in (top bar of Home / Dashboard).' : ''))
       return
     }
     await refreshState()
@@ -90,7 +94,7 @@ export default function Wizard() {
     setLoading('saving')
     await fetch(`/api/contentos/${slug}/save-edit?step=${currentStep}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
       body: JSON.stringify({ content }),
     })
     setLoading('idle')
@@ -101,13 +105,15 @@ export default function Wizard() {
     if (!slug) return
     setLoading('building')
     setBuilding({ output: 'Hydrating 11 agents...' })
-    const r = await fetch(`/api/contentos/${slug}/build`, { method: 'POST' }).then(r => r.json())
+    const r = await fetch(`/api/contentos/${slug}/build`, {
+      method: 'POST', headers: { ...authHeaders(token) },
+    }).then(r => r.json())
     setLoading('idle')
-    if (r.code !== 0) {
-      setBuilding({ output: 'Build failed:\n' + (r.stderr || r.stdout), done: false })
+    if (r.error) {
+      setBuilding({ output: 'Build failed:\n' + r.error, done: false })
       return
     }
-    setBuilding({ output: r.stdout, done: true })
+    setBuilding({ output: `✓ Hydrated ${(r.updated || []).length} agents.`, done: true })
   }
 
   const doneCount = STEPS.filter(s => state[s.key]?.status === 'done').length

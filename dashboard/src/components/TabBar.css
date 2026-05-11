@@ -20,6 +20,8 @@
   transition: color 0.15s, border-color 0.15s;
 }
 
+.dj-tab-icon { font-size: 14px; }
+
 .dj-tab:hover { color: var(--text); }
 
 .dj-tab.is-active {

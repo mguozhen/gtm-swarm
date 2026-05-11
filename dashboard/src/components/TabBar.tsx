@@ -1,23 +1,23 @@
 import './TabBar.css'
 
-export type TabKey = 'dashboard' | 'inventory' | 'review' | 'trending' | 'bank' | 'local'
+export type TabKey = 'overview' | 'ideas' | 'drafts' | 'review' | 'bank' | 'published'
 
 type Counts = {
-  dashboard: number | null
-  inventory: number | null
+  overview: number | null
+  ideas: number | null
+  drafts: number | null
   review: number | null
-  trending: number | null
   bank: number | null
-  local: number | null
+  published: number | null
 }
 
-const TABS: { key: TabKey; label: string }[] = [
-  { key: 'dashboard', label: 'Dashboard' },
-  { key: 'inventory', label: '库存 + 排程' },
-  { key: 'review', label: '审核' },
-  { key: 'trending', label: 'Trending' },
-  { key: 'bank', label: 'Content Bank' },
-  { key: 'local', label: 'Local Draft' },
+const TABS: { key: TabKey; label: string; icon: string }[] = [
+  { key: 'overview',  icon: '📍', label: 'Overview' },
+  { key: 'ideas',     icon: '💡', label: 'Ideas' },
+  { key: 'drafts',    icon: '📝', label: 'Drafts' },
+  { key: 'review',    icon: '👁',  label: 'Review' },
+  { key: 'bank',      icon: '🏦', label: 'Bank' },
+  { key: 'published', icon: '📰', label: 'Published' },
 ]
 
 export function TabBar({
@@ -42,8 +42,9 @@ export function TabBar({
             className={`dj-tab ${isActive ? 'is-active' : ''}`}
             onClick={() => onChange(t.key)}
           >
+            <span className="dj-tab-icon">{t.icon}</span>
             <span>{t.label}</span>
-            {typeof n === 'number' && (
+            {typeof n === 'number' && n > 0 && (
               <span className={`dj-tab-badge ${isAlert ? 'is-alert' : ''}`}>{n}</span>
             )}
           </button>

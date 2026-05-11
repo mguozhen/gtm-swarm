@@ -1,0 +1,21 @@
+{
+  "current_step": 1,
+  "steps": {
+    "01-market-insight": {
+      "status": "done",
+      "output_file": "projects/voc-ai/strategy/01-market-insight.md",
+      "completed_at": "2026-05-11T05:20:21.763827+00:00",
+      "size": 6503
+    },
+    "02-user-insight": {
+      "status": "pending"
+    },
+    "03-competitor-analysis": {
+      "status": "pending"
+    },
+    "04-content-strategy": {
+      "status": "pending"
+    }
+  },
+  "last_updated": "2026-05-11T05:20:21.763889+00:00"
+}

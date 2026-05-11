@@ -63,4 +63,15 @@ done
 
 echo ""
 echo "✓ CIA data copied to $CIA_OUT"
+
+# CIA CLI does not emit synthesis.md — generate it from data.xlsx so
+# server/contentos.js readCiaData() has something to inject into prompts.
+if [[ -f "$CIA_OUT/data.xlsx" ]]; then
+  CIA_PY="$HOME/.claude/skills/cia/.venv/bin/python"
+  if [[ -x "$CIA_PY" ]]; then
+    "$CIA_PY" "$REPO_ROOT/scripts/cia-synthesize.py" "$CIA_OUT" || echo "  (synthesize step failed)"
+  else
+    echo "  ⚠ CIA venv python not found — skipping synthesis.md generation"
+  fi
+fi
 echo "  Next: wizard Step 1+2 will auto-include this data in the LLM prompt."

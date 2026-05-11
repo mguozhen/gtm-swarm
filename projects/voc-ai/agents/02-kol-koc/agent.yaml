@@ -1,17 +1,32 @@
 id: 02-kol-koc
 name: KOL / KOC Agent
 category: distribution
-platform: "YouTube · TikTok · Instagram"
-builder: "张基琳"
-reviewer: "Ivy"
-goal: "Discover, outreach & partner with KOCs. XX KOC outreach/day. Target: publish XX KOC videos/week by 5/30."
-default_product: "voc-ai"
+platform: YouTube · TikTok · Instagram
+builder: 张基琳
+reviewer: Ivy
+goal: Earn third-party validation from the analysts and thought leaders the brand-side
+  buyer already trusts — Forrester / IDC / Marketplace Pulse / Modern Retail — without
+  paying for SMB FBA influencer reach.
+default_product: voc-ai
 kpi:
-  weekly_target: "XX KOC videos published"
-  measure: "videos published, reach, conversions"
-schedule: "cron: 0 10 * * 1-5"
+  weekly_target: 0.5 analyst or thought-leader touchpoint per week (2 briefings/month
+    + 1 co-published piece/month)
+  measure: Analyst inclusion in next Forrester / IDC marketplace intelligence or social
+    listening report; named mentions in Marketplace Pulse / Modern Retail
+schedule: 'cron: 0 10 * * 1-5'
 budget_monthly_usd: 0
 status: deployable
 reuse:
-  - "~/MKT/TiktokAutoUploader"
-  - "~/MKT/scripts (CosyVoice / ShortGPT)"
+- ~/MKT/TiktokAutoUploader
+- ~/MKT/scripts (CosyVoice / ShortGPT)
+activate: true
+topics:
+- Forrester / IDC / Gartner analyst briefings on review intelligence as a distinct
+  category from social listening
+- Co-published essay with a Consumer Insights thought leader on the Brandwatch / Sprinklr
+  e-commerce gap
+- Modern Retail or Marketplace Pulse sponsored deep-dive on review-to-NPI attribution
+- Insights Association webinar co-hosted with a recognized VOC practitioner
+- Targeted LinkedIn thought-leader engagement — 15-20 named Consumer Insights / E-commerce
+  VP voices, not FBA YouTubers
+contentos_hydrated_at: '2026-05-11T06:13:14.281401+00:00'

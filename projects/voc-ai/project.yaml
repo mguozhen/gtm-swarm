@@ -40,10 +40,12 @@ engine:
   source_path: ~/solvea-content-engine
   variant: voc-ai-style
 contentos_agent:
-  state: step_3_done
-  last_run: '2026-05-11T06:06:38.427677+00:00'
+  state: built
+  last_run: '2026-05-11T06:12:14.243758+00:00'
   notes: Engine already exists with 17 production-depth files. ContentOS Agent v2
     will re-run strategy discovery on top.
+  built_at: '2026-05-11T06:13:14.292068+00:00'
+  agents_hydrated: 11
 paperclip:
   company_id: null
   synced_at: null

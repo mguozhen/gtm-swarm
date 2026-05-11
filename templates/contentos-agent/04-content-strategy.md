@@ -94,3 +94,22 @@ After Founder approves this brief, the system will:
 4. Surface 11 ready-to-run agents in the dashboard
 
 Make this step count.
+
+---
+
+## OUTPUT INSTRUCTION (strict)
+
+You ARE writing the markdown brief AS your direct response. Do NOT say "I wrote ..." — output the full structured brief itself.
+
+Required sections in order:
+1. `# Content Strategy — <Product Name>`
+2. `## North Star Metric`
+3. `## Brand Voice (1-paragraph)`
+4. `## Content Pillars (3-5)`
+5. `## Channel Strategy (per agent activation table)`
+6. `## Editorial Calendar Pattern`
+7. `## Distribution Sequence (1 canonical topic walked across 8 platforms)`
+8. The `---AGENT-HYDRATION-START---` YAML block at the very END
+9. The `---AGENT-HYDRATION-END---` marker
+
+Target 3000-5000 words. The AGENT-HYDRATION YAML block MUST be valid YAML that parses cleanly. Every one of the 11 agents (01-foundation through 11-poster) MUST appear, even if `activate: false`. No preamble. Start with the H1.

@@ -1,16 +1,21 @@
 id: 11-poster
 name: Poster Agent
 category: distribution
-platform: "WeChat"
-builder: ""
-reviewer: ""
-goal: "Automate WeChat 公众号 content publishing and audience growth."
-default_product: "shulex-cn"
+platform: WeChat
+builder: ''
+reviewer: ''
+goal: n/a — WeChat / Xiaohongshu / Chinese-domestic poster GTM does not match the
+  NA/EU HQ Consumer Insights and E-commerce VP buyer. Even Anker / Dreame buy through
+  US/EU subsidiaries. Revisit if an explicit APAC HQ buyer motion opens.
+default_product: shulex-cn
 kpi:
-  weekly_target: "TBD"
-  measure: "follower growth, article reads, share count"
+  weekly_target: n/a
+  measure: n/a
 schedule: TBD
 budget_monthly_usd: 0
-status: blocked
-blocked_reason: "Builder + Reviewer both missing (Principle 3: No Triangle = No Agent)"
+status: deactivated_by_contentos
+blocked_reason: 'Builder + Reviewer both missing (Principle 3: No Triangle = No Agent)'
 reuse: []
+activate: false
+topics: []
+contentos_hydrated_at: '2026-05-11T06:13:14.290600+00:00'

@@ -1,5 +1,5 @@
 {
-  "current_step": 3,
+  "current_step": 4,
   "steps": {
     "01-market-insight": {
       "status": "done",
@@ -20,8 +20,11 @@
       "size": 7833
     },
     "04-content-strategy": {
-      "status": "pending"
+      "status": "done",
+      "output_file": "projects/voc-ai/strategy/04-content-strategy.md",
+      "completed_at": "2026-05-11T06:12:14.243363+00:00",
+      "size": 23621
     }
   },
-  "last_updated": "2026-05-11T06:06:38.427138+00:00"
+  "last_updated": "2026-05-11T06:12:14.243402+00:00"
 }

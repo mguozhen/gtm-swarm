@@ -1,16 +1,30 @@
 id: 04-backlink
 name: Backlink Agent
 category: content
-platform: "Official Website"
-builder: ""
-reviewer: "彭静"
-goal: "Find, evaluate & secure quality backlinks. Outreach, negotiate & publish. Build domain authority."
-default_product: "voc-ai"
+platform: Official Website
+builder: ''
+reviewer: 彭静
+goal: Earn editorial backlinks from tier-1 retail intelligence and consumer insights
+  publications — DR60+, named editorial placements, zero PBN or SMB seller blog noise.
+default_product: voc-ai
 kpi:
-  weekly_target: "XX backlinks acquired"
-  measure: "DR-weighted backlink count, referring domains"
+  weekly_target: 1 editorial backlink/week from a named publication (4/month target)
+  measure: DR60+ backlinks from Marketplace Pulse, Modern Retail, Digital Commerce
+    360, Insights Association, Forrester / IDC research citations
 schedule: TBD
 budget_monthly_usd: 0
 status: blocked
-blocked_reason: "Builder missing (Principle 3: No Triangle = No Agent)"
+blocked_reason: 'Builder missing (Principle 3: No Triangle = No Agent)'
 reuse: []
+activate: true
+topics:
+- 'Original research: the Brandwatch / Sprinklr Amazon review coverage benchmark —
+  a quotable industry stat'
+- Quotable founder commentary for Modern Retail / Marketplace Pulse on the marketplace
+  intelligence stack evolution
+- Guest essay in Insights Association publication on review intelligence as a distinct
+  VOC discipline
+- Citable data on review-to-NPI cost avoidance — usable as a stat in analyst reports
+- HARO / Qwoted founder-quote responses on consumer insights, brand health, marketplace
+  strategy
+contentos_hydrated_at: '2026-05-11T06:13:14.283482+00:00'

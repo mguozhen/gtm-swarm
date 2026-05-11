@@ -1,17 +1,34 @@
 id: 07-social-media
 name: Social Media Agent
 category: distribution
-platform: "X · GitHub · LinkedIn · All Platforms"
-builder: "Wayne"
-reviewer: "Ivy Chen"
-goal: "Auto-publish across all platforms: brand content, product updates, trending content. Ivy owns brand voice & user channel."
-default_product: "voc-ai"
+platform: X · GitHub · LinkedIn · All Platforms
+builder: Wayne
+reviewer: Ivy Chen
+goal: 'Make LinkedIn the #1 demand engine — founder POV posts, gap-teardown carousels,
+  named-brand commentary — and use X as a secondary surface for Marketplace Pulse
+  / Modern Retail readers.'
+default_product: voc-ai
 kpi:
-  weekly_target: "5 X / 3 LinkedIn / 1 GitHub (per active product)"
-  measure: "impressions, engagement rate, profile clicks"
-schedule: "cron: 0 8,17 * * *"
+  weekly_target: 4 LinkedIn posts/week from founder + 1 carousel/week; 100 ICP-title
+    profile views/week
+  measure: ICP-title profile views; comment quality from named-account contacts; LinkedIn-attributed
+    demo bookings
+schedule: 'cron: 0 8,17 * * *'
 budget_monthly_usd: 0
 status: deployable
 reuse:
-  - "engines/voc-ai platform native rewrite"
-  - "~/social-bot LinkedIn API memo"
+- engines/voc-ai platform native rewrite
+- ~/social-bot LinkedIn API memo
+activate: true
+topics:
+- 'Founder POV: weekly observations on the Brandwatch / Profitero / Stackline competitive
+  frontier'
+- Gap-teardown carousels — side-by-side dashboard screenshots showing what social
+  listening misses on Amazon
+- Named-brand commentary (with permission or anonymized) — Q3 review trends at electronics
+  / appliance / wearable brands
+- 'Calendar-anchored posts: Prime Day +14 day post-mortem framework; Q4 board prep
+  one-pager'
+- X thread companions to LinkedIn carousels — same evidence, different rhythm, links
+  back to LinkedIn not the blog
+contentos_hydrated_at: '2026-05-11T06:13:14.286382+00:00'

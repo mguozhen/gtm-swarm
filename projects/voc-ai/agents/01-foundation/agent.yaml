@@ -1,17 +1,33 @@
 id: 01-foundation
 name: GTM Foundation
 category: foundation
-platform: "Internal Dashboard"
-builder: "钟石龙"
-reviewer: "Boyuan"
-goal: "All agents connected. Execution monitoring, version mgmt, cost mgmt. Review via dashboard only."
-default_product: "all"
+platform: Internal Dashboard
+builder: 钟石龙
+reviewer: Boyuan
+goal: Build the website infrastructure that converts brand-side Insights and E-commerce
+  decision-makers — comparison pages against Brandwatch / Profitero, named case studies,
+  and a pricing surface that filters out SMB.
+default_product: all
 kpi:
-  weekly_target: "All 11 agents pingable, cost report up-to-date"
-  measure: "agents online %, weekly cost drift"
-schedule: "always-on"
+  weekly_target: 1 foundation asset shipped (comparison page, case study section,
+    pricing iteration, or onboarding collateral)
+  measure: Pages shipped + organic ranking for at least 2 enterprise-intent comparison
+    keywords within 90 days
+schedule: always-on
 budget_monthly_usd: 0
 status: deployable
 reuse:
-  - "~/agent-teams (Paperclip) schema for agents/goals/issues/approvals"
-  - "dashboard/ in this repo"
+- ~/agent-teams (Paperclip) schema for agents/goals/issues/approvals
+- dashboard/ in this repo
+activate: true
+topics:
+- vs Brandwatch — the Amazon review depth gap, side-by-side
+- vs Profitero / Stackline — where marketplace intelligence stops and review intelligence
+  begins
+- 'Named case study: how an Anker-class brand uses VOC AI alongside their existing
+  Brandwatch / Profitero stack'
+- Pricing page rewrite — enterprise-tier framing, SOC2 / SSO / DPA visibility, deliberate
+  filter on SMB inbound
+- ROI calculator — analyst hours saved + NPI miss cost avoided, calibrated for $100M+
+  brand economics
+contentos_hydrated_at: '2026-05-11T06:13:14.279851+00:00'

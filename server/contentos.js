@@ -64,8 +64,12 @@ export function buildPrompt(stepIdx, projectDir, projectYaml) {
   for (const depSlug of step.deps) {
     const depFile = path.join(projectDir, 'strategy', `${depSlug}.md`)
     if (existsSync(depFile)) {
+      // Strip non-BMP (4-byte UTF-8 emojis) — same issue that hits CIA data:
+      // long prompts containing them trip Flatkey/CF upstream parsers.
+      let depText = readFileSync(depFile, 'utf-8')
+      depText = Array.from(depText).filter(c => c.codePointAt(0) < 0x10000).join('')
       parts.push(`## PRIOR OUTPUT — ${depSlug}.md\n`)
-      parts.push(readFileSync(depFile, 'utf-8'))
+      parts.push(depText)
       parts.push('\n')
     } else {
       throw new Error(`Dependency missing: ${depFile}`)

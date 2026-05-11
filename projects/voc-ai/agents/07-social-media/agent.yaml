@@ -4,31 +4,48 @@ category: distribution
 platform: X · GitHub · LinkedIn · All Platforms
 builder: Wayne
 reviewer: Ivy Chen
-goal: 'Make LinkedIn the #1 demand engine — founder POV posts, gap-teardown carousels,
-  named-brand commentary — and use X as a secondary surface for Marketplace Pulse
-  / Modern Retail readers.'
+goal: >-
+  Run two distinct social voices in parallel — LinkedIn for the brand PM and
+  consumer insights secondary ICP (professional, narrative, data-backed), and
+  TikTok for the FBA seller and indie hacker primary ICP (demo-first,
+  surprise-data, opportunity-discovery hook) — both optimizing for the same
+  trial endpoint via different paths.
 default_product: voc-ai
 kpi:
-  weekly_target: 4 LinkedIn posts/week from founder + 1 carousel/week; 100 ICP-title
-    profile views/week
-  measure: ICP-title profile views; comment quality from named-account contacts; LinkedIn-attributed
-    demo bookings
+  weekly_target: >-
+    LinkedIn: 2 posts per week averaging 500+ impressions each; TikTok: 3 posts
+    per week with 1 video reaching 10K+ views per month
+  measure: >-
+    LinkedIn: impressions + trial link clicks from posts (via UTM in first
+    comment); TikTok: view count + profile link clicks; combined social-to-trial
+    conversion target: 30 trial signups/week from both platforms combined by
+    month 5
 schedule: 'cron: 0 8,17 * * *'
 budget_monthly_usd: 0
 status: deployable
 reuse:
-- engines/voc-ai platform native rewrite
-- ~/social-bot LinkedIn API memo
+  - engines/voc-ai platform native rewrite
+  - ~/social-bot LinkedIn API memo
 activate: true
 topics:
-- 'Founder POV: weekly observations on the Brandwatch / Profitero / Stackline competitive
-  frontier'
-- Gap-teardown carousels — side-by-side dashboard screenshots showing what social
-  listening misses on Amazon
-- Named-brand commentary (with permission or anonymized) — Q3 review trends at electronics
-  / appliance / wearable brands
-- 'Calendar-anchored posts: Prime Day +14 day post-mortem framework; Q4 board prep
-  one-pager'
-- X thread companions to LinkedIn carousels — same evidence, different rhythm, links
-  back to LinkedIn not the blog
-contentos_hydrated_at: '2026-05-11T06:13:14.286382+00:00'
+  - >-
+    LinkedIn — Competitive intel narrative: 'In a product meeting, someone asked
+    what customers are complaining about in [competitor brand]'s new model.
+    Here's the 90-second answer we built.' (P4, T2)
+  - >-
+    LinkedIn — Data post: share one category report finding as a standalone stat
+    with business implication — '34% of 1-star buyers in [category] share the
+    same complaint. Here's what that means for anyone designing in this space.'
+    (P5, T4)
+  - >-
+    TikTok — Opportunity discovery demo: '[Category] review mining — I found the
+    gap no product has solved' — screen record of category-level complaint
+    clustering output (P3, T4)
+  - >-
+    TikTok — Comparison hook: 'What Helium 10 showed me vs. what I actually
+    needed to know before launching' — split-screen before/after (P2, T3)
+  - >-
+    TikTok — Bad launch diagnosis: 'My product was getting 1-star reviews.
+    Here's what I found in 60 seconds that took me 3 hours to miss manually.'
+    (P1, T1)
+contentos_hydrated_at: '2026-05-11T21:43:20.917Z'

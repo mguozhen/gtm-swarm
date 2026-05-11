@@ -4,30 +4,48 @@ category: revenue
 platform: Google · iOS · Android
 builder: 高博远
 reviewer: ''
-goal: Run tightly-scoped ABM advertising against a named-account list of ~500 brands
-  with > $100M revenue and Amazon as a top-3 channel — no broad SMB-intent search
-  bidding.
+goal: >-
+  Capture the highest-intent trigger-matched search queries (Helium 10
+  alternative seekers, review analysis tool seekers, bad launch diagnosers) with
+  paid search, and retarget blog + category report visitors who didn't convert
+  to trial — keeping CAC at or below $50 per qualified trial.
 default_product: solvea
 kpi:
-  weekly_target: $3,500/week ABM spend (≈$15K/month) → 25 SQL meetings/quarter from
-    named account list
-  measure: SQL bookings from named-account list; CAC by account tier; account-engagement-score
-    lift on retargeted accounts
+  weekly_target: >-
+    2 new ad variants A/B tested per week; 25 trial signups per week from paid
+    by month 4
+  measure: >-
+    Trial signups per channel tracked in GA4 with UTM; CAC calculated as ad
+    spend / trial signups; target $50 CAC or less; track trial-to-paid
+    conversion rate from paid-acquired trials separately (target ≥20% within 30
+    days)
 schedule: always-on
 budget_monthly_usd: 0
 status: blocked
 blocked_reason: 'Reviewer missing (Principle 3: No Triangle = No Agent)'
 reuse:
-- ~/google-ads (Google Ads Sprint stack — most mature reuse)
-- ~/.ads-skill/tokens.json (OAuth)
+  - ~/google-ads (Google Ads Sprint stack — most mature reuse)
+  - ~/.ads-skill/tokens.json (OAuth)
 activate: true
 topics:
-- LinkedIn Sponsored Content targeting Consumer Insights Director / VOC Manager /
-  E-commerce VP at named accounts
-- ABM display retargeting on warm accounts that visited comparison pages or pricing
-- Conquest campaigns timed to known Brandwatch / Sprinklr / Profitero renewal cycles
-  (Q1 + Q3)
-- Webinar registration ads for the Insights Association co-hosted sessions
-- Deliberately NOT bidding on 'helium 10 alternative' or 'amazon product research'
-  SMB-intent terms
-contentos_hydrated_at: '2026-05-11T06:13:14.287425+00:00'
+  - >-
+    Google Search — T3 intent: 'helium 10 alternative', 'helium 10 review
+    analytics', 'amazon review analysis tool', 'beyond keyword research amazon'
+    — direct to comparison landing page
+  - >-
+    Google Search — T1 intent: 'how to analyze amazon 1 star reviews', 'why is
+    my amazon product getting bad reviews', 'amazon review clustering tool' —
+    direct to P1 blog post or free trial
+  - >-
+    Google Search — T4 intent: 'find product opportunities amazon reviews',
+    'amazon review mining tool', 'product gap finder amazon' — direct to
+    category report page or trial
+  - >-
+    Retargeting — blog readers who didn't convert: show category report for
+    their visited category + 'See what VOC AI found in your category' CTA
+  - >-
+    LinkedIn Ads — T2/T5 intent for secondary ICP: job title targeting (Amazon
+    Brand Manager, Head of Product, Consumer Insights Lead) at companies
+    100-2000 employees — show Anker/Panasonic social proof + competitor
+    benchmarking use case
+contentos_hydrated_at: '2026-05-11T21:43:20.917Z'

@@ -3,28 +3,80 @@
   "steps": {
     "01-market-insight": {
       "status": "done",
+      "started_at": "2026-05-11T20:44:17.537Z",
       "output_file": "projects/voc-ai/strategy/01-market-insight.md",
-      "completed_at": "2026-05-11T05:31:53.272763+00:00",
-      "size": 20909
+      "completed_at": "2026-05-11T20:47:48.618Z",
+      "size": 20260,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15529,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 10387,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      }
     },
     "02-user-insight": {
       "status": "done",
+      "started_at": "2026-05-11T21:23:46.400Z",
       "output_file": "projects/voc-ai/strategy/02-user-insight.md",
-      "completed_at": "2026-05-11T05:54:03.395360+00:00",
-      "size": 18827
+      "completed_at": "2026-05-11T21:27:25.011Z",
+      "size": 34973,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 25592,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 25592,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 9574,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      }
     },
     "03-competitor-analysis": {
       "status": "done",
+      "started_at": "2026-05-11T21:34:33.574Z",
       "output_file": "projects/voc-ai/strategy/03-competitor-analysis.md",
-      "completed_at": "2026-05-11T06:06:38.426972+00:00",
-      "size": 7833
+      "completed_at": "2026-05-11T21:39:01.385Z",
+      "size": 31213,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 21346,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 7749,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      }
     },
     "04-content-strategy": {
       "status": "done",
+      "started_at": "2026-05-11T21:39:01.496Z",
       "output_file": "projects/voc-ai/strategy/04-content-strategy.md",
-      "completed_at": "2026-05-11T06:12:14.243363+00:00",
-      "size": 23621
+      "completed_at": "2026-05-11T21:43:00.756Z",
+      "size": 37508,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 29526,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 29526,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 9695,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      }
     }
   },
-  "last_updated": "2026-05-11T06:12:14.243402+00:00"
+  "last_updated": "2026-05-11T21:43:00.756Z"
 }

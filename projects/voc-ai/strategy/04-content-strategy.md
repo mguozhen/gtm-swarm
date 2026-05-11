@@ -1,82 +1,194 @@
-I'll write Step 4 directly to disk and produce the brief.
-
 # Content Strategy — VOC AI
 
 ## North Star Metric
 
-**Enterprise / mid-market discovery-call bookings sourced from brand-side Insights and E-commerce decision-makers — target 8 SQLs/week within 6 months, with deal size ≥ $30K ARR.**
+**Qualified trial signups from pain-matched content: 50 trials/week within 6 months**, where "qualified" = signup source is a trigger-matched entry point (T1/T3/T4 search query, Reddit community comment, TikTok opportunity-discovery video, or comparison landing page) AND the user reaches the category-level complaint clustering view within their first session.
 
-This is the only number that matters. Every active agent rolls up to it. We are not optimizing for "trial signups" (SMB framing), "blog traffic" (vanity), or "LinkedIn followers" (proxy). We are optimizing for the moment a Consumer Insights Manager at a $100M+ consumer brand or an E-commerce VP at a $50M-$500M Amazon-native brand books a 30-minute conversation because they read, watched, or were referred to something we made. Everything downstream — case studies, comparison content, analyst relations, webinars, cold outreach — exists to manufacture that booking. SMB-flavored inbound is deliberately suppressed; if a $200K-GMV FBA seller fills the form, the funnel routes them to a self-serve free tier with no human touch. Sales hours are reserved for buyers who can pay $30K+/year.
+*Why this metric*: Trial volume alone is a vanity metric if users never hit the aha moment (category-level view). The combined qualifier — pain-matched source × in-product activation — is the only leading indicator that predicts trial-to-paid conversion. Every GTM agent is optimized for this compound outcome, not raw traffic.
 
-## Brand Voice (1-paragraph)
+---
 
-We sound like the Consumer Insights veteran who has been at the Brandwatch / Sprinklr / Profitero table for a decade and finally has a tool that closes the Amazon gap they have been complaining about in private Slack channels for three years. We use the actual operator vocabulary — VOC, NPI, share of voice, review velocity, 4-star ratio, claim, theme, ASIN, listing, marketplace, post-mortem — and we never say "AI-powered," "unlock insights," "actionable insights," "revolutionary," "sentiment analysis as a service," "skyrocket," "hack," "blue ocean," or "seller." We speak gap, not capability: "the Amazon layer your social listening platform was supposed to have" beats "an AI platform for review analytics." We assume the reader already knows reviews matter; we never re-educate that. We name competitors by name (Brandwatch, Sprinklr, Profitero, Stackline) and treat them with respect, not contempt — the gap is structural, not because they are dumb. Every sentence either quantifies a real pain (hours of analyst time, weeks of NPI delay, dollars of share-of-voice leak) or names a real workflow (Q4 retro, board prep, NPI retention check, Brandwatch renewal). When in doubt, sound like a Marketplace Pulse essay, not a Helium 10 YouTube ad.
+## Brand Voice
 
-## Content Pillars (3-5)
+VOC AI sounds like the sharpest person in the product meeting — the one who read every review before the meeting started. We are precise without being academic, confident without being arrogant, and always specific where our competitors are vague. We speak in the language of product decisions, not marketing language: we say "1-star reviews," not "negative sentiment"; we say "what customers keep complaining about," not "actionable consumer insights." We never reach for impressive-sounding abstractions when a concrete number or a specific complaint will do. Our tone carries a slight impatience with the status quo — the impatience of someone who knows the answer is already in the data and can't understand why anyone is still reading reviews in a spreadsheet. We are not a tool that does "sentiment analysis" — we are the product intelligence layer that keyword tools forgot to build. When we write case studies, we give the dollar figure. When we write comparisons, we give the specific feature gap. When we write educational content, we give the step-by-step workflow, not the concept. We sound like a founder who has already done the analysis — and is sharing what they found.
 
-1. **The Brandwatch Gap on Amazon** — concrete, evidence-driven content showing where social-listening platforms go blind the moment a customer leaves Reddit and writes on a PDP. Side-by-side gap teardowns of real brands. Why this ICP cares: Brandwatch renewal cycles are the #1 buying trigger, and Insights Managers walk into renewal meetings unarmed against the CFO's "what's our e-commerce listening ROI" question. This pillar gives them the slide.
+---
 
-2. **Review-to-R&D Attribution** — content on how a specific review pain pattern maps to a specific feature, claim, or spec decision; how to ship a JIRA ticket from a review cluster; how Anker / Insta360 / ESR-type brands run weekly review-to-product standing meetings. Why this ICP cares: the Insights team's perceived value in the org is being squeezed, and proving R&D acts on review data is the one move that gets them a bigger seat at the board.
+## Content Pillars
 
-3. **Marketplace Intelligence That Goes Past Share-of-Shelf** — content positioned alongside Profitero / Stackline content, not against it; explains why review depth is the unfilled layer in marketplace intelligence stacks, and how brands stitch the two together. Why this ICP cares: E-commerce VPs already pay Profitero/Stackline $80K+/year and need a story for the budget committee that explains why review intelligence is a separate line item, not a Profitero upsell.
+### Pillar 1: The Review Intelligence Playbook — "What to do with 1-star reviews"
 
-4. **The Q4 / Prime Day Post-Mortem Playbook** — calendar-anchored content (Prime Day +14 days, Black Friday +14 days, Q4 board prep) showing how to generate the retro deck without spending two weeks on it. Why this ICP cares: every brand runs this retro, every Insights team dreads it, the format is highly predictable, and the post-mortem moment is the highest-intent buying window of the year for this ICP.
+**What's covered**: Tactical, workflow-level content showing exactly how a seller or brand manager extracts product decisions from review data. This includes: how to read a category's complaint landscape before designing a product, how to diagnose a listing with declining ratings, how to use competitor reviews to find the gap your next SKU should fill, how to weight verified-purchase 1-star reviews vs. unverified 5-star reviews. Format-agnostic — works as blog posts, YouTube tutorials, Reddit answers, TikTok demos, and newsletter tips.
 
-5. **The Anti-SMB Manifesto (sparingly)** — the small, sharp content stream that says explicitly "this is not a tool for FBA sellers" and explains why brand-side intelligence is a different category. Why this ICP cares: it signals to buyers that we know who we are, filters our inbound, and gives Insights Managers a one-liner to use internally when explaining "no, this is not Helium 10."
+**Why ICP cares**: This is the T1 and T4 trigger territory. A seller who just had a bad launch, or who is about to enter a category, needs a systematic workflow — not a concept. This pillar positions VOC AI as the teacher of a skill, not just a tool. Skill content builds organic authority, generates backlinks from FBA communities, and creates an "aha — I need a tool to do this at scale" moment without ever making a sales claim.
+
+**Flagship content format**: "The 4-step review mining workflow: how to find what no product in a category has solved yet" — a long-form tutorial that walks through the exact process, using VOC AI for the scale step, with real category examples.
+
+---
+
+### Pillar 2: The Keyword Ceiling — "What Helium 10 doesn't show you"
+
+**What's covered**: Content that lives in the specific moment when a Helium 10 or Jungle Scout power user realizes keyword rank data doesn't answer the product question they actually have. This includes: comparison articles (VOC AI vs Helium 10, by specific use case, not by feature list), "beyond keywords" educational content, and POV pieces on why demand signal ≠ desire signal. Not anti-Helium-10 in tone — respectful but precise about what each tool is built to answer.
+
+**Why ICP cares**: T3 trigger (Helium 10 frustration ceiling) is one of the highest-intent acquisition triggers. A seller who has already invested 12 months into Helium 10, knows it well, and has hit its ceiling is the ideal customer — they have tool budget, they understand the problem space, and they are actively looking for the next layer. This pillar meets them at the exact moment of realization and gives them a vocabulary for what's missing.
+
+**Flagship content format**: Comparison landing page "VOC AI vs Helium 10: two different questions, two different tools" — plus a YouTube video "Why I still use Helium 10 AND VOC AI (and what each one actually tells me)" — structuring VOC AI as additive, not adversarial, to reduce incumbent loyalty friction.
+
+---
+
+### Pillar 3: The Opportunity Discovery Series — "The gap hiding in plain sight"
+
+**What's covered**: Narrative content that follows the pattern "I analyzed [X] reviews in [category] and found [specific, surprising complaint pattern that no product has solved]." Real or anonymized category analyses published as blog posts, TikTok videos, YouTube Shorts, and LinkedIn posts. This pillar demonstrates the product's output directly — the reader sees what a category-level review intelligence report actually reveals, without having to sign up first.
+
+**Why ICP cares**: This is the T4 content territory (category entry research) and the highest-virality pillar. Sellers who are evaluating entering a new category are actively hungry for examples of "what the reviews in [category] are actually saying." This content doubles as proof-of-concept — every post is a live demo of the product's core value. Additionally, this is the pillar that can attract the indie hacker / DTC founder crossover audience (L3 market) without requiring separate content investment.
+
+**Flagship content format**: Recurring series: "Review Mining Report: [Category]" — published monthly, 1,500–2,500 words, structured as: (1) category overview, (2) top 5 complaint patterns across 50+ ASINs, (3) the one complaint no product has solved, (4) what a product that solves it would look like. Blog + LinkedIn + TikTok clip + Reddit summary thread.
+
+---
+
+### Pillar 4: The Competitive Intelligence Brief — "What customers are saying about your competitors"
+
+**What's covered**: Content targeting the brand PM and consumer insights secondary ICP. Case study narratives ("how [brand type] used competitor review data to find the weak spot before their launch"), POV pieces on why Brandwatch costs $60K and what brands actually need, thought leadership for LinkedIn from the brand-manager perspective. This pillar speaks the enterprise vocabulary (voice of customer, product roadmap, consumer insights) while maintaining VOC AI's concrete, specific tone.
+
+**Why ICP cares**: T2 trigger (competitor intel gap in a team meeting) is the most acute enterprise trigger. The brand PM who is embarrassed by not having a fast answer to "what are customers complaining about in [competitor ASIN]?" is the exact buyer. This pillar creates the content they will share internally to justify evaluating VOC AI — it speaks to their boss's question, not just their own curiosity.
+
+**Flagship content format**: LinkedIn narrative post series: "In a product meeting last week, someone asked a question nobody could answer in under 5 minutes. Here's the 90-second answer we built." — Plus: one published case study per quarter with a real reference customer (Anker / Panasonic / Dreame tier) with specific numbers.
+
+---
+
+### Pillar 5: The VOC AI Review Report — "What customers actually said" (Product-led content)
+
+**What's covered**: Free, publicly available, lightweight category review reports that VOC AI generates and publishes as lead magnets — on the blog, as gated PDF downloads, or as embeddable tools. Each report covers one category (e.g., "portable blenders," "standing desks," "pet cameras") and shows the top 10 complaint patterns, the top 5 praised features, and the one gap no product has solved. These reports are the top-of-funnel gift that converts a reader into a trial user.
+
+**Why ICP cares**: Every seller evaluating a category wants this data. Every brand manager preparing a competitive review wants this format. The report is the product in miniature — it demonstrates exactly what VOC AI produces, at exactly the quality level the ICP needs to see before they convert. It also generates backlinks naturally (sellers share category reports in Facebook groups, Reddit threads, and Slack communities).
+
+**Flagship content format**: Programmatic category report pages (SEO-optimized, targeting "[category] amazon review analysis," "[category] product gap," "what customers hate about [category]") — each page is a live, updated version of the report with a "run your own category" CTA to trial. Start with 20 categories, expand to 200.
+
+---
 
 ## Channel Strategy
 
-| Agent | Activate | Why / Primary Topic Territory | KPI |
-|---|---|---|---|
-| 01-foundation | ✅ Yes | Website rewrite, positioning page, "vs Brandwatch" / "vs Profitero" comparison pages, pricing reframe, case study production hub. Foundation feeds every other agent. | 3 Brandwatch/Profitero comparison pages published + 2 named case studies (Anker-class + Insta360-class) in 90 days |
-| 02-kol-koc | ✅ Yes | Analyst Relations (Forrester / IDC / Gartner Marketplace Intelligence + Social Listening waves) + 15-20 Consumer-Insights / Marketplace thought leaders (not FBA YouTubers). Briefings, paid placements in Marketplace Pulse / Modern Retail. | 2 analyst briefings booked/month + 1 thought-leader co-published piece/month |
-| 03-blog | ✅ Yes | Hard SEO on enterprise-intent keywords: "brandwatch alternative for amazon," "voice of customer amazon platform," "profitero review module," "amazon brand health dashboard." Long-form, evidence-heavy, 2500-4000 words. | 6 pillar posts/quarter ranked top 10 for at least 2 enterprise-intent keywords |
-| 04-backlink | ✅ Yes | Editorial backlinks from Marketplace Pulse, Modern Retail, Digital Commerce 360, Insights Association, Forrester / IDC research citations. Quality > quantity, no PBN, no SMB seller blogs. | 4 DR60+ editorial backlinks/month from named tier-1 retail-intelligence publications |
-| 05-video | ✅ Yes | Long-form YouTube + podcast guesting: "Modern Retail Podcast," "E-commerce Braintrust," "Marketplace Pulse Podcast." Founder-narrated teardowns (e.g. "Why Anker MagGo's Q3 reviews say something Brandwatch can't see"). | 1 founder-led teardown video/month + 2 podcast guest spots/quarter |
-| 06-reddit | ⚠️ Activate small | r/marketing, r/CustomerSuccess, r/ProductManagement — NOT r/FulfillmentByAmazon. Founder-voiced answers on VOC, review intelligence, Brandwatch frustrations. Reddit is mid-signal for this ICP; Insights ICs scroll, decision-makers rarely. | 4 high-quality comments/week in target subs; 1 native post/month |
-| 07-social-media | ✅ Yes | LinkedIn-first, X secondary. LinkedIn is the #1 channel — Consumer Insights Managers and E-commerce VPs live here. Founder POV posts, named-brand teardowns (with permission), gap-analysis carousels. | 4 LinkedIn posts/week from founder; 1 carousel/week; 100 ICP-title profile views/week |
-| 08-ads | ✅ Yes | LinkedIn Sponsored Content + ABM display retargeting on a tightly-scoped account list (top 500 brands with > $100M revenue and Amazon as top-3 channel). No Google Search ads on SMB-intent terms. | $15K/month ABM spend → 25 SQL meetings/quarter from named account list |
-| 09-edm | ✅ Yes | Two streams: (a) Newsletter — "The Marketplace Voice Brief," monthly, gap-analysis case studies + analyst-grade essays, positioned next to Marketplace Pulse. (b) Cold Outreach — sequenced enterprise outbound on named-account list, tied to renewal-window timing. | Newsletter: 2,500 subscribers @ 35%+ open rate in 90 days. Outbound: 8 SQLs/week from sequenced ABM outreach |
-| 10-yelp | ❌ Skip | Yelp is local-business review territory; irrelevant ICP. Resource not spent. | n/a |
-| 11-poster | ❌ Skip | WeChat / Xiaohongshu posters target a Chinese-domestic-buyer GTM. Our enterprise buyers are NA/EU HQ Consumer Insights and E-commerce VPs. Even Anker/Dreame HQ teams in CN buy through US/EU subsidiaries. Revisit if/when an explicit APAC HQ buyer motion opens. | n/a |
+| # | Agent | Activate | Primary Topic Territory | Primary KPI |
+|---|---|---|---|---|
+| 01 | Foundation (Brand/SEO Infrastructure) | **YES** | Pillar 1 + 2 + 5: review intelligence playbook + comparison pages + category report library | 20 ranking pages in top-10 Google for trigger-matched queries within 6 months |
+| 02 | KOL/KOC (Influencer/Creator Seeding) | **YES** | Pillar 3 + 4: opportunity discovery narratives seeded through Amazon seller podcasters, FBA YouTubers, and DTC LinkedIn creators | 5 authentic creator mentions per month generating ≥50 trial referrals/month total |
+| 03 | Blog (Long-form SEO Content) | **YES** | Pillar 1 + 2 + 3: review mining tutorials, keyword ceiling content, opportunity discovery posts | 4 posts/month; 3 posts ranking in top 10 within 90 days for pain-matched queries |
+| 04 | Backlink (Link Acquisition) | **YES** | Pillar 5: category review reports as link magnets; guest posts in FBA resource hubs | 8 referring domains/month from Amazon seller communities and tool review sites |
+| 05 | Video (YouTube long-form + Shorts) | **YES** | Pillar 1 + 2: workflow tutorials ("how to mine reviews before a product launch") + comparison videos ("Helium 10 + VOC AI together") | 2 long-form videos/month; 4 Shorts/month; 500 trial clicks from YouTube within 6 months |
+| 06 | Reddit (Community + Dark Funnel) | **YES** | Pillar 1 + 2: authentic answers to seller pain questions in r/fulfillmentbyamazon, r/AmazonFBA, r/AmazonSeller | 10 high-quality comment contributions/week; 15 trial signups/week attributed to Reddit within 3 months |
+| 07 | Social Media (LinkedIn + TikTok primary) | **YES** | LinkedIn: Pillar 4 (brand PM / competitive intel); TikTok: Pillar 3 (opportunity discovery demos) | LinkedIn: 2 posts/week, 500 impressions/post average; TikTok: 3 posts/week, 1 video ≥10K views/month |
+| 08 | Ads (Paid SEM + Social) | **YES** | Pillar 2: capture T3 intent (Helium 10 alternative, review analytics tool); Pillar 1: capture T1 intent (how to analyze amazon reviews) | $50 CAC or less for trial signup from paid; 100 paid-trial signups/month by month 4 |
+| 09 | EDM (Email / Nurture) | **YES** | Pillar 1 + 3: post-trial nurture with category report for their niche + review mining workflow content | 35% trial-to-paid conversion rate on 30-day nurture sequence; open rate ≥40% |
+| 10 | Yelp/Review Platforms (G2, Capterra, ProductHunt) | **YES** | Review acquisition on G2 + Capterra (T5 trigger: new role onboarding, tool comparison); ProductHunt for awareness burst | 25 verified G2 reviews within 6 months; top 3 ranking in "Amazon seller tools" G2 category |
+| 11 | Poster (WeChat/Offline/Chinese Social) | **NO** | — | — |
 
-**Activate: 9 of 11 agents.** Skipped: 10-yelp (wrong category), 11-poster (wrong geography). 06-reddit activated at low intensity (4 comments/week, not full-throttle posting) because the Reddit ICP signal is real but thin for this buyer.
+**Agent 11 rationale for skip**: VOC AI's stated ICP is US/EU Amazon FBA sellers and DTC brands. While SellerSprite competes in the Chinese-market seller space, VOC AI's differentiation is explicitly US/EU-market focus. WeChat and Xiaohongshu distribution would reach Chinese-market sellers who are not the target ICP and would create brand dilution against the stated positioning. Hunter can revisit this agent if VOC AI explicitly expands to serve Chinese sellers on US Amazon — but that is a separate GTM motion that requires its own positioning work.
 
-## Editorial Calendar Pattern (typical week)
+---
 
-| Day | LinkedIn (07) | Blog (03) | Video (05) | Reddit (06) | Newsletter (09) | Outbound (09) | Ads (08) | Foundation (01) |
-|---|---|---|---|---|---|---|---|---|
-| Mon | Founder POV post on a current pain (e.g. "Why your Q3 NPI retro deck is going to be a fire drill") | — | — | 1 thread answer in r/marketing | — | 40 sequenced cold emails to ABM list | $500 spend test on new ad creative | — |
-| Tue | — | New pillar post drafted (1/wk) | — | 1 thread answer in r/CustomerSuccess | — | Follow-ups to last week's openers | Continuous ABM display | Update 1 case-study section |
-| Wed | Carousel (5-7 slides) — gap teardown or pillar essay | Pillar post final edit | Founder-led YouTube teardown filming/scripting | — | — | — | — | Comparison page A/B test |
-| Thu | Founder POV post — named-brand teardown or analyst-style observation | — | — | 1 thread answer in r/ProductManagement | — | New cold sequence wave | — | — |
-| Fri | Reshare + commentary on Marketplace Pulse / Modern Retail piece of the week | Pillar post published + LinkedIn announcement | YouTube video published (1 per 4 weeks; otherwise: editing) | 1 native post in target sub (monthly cadence) | Newsletter drafted (1/month, published 4th Fri) | Wrap-up sequence | Weekly ad performance review | Pricing page tweak / collateral update |
+## Editorial Calendar Pattern
 
-**Per-week totals**: LinkedIn 4 posts + 1 carousel; Blog 1 pillar post; Video 1 long-form/month + 2 podcast guesting/quarter; Reddit 3-4 comments + 1 native post/month; Newsletter 1/month; Outbound 200 sequenced emails/week (40/day × 5 days); Ads continuous ABM spend; Foundation 1 update/week.
+**Rhythm: A typical week across all 10 active agents**
 
-## Distribution Sequence — one canonical topic across 8 platforms
+| Day | Platform/Agent | Content Unit | Pillar | ICP Trigger |
+|---|---|---|---|---|
+| **Monday** | LinkedIn (07-social) | Brand PM narrative post: "In a product meeting last week, someone asked [X]..." — competitor intel story | P4 | T2 |
+| **Monday** | Email/EDM (09) | Weekly tip to nurture list: one specific review mining workflow step with screenshot | P1 | T1 |
+| **Tuesday** | Reddit (06) | 3 substantive answers in r/fulfillmentbyamazon or r/AmazonFBA to threads about product research, bad launches, or review reading | P1/P2 | T1/T3 |
+| **Tuesday** | TikTok (07-social) | Short-form demo: "[Category] review mining — I found the gap no product has solved" — real category, real output | P3 | T4 |
+| **Wednesday** | Blog (03) | Publish 1 long-form post (1,800–2,500 words) — alternating: P1 workflow tutorial / P2 keyword ceiling / P3 opportunity discovery | P1/P2/P3 | T1/T3/T4 |
+| **Wednesday** | YouTube Shorts (05) | 60-second clip cut from TikTok Tuesday, reframed for search intent ("How to find product gaps in amazon reviews") | P1/P3 | T4 |
+| **Thursday** | LinkedIn (07-social) | Data post: share one finding from the month's category report — "40% of 1-star reviews in [category] complain about [X]" | P5 | T2/T4 |
+| **Thursday** | G2/Capterra (10) | Outreach to 2 current customers for review request (on rotation; aim for 2 new reviews/week) | — | T5 |
+| **Friday** | TikTok (07-social) | Educational/comparison short: "What Helium 10 shows vs. what I actually needed to know" | P2 | T3 |
+| **Friday** | Reddit (06) | 2 more answers + 1 thread started (not promotional — genuine discussion starter about review-based product research) | P1 | T1 |
+| **Ongoing** | Ads (08) | Search: "helium 10 alternative" / "amazon review analysis tool" / "analyze amazon reviews" — running continuously; A/B test 2 ad variants/week | P2 | T3 |
+| **Ongoing** | Backlink (04) | 1 outreach batch/week to 5 FBA tool review blogs, Amazon seller resource sites, or YouTube creators for category report embedding | P5 | — |
+| **Monthly** | YouTube long-form (05) | 2 tutorial videos: one workflow tutorial (P1) + one comparison video (P2) — 8–15 minutes, SEO-optimized titles | P1/P2 | T1/T3 |
+| **Monthly** | KOL seed (02) | Brief 1 Amazon seller podcaster or FBA YouTuber with the category report for their niche; offer exclusive data angle | P3/P5 | T4 |
+| **Monthly** | Category Report (01/P5) | Publish 1 new programmatic category report page + promote across all channels simultaneously | P5 | T4 |
 
-**Canonical topic**: *"We ran 30 days of Anker's Amazon reviews through Brandwatch + VOC AI side-by-side. Here's what Brandwatch missed."*
+**Weekly output count by platform**:
+- LinkedIn: 2 posts
+- TikTok: 3 posts
+- Reddit: 5 substantive contributions
+- Blog: 1 long-form post
+- YouTube Shorts: 1–2 clips
+- Email: 1 weekly tip + 1 nurture sequence email (automated)
+- Ads: continuous, 2 A/B variants rotated
+- G2/Capterra: 2 review outreach messages
 
-This is the highest-leverage piece we publish this quarter. It is built once, then **rethought** (not reposted) for each platform — different format, different hook, different reader, same evidence.
+---
 
-1. **Foundation (long-form pillar essay on voc.ai/blog)** — 3,500 words. Full methodology, every chart, raw numbers (review volume gap %, pain themes Brandwatch surfaces vs. doesn't, attribution depth difference). Audience: Insights Director Googling "brandwatch alternative for amazon" after a renewal email lands in their inbox. Format: technical, screenshots, defensible numbers, citation-grade.
+## Distribution Sequence
 
-2. **LinkedIn (07)** — 7-slide carousel. Slide 1: hook ("Brandwatch missed 62% of Anker's Q3 Amazon review themes. Here's how we know."). Slide 2-5: side-by-side screenshots stripped of brand-identifying detail. Slide 6: the structural reason (social-listening architecture vs. marketplace-listening architecture). Slide 7: "Read the full teardown" with link to pillar post. Audience: Insights Manager scrolling Tuesday at 9am. Format: punchy, ungated, visually dense.
+**Canonical topic**: *"I analyzed 8,000 reviews in the portable blender category. 34% of 1-star reviews share one complaint no product has solved."*
 
-3. **X / Twitter (07)** — 8-tweet thread. Tweet 1 is the most-shareable single line ("Brandwatch is structurally blind on Amazon. Here's the receipts."). Each subsequent tweet is one data point. Final tweet links to LinkedIn carousel (not the blog) — keep the action inside the platform pattern. Audience: Marketplace Pulse / Modern Retail readers who live on X.
+This topic is native to Pillar 3 (opportunity discovery), serves T4 (category entry research), and demonstrates the core product value without a sales pitch. Here is how it moves across platforms:
 
-4. **Instagram (07)** — not a primary surface for this ICP, but the carousel from LinkedIn is repurposed as a square-format Story + Reel for the founder's personal brand. Light reuse, not custom rebuild. Skip if bandwidth-constrained.
+---
 
-5. **TikTok** — deliberately skipped for this topic and this ICP. (TikTok agent priority 1/5 — see Step 2.) The Insights buyer is not on TikTok in a buying mood.
+**Step 1 — TikTok (07-social): The Hook**
 
-6. **YouTube (05)** — 12-minute founder-narrated screen-record teardown. Walks through the same data live, in voice, with the Brandwatch dashboard on the left and VOC AI on the right. Same evidence, but conversational pacing, founder voice, treated as podcast-adjacent. Audience: Insights Manager who watches Modern Retail interviews during their commute. Embedded back into the pillar post.
+*Format*: 45-second screen-record demo. Hook in first 3 seconds, spoken aloud: "I just analyzed 8,000 Amazon reviews for portable blenders. Here's the one complaint that 34% of 1-star buyers share — and not one product in the category has fixed it." Show the VOC AI category view on screen — the complaint cluster, the percentage, the review volume. End with: "If you're thinking about entering this category, this is what you need to know before you design anything." No call to action. Just the finding.
 
-7. **Reddit (06)** — *not* a re-post. Instead, the founder writes a single comment in r/marketing on an organic thread asking about Brandwatch alternatives. The comment is 250 words, references the methodology (not the brand name, not Anker — Reddit users smell promo). Drops a Google search suggestion ("if you search 'brandwatch amazon gap' you'll find a teardown someone did last week"). No direct link. Reddit gets earned mention, not paid placement.
+*Native element*: No caption links (TikTok deprioritizes link-in-bio pushes in video content). Pure value, pure hook. The curiosity gap ("what IS the complaint?") can be revealed in the video or teased for the comment section. Reply to every comment personally for the first 48 hours.
 
-8. **Newsletter (09)** — full-text essay version, 1,800 words, lands in subscribers' inboxes Friday. Different opening hook than the blog ("I spent two weeks looking at Anker through two listening platforms. Only one of them saw the customers."). Tighter, more narrative, more first-person. Includes the "if you're hitting Brandwatch renewal in Q3, here's what to ask your CSM" closer — this is the explicit CTA, not a "book a demo" button.
+---
 
-The pillar essay is the **source of truth**; every other surface is a platform-native re-write. The rule: same evidence, different mind. The Insights Manager who sees the LinkedIn carousel Tuesday, the X thread Wednesday, the Modern Retail podcast guesting Friday, and the newsletter Saturday should think "this team has a real point of view" — not "this team just reposted the same blog four times."
+**Step 2 — LinkedIn (07-social): The Narrative**
+
+*Format*: 250-word narrative post. First line: "In a product planning meeting last week, a PM asked: 'What's the #1 recurring complaint in the portable blender category?' Here's what we found — and what it means for anyone designing in this space." Then: the 3 key findings from the category analysis, written as business implications (not just data). The complaint pattern + why it's unresolved + what a product that solves it would need to include. End with a question to the audience: "Have you ever designed around a review-based insight like this? What category?"
+
+*Native element*: LinkedIn rewards narrative and professional framing. No screenshots of the tool. The insight is the content — the tool is mentioned only if directly relevant. Tag 2 connections who are product managers or DTC founders. Cross-post link to the blog post (Step 3) in the first comment, not the caption.
+
+---
+
+**Step 3 — Blog (03): The Full Analysis**
+
+*Format*: 2,000-word post titled "Portable Blender Amazon Review Mining: What 8,000 Reviews Reveal About the Gap No Brand Has Solved" — SEO target: "portable blender amazon review analysis," "what customers want in a portable blender," "product gap portable blender." Structure: (1) methodology (how we indexed 8,000 reviews across 45 ASINs), (2) the top 5 complaint patterns with verbatim review quotes, (3) the one unresolved complaint — with the analysis of why it keeps appearing and why no product has fixed it, (4) what a product solving this gap would look like (features, positioning angle, price point consideration), (5) CTA: "Run this analysis on any category in VOC AI — start your free trial."
+
+*Native element*: This is the long-form anchor that all other formats reference. It will rank organically within 60–90 days for long-tail category research queries. It is also the link that Reddit and email share. It must stand alone without requiring the reader to know anything about VOC AI.
+
+---
+
+**Step 4 — YouTube Long-form (05): The Tutorial**
+
+*Format*: 10-minute YouTube video titled "How I find untapped product opportunities using Amazon reviews (portable blender case study)" — screen-record walkthrough: how to set up the category analysis in VOC AI, what the complaint clustering output looks like, how to interpret the findings for a product decision. The blog post findings are the narrative spine. The video adds the "how" layer — not just what we found, but how to replicate this for any category. End with: "I'll link the full written analysis below, and a free trial if you want to run your own category."
+
+*Native element*: YouTube rewards search-intent titles and chapter markers. Add chapters: (0:00) intro, (1:30) category setup, (3:00) reading the complaint clusters, (6:00) the unresolved gap, (8:30) what to do with this insight. Pin a comment linking the blog post and the trial. This video will rank for "how to find product opportunities amazon" within 3–6 months if the title, description, and chapter text are keyword-optimized.
+
+---
+
+**Step 5 — Reddit (06): The Authentic Answer**
+
+*Format*: Find a live thread in r/fulfillmentbyamazon or r/AmazonFBA where someone is asking about portable blender category research, product opportunity research, or how to use reviews for product decisions. Write a 200-word substantive answer that gives the actual finding — the 34% complaint pattern, the unresolved gap — as a genuine contribution, without naming VOC AI unless directly asked. At the end: "I actually published a full breakdown of this analysis if you want the methodology." Link to the blog post. If no live thread exists: start one. "Question for the FBA community: has anyone entered the portable blender category recently? Curious about what your review analysis showed."
+
+*Native element*: Reddit punishes self-promotion and rewards specificity. The finding IS the contribution. The link is secondary. The account running this must have a history of genuine participation — this is why the Reddit agent requires a 30-day community warming period before any product mentions.
+
+---
+
+**Step 6 — YouTube Short / TikTok remix (05/07): The Repurposed Hook**
+
+*Format*: Cut the most surprising 30 seconds of the YouTube tutorial into a Short — specifically the moment where the category-level complaint cluster appears on screen for the first time. Reframe for YouTube Shorts with a text overlay: "34% of portable blender buyers complain about THIS — and no brand has fixed it." Add a comment directing to the full video. Also repost to TikTok with the same hook, minor audio edit if needed.
+
+*Native element*: Shorts and TikTok reward visual surprise and fast reveals. The moment where the data appears is inherently visual — lean into it. No voiceover needed if the screen data tells the story.
+
+---
+
+**Step 7 — Email / Newsletter (09): The Tip**
+
+*Format*: One section of the weekly email tip: "This week's review mining insight: We analyzed 8,000 reviews in the portable blender category. Here's the one finding that surprised us — [the complaint pattern + why it's unresolved]. Full analysis linked below." 150 words. One link to the blog post. One CTA: "Want to run this on your category? Here's how."
+
+*Native element*: Email rewards brevity and value density. The reader is already subscribed — they don't need to be sold. Give them the insight, link the depth, move on.
+
+---
+
+**Step 8 — KOL Seed (02): The Exclusive Angle**
+
+*Format*: Email to 1 Amazon seller podcaster or FBA YouTube creator who covers product research: "I thought you might find this interesting for your audience — we ran a review mining analysis on the portable blender category and found something surprising [specific finding]. Happy to share the full data set if you want to cover it, or walk through the methodology live if that's useful." No ask for promotion. Just a data offer. The creator gets an exclusive data angle; VOC AI gets an authentic mention to their audience if the data is genuinely interesting.
+
+*Native element*: KOL relationships are built on value exchange, not ad buys. The category report is the currency — it gives a creator something genuinely useful to talk about. If the creator's audience is "FBA sellers researching new products," this data is more valuable than a press release.
 
 ---
 
@@ -84,124 +196,140 @@ The pillar essay is the **source of truth**; every other surface is a platform-n
 agents:
   01-foundation:
     activate: true
-    goal: "Build the website infrastructure that converts brand-side Insights and E-commerce decision-makers — comparison pages against Brandwatch / Profitero, named case studies, and a pricing surface that filters out SMB."
+    goal: "Build the SEO infrastructure that captures Amazon sellers and brand managers at the exact moment they search for review intelligence — through comparison landing pages, category report pages, and pain-matched pillar content that ranks for T1/T3/T4 trigger queries."
     kpi:
-      weekly_target: "1 foundation asset shipped (comparison page, case study section, pricing iteration, or onboarding collateral)"
-      measure: "Pages shipped + organic ranking for at least 2 enterprise-intent comparison keywords within 90 days"
+      weekly_target: "3 new pages published or updated; 1 new category report page live per month"
+      measure: "Google Search Console: track ranking position for 20 target queries; goal = 5 queries in top 10 by month 3, 20 queries in top 10 by month 6"
     topics:
-      - "vs Brandwatch — the Amazon review depth gap, side-by-side"
-      - "vs Profitero / Stackline — where marketplace intelligence stops and review intelligence begins"
-      - "Named case study: how an Anker-class brand uses VOC AI alongside their existing Brandwatch / Profitero stack"
-      - "Pricing page rewrite — enterprise-tier framing, SOC2 / SSO / DPA visibility, deliberate filter on SMB inbound"
-      - "ROI calculator — analyst hours saved + NPI miss cost avoided, calibrated for $100M+ brand economics"
+      - "VOC AI vs Helium 10: two different questions, two different tools — comparison landing page"
+      - "VOC AI vs Jungle Scout: market size data vs customer complaint data"
+      - "VOC AI vs Brandwatch: Amazon-native depth at 1/20th the price for brand teams under $50M"
+      - "VOC AI vs manual review reading + ChatGPT: 20 reviews pasted vs 47,000 reviews indexed"
+      - "Programmatic category report pages: [category] amazon review analysis — targeting '[category] review insights', 'what customers hate about [category]', '[category] product gap'"
+
   02-kol-koc:
     activate: true
-    goal: "Earn third-party validation from the analysts and thought leaders the brand-side buyer already trusts — Forrester / IDC / Marketplace Pulse / Modern Retail — without paying for SMB FBA influencer reach."
+    goal: "Seed authentic VOC AI discovery among Amazon FBA sellers and DTC brand managers through the podcasters, YouTubers, and LinkedIn creators those audiences already trust — by offering category review data as a genuine content asset, not a sponsorship."
     kpi:
-      weekly_target: "0.5 analyst or thought-leader touchpoint per week (2 briefings/month + 1 co-published piece/month)"
-      measure: "Analyst inclusion in next Forrester / IDC marketplace intelligence or social listening report; named mentions in Marketplace Pulse / Modern Retail"
+      weekly_target: "2 creator outreach messages sent; 1 creator briefed with category report data per month"
+      measure: "Referral trial signups tracked via UTM from creator mentions; target 50 trial signups/month from creator-referred traffic by month 4"
     topics:
-      - "Forrester / IDC / Gartner analyst briefings on review intelligence as a distinct category from social listening"
-      - "Co-published essay with a Consumer Insights thought leader on the Brandwatch / Sprinklr e-commerce gap"
-      - "Modern Retail or Marketplace Pulse sponsored deep-dive on review-to-NPI attribution"
-      - "Insights Association webinar co-hosted with a recognized VOC practitioner"
-      - "Targeted LinkedIn thought-leader engagement — 15-20 named Consumer Insights / E-commerce VP voices, not FBA YouTubers"
+      - "Category review mining reports offered as exclusive data angles to FBA product research podcasters (My Wife Quit Her Job, Serious Sellers Podcast)"
+      - "Opportunity discovery case studies for Amazon seller YouTube channels covering product research 2025"
+      - "LinkedIn thought leadership co-creation with DTC brand managers and product executives who are secondary ICP"
+      - "FBA Facebook group admins offered a free category report for their community's top product research question"
+      - "Amazon seller newsletter writers offered the monthly category finding as a data-backed story"
+
   03-blog:
     activate: true
-    goal: "Rank for the enterprise-intent search queries that brand-side decision-makers type the day before a Brandwatch renewal, an NPI post-mortem, or a Q4 board prep meeting."
+    goal: "Publish 4 long-form posts per month that rank for pain-matched search queries across the T1/T3/T4 trigger territory — every post demonstrates a specific review intelligence use case and ends with a category-level trial CTA."
     kpi:
-      weekly_target: "1 pillar post drafted or shipped per week; 6 pillar posts ranking top 10 per quarter"
-      measure: "Organic traffic from named enterprise-intent keywords; pillar post → demo-booking conversion rate"
+      weekly_target: "1 long-form post published (1,800-2,500 words); 3 posts ranking in top 10 for target queries within 90 days"
+      measure: "Ahrefs rank tracking for each post's primary keyword; blog-to-trial conversion rate tracked via Google Analytics (target: 2% of blog readers start trial)"
     topics:
-      - "Brandwatch alternative for Amazon — the structural gap and what fills it"
-      - "How to build an Amazon brand health dashboard your CMO will actually open"
-      - "Review-to-R&D attribution — turning 60K reviews into 3 JIRA tickets your product team will ship"
-      - "Prime Day / Q4 post-mortem playbook — the 1-pager that answers the board's questions before they ask"
-      - "Marketplace intelligence stack design — where Profitero / Stackline / Brandwatch overlap, and what's missing in the middle"
+      - "The 4-step review mining workflow: how to find what no product in a category has solved yet (P1 — tutorial, T4 trigger)"
+      - "Why Helium 10 users hit the ceiling: what keyword data can't tell you about your next product decision (P2 — T3 trigger)"
+      - "Review Mining Report: [Category] — monthly series showing top complaint patterns + unresolved gap across 50+ ASINs (P3 — T4 trigger, link magnet)"
+      - "How to diagnose a failing Amazon listing using 1-star review clustering — the 30-minute product fix framework (P1 — T1 trigger)"
+      - "What brand managers at Anker-tier companies actually do with Amazon review data: the competitive intelligence workflow (P4 — T2 trigger, enterprise lane)"
+
   04-backlink:
     activate: true
-    goal: "Earn editorial backlinks from tier-1 retail intelligence and consumer insights publications — DR60+, named editorial placements, zero PBN or SMB seller blog noise."
+    goal: "Earn 8 referring domains per month from Amazon seller communities, FBA tool review sites, and DTC brand resource hubs by making VOC AI's category report pages the most shareable, data-rich, freely available resource in the review intelligence space."
     kpi:
-      weekly_target: "1 editorial backlink/week from a named publication (4/month target)"
-      measure: "DR60+ backlinks from Marketplace Pulse, Modern Retail, Digital Commerce 360, Insights Association, Forrester / IDC research citations"
+      weekly_target: "5 outreach contacts sent; 2 new referring domain links confirmed per month as rolling average"
+      measure: "Ahrefs referring domains dashboard; track domain rating distribution of new links (target: DR 30+ for at least 50% of new links)"
     topics:
-      - "Original research: the Brandwatch / Sprinklr Amazon review coverage benchmark — a quotable industry stat"
-      - "Quotable founder commentary for Modern Retail / Marketplace Pulse on the marketplace intelligence stack evolution"
-      - "Guest essay in Insights Association publication on review intelligence as a distinct VOC discipline"
-      - "Citable data on review-to-NPI cost avoidance — usable as a stat in analyst reports"
-      - "HARO / Qwoted founder-quote responses on consumer insights, brand health, marketplace strategy"
+      - "Category review reports submitted to Amazon seller resource roundup pages and FBA tool directories as a free, linkable asset"
+      - "Guest posts on FBA-focused blogs covering 'product research using review data' — with embedded category report as supporting data"
+      - "HARO / journalist source for reporters writing about Amazon seller tools, AI review analysis, or DTC product research trends"
+      - "Broken link outreach to FBA resource pages that link to defunct review tool guides — replace with VOC AI methodology content"
+      - "Podcast show notes link placement: any podcast that mentions 'review mining' or 'review-based product research' — offer the methodology post as a resource link"
+
   05-video:
     activate: true
-    goal: "Establish the founder as the recognized voice on marketplace review intelligence through long-form YouTube teardowns and podcast guesting on shows brand-side buyers already listen to."
+    goal: "Build a YouTube presence that captures high-intent FBA sellers and brand managers through workflow tutorials and comparison videos — with Shorts feeding discovery and long-form building the trust that converts viewers into trial users."
     kpi:
-      weekly_target: "Production progress on 1 long-form video/month + 2 podcast guest appearances/quarter"
-      measure: "YouTube watch time on founder teardowns; podcast download attribution; demo bookings citing video/podcast as source"
+      weekly_target: "1-2 YouTube Shorts published; 2 long-form videos published per month"
+      measure: "Trial link clicks from YouTube (tracked via UTM in description); target 500 total trial clicks from YouTube within 6 months; 1 long-form video ≥1,000 views within 30 days of publish by month 4"
     topics:
-      - "Founder-narrated side-by-side teardown — Brandwatch dashboard vs. VOC AI dashboard on the same brand's 30-day data"
-      - "Podcast guesting on Modern Retail Podcast, E-commerce Braintrust, Marketplace Pulse Podcast"
-      - "12-minute screen-record: how to build a Q4 review post-mortem deck in one Monday morning"
-      - "Founder-led video essay: 'Why your social listening platform was supposed to handle Amazon — and why it doesn't'"
-      - "Customer-voice mini-doc — Anker-class or Insta360-class Insights team walking through their weekly review review meeting"
+      - "How to find untapped product opportunities using Amazon reviews: [category] case study walkthrough — screen-record tutorial of category-level complaint clustering (P3, T4)"
+      - "Why I use Helium 10 AND VOC AI: what each tool actually tells me about a product — comparison walkthrough showing complementary use case (P2, T3)"
+      - "The 30-minute bad launch diagnosis: how to use 1-star reviews to find exactly what's broken in your listing — step-by-step workflow (P1, T1)"
+      - "What 8,000 Amazon reviews in [category] told me about the next product opportunity — Short format, 45 seconds, surprise data reveal (P3, T4)"
+      - "How brand managers at major electronics brands use competitor review data before a product launch — narrative case study format (P4, T2)"
+
   06-reddit:
     activate: true
-    goal: "Maintain a high-signal, low-volume presence in the subreddits where mid-level Insights and Product practitioners scroll — without ever sounding like an FBA-seller pitch."
+    goal: "Be the most genuinely useful voice in r/fulfillmentbyamazon, r/AmazonFBA, and r/AmazonSeller on the topic of review-based product research — contributing specific, data-backed answers that build trust and dark-funnel brand recognition without triggering the community's self-promotion sensors."
     kpi:
-      weekly_target: "4 substantive comments/week across r/marketing, r/CustomerSuccess, r/ProductManagement; 1 native post/month"
-      measure: "Upvote ratio > 80% on comments; referral traffic from Reddit to pillar posts; named demo bookings citing Reddit as origin"
+      weekly_target: "5 substantive comment contributions per week across target subreddits; 0 posts flagged as spam"
+      measure: "Reddit referral traffic tracked in GA4 (UTM on any links shared); target 15 trial signups/week attributed to Reddit by month 3; track upvote rate on comments (target avg >10 upvotes per substantive contribution)"
     topics:
-      - "Honest answers in r/marketing on 'Brandwatch alternative for Amazon' type threads"
-      - "r/CustomerSuccess threads on building a voice-of-customer practice that R&D actually trusts"
-      - "r/ProductManagement threads on review-to-feature attribution methodology"
-      - "Long-form native post: 'I work on review intelligence. Here's what I learned from comparing Brandwatch and a marketplace-native tool side-by-side'"
-      - "Deliberately NOT posting in r/FulfillmentByAmazon or r/AmazonSeller — wrong ICP, signals SMB positioning"
+      - "Answering threads about 'how to research a product before launching' with specific review mining methodology — give the workflow, not the pitch (r/fulfillmentbyamazon)"
+      - "Answering threads about 'why is my product underperforming / how do I find what customers hate' with 1-star review analysis framework (r/AmazonFBA)"
+      - "Answering 'Helium 10 alternative' and 'what tools do you use for product research' threads with honest comparison framing (r/fulfillmentbyamazon)"
+      - "Starting genuine discussion threads: 'Has anyone used review data rather than keyword data to choose a product — what did you find?' (community warming, not promotion)"
+      - "Sharing category report findings as standalone value posts: 'I ran a review analysis on [category] and found something surprising — here's what the 1-star reviews actually say' with blog link in comments"
+
   07-social-media:
     activate: true
-    goal: "Make LinkedIn the #1 demand engine — founder POV posts, gap-teardown carousels, named-brand commentary — and use X as a secondary surface for Marketplace Pulse / Modern Retail readers."
+    goal: "Run two distinct social voices in parallel — LinkedIn for the brand PM and consumer insights secondary ICP (professional, narrative, data-backed), and TikTok for the FBA seller and indie hacker primary ICP (demo-first, surprise-data, opportunity-discovery hook) — both optimizing for the same trial endpoint via different paths."
     kpi:
-      weekly_target: "4 LinkedIn posts/week from founder + 1 carousel/week; 100 ICP-title profile views/week"
-      measure: "ICP-title profile views; comment quality from named-account contacts; LinkedIn-attributed demo bookings"
+      weekly_target: "LinkedIn: 2 posts per week averaging 500+ impressions each; TikTok: 3 posts per week with 1 video reaching 10K+ views per month"
+      measure: "LinkedIn: impressions + trial link clicks from posts (via UTM in first comment); TikTok: view count + profile link clicks; combined social-to-trial conversion target: 30 trial signups/week from both platforms combined by month 5"
     topics:
-      - "Founder POV: weekly observations on the Brandwatch / Profitero / Stackline competitive frontier"
-      - "Gap-teardown carousels — side-by-side dashboard screenshots showing what social listening misses on Amazon"
-      - "Named-brand commentary (with permission or anonymized) — Q3 review trends at electronics / appliance / wearable brands"
-      - "Calendar-anchored posts: Prime Day +14 day post-mortem framework; Q4 board prep one-pager"
-      - "X thread companions to LinkedIn carousels — same evidence, different rhythm, links back to LinkedIn not the blog"
+      - "LinkedIn — Competitive intel narrative: 'In a product meeting, someone asked what customers are complaining about in [competitor brand]'s new model. Here's the 90-second answer we built.' (P4, T2)"
+      - "LinkedIn — Data post: share one category report finding as a standalone stat with business implication — '34% of 1-star buyers in [category] share the same complaint. Here's what that means for anyone designing in this space.' (P5, T4)"
+      - "TikTok — Opportunity discovery demo: '[Category] review mining — I found the gap no product has solved' — screen record of category-level complaint clustering output (P3, T4)"
+      - "TikTok — Comparison hook: 'What Helium 10 showed me vs. what I actually needed to know before launching' — split-screen before/after (P2, T3)"
+      - "TikTok — Bad launch diagnosis: 'My product was getting 1-star reviews. Here's what I found in 60 seconds that took me 3 hours to miss manually.' (P1, T1)"
+
   08-ads:
     activate: true
-    goal: "Run tightly-scoped ABM advertising against a named-account list of ~500 brands with > $100M revenue and Amazon as a top-3 channel — no broad SMB-intent search bidding."
+    goal: "Capture the highest-intent trigger-matched search queries (Helium 10 alternative seekers, review analysis tool seekers, bad launch diagnosers) with paid search, and retarget blog + category report visitors who didn't convert to trial — keeping CAC at or below $50 per qualified trial."
     kpi:
-      weekly_target: "$3,500/week ABM spend (≈$15K/month) → 25 SQL meetings/quarter from named account list"
-      measure: "SQL bookings from named-account list; CAC by account tier; account-engagement-score lift on retargeted accounts"
+      weekly_target: "2 new ad variants A/B tested per week; 25 trial signups per week from paid by month 4"
+      measure: "Trial signups per channel tracked in GA4 with UTM; CAC calculated as ad spend / trial signups; target $50 CAC or less; track trial-to-paid conversion rate from paid-acquired trials separately (target ≥20% within 30 days)"
     topics:
-      - "LinkedIn Sponsored Content targeting Consumer Insights Director / VOC Manager / E-commerce VP at named accounts"
-      - "ABM display retargeting on warm accounts that visited comparison pages or pricing"
-      - "Conquest campaigns timed to known Brandwatch / Sprinklr / Profitero renewal cycles (Q1 + Q3)"
-      - "Webinar registration ads for the Insights Association co-hosted sessions"
-      - "Deliberately NOT bidding on 'helium 10 alternative' or 'amazon product research' SMB-intent terms"
+      - "Google Search — T3 intent: 'helium 10 alternative', 'helium 10 review analytics', 'amazon review analysis tool', 'beyond keyword research amazon' — direct to comparison landing page"
+      - "Google Search — T1 intent: 'how to analyze amazon 1 star reviews', 'why is my amazon product getting bad reviews', 'amazon review clustering tool' — direct to P1 blog post or free trial"
+      - "Google Search — T4 intent: 'find product opportunities amazon reviews', 'amazon review mining tool', 'product gap finder amazon' — direct to category report page or trial"
+      - "Retargeting — blog readers who didn't convert: show category report for their visited category + 'See what VOC AI found in your category' CTA"
+      - "LinkedIn Ads — T2/T5 intent for secondary ICP: job title targeting (Amazon Brand Manager, Head of Product, Consumer Insights Lead) at companies 100-2000 employees — show Anker/Panasonic social proof + competitor benchmarking use case"
+
   09-edm:
     activate: true
-    goal: "Run two parallel streams — a thought-leadership newsletter that earns inbox trust like Marketplace Pulse, and a precision cold-outreach engine timed to enterprise renewal windows."
+    goal: "Convert trial users to paid subscribers through a 30-day nurture sequence that delivers category-specific review intelligence, teaches the review mining workflow one step at a time, and makes the category-level aha moment unavoidable — targeting 35% trial-to-paid conversion."
     kpi:
-      weekly_target: "200 sequenced cold emails/week (40/day × 5 days) → 8 SQLs/week; Newsletter: 1 issue/month, 35%+ open rate"
-      measure: "Newsletter subscriber count (target 2,500 in 90 days) + open rate; outbound reply rate + meetings booked from sequenced ABM list"
+      weekly_target: "1 nurture email sent to active trial segment; 1 re-engagement email to dormant trial segment; weekly tip email to subscriber list"
+      measure: "Trial-to-paid conversion rate tracked per cohort (30-day window); target 35%; email open rate target 40%; click-to-trial-activation rate target 15% per email"
     topics:
-      - "Monthly newsletter 'The Marketplace Voice Brief' — gap-analysis case study + analyst-grade essay + 3 industry stats"
-      - "Cold sequence: Brandwatch / Sprinklr renewal-window outreach (60 days before known renewal)"
-      - "Cold sequence: NPI post-mortem outreach to E-commerce VPs at brands with recent product launches"
-      - "Cold sequence: Q4 board-prep urgency outreach (mid-September to mid-November)"
-      - "Re-engagement sequence: warm-but-stalled named accounts that visited comparison pages but did not book"
+      - "Welcome sequence Day 1: 'The one thing to do first in VOC AI' — route directly to category-level view, not single-ASIN; include a pre-built category example relevant to their signup context"
+      - "Nurture Day 3: 'How to read a complaint cluster: what the percentage actually means for your product decision' — mini workflow tutorial with screenshot"
+      - "Nurture Day 7: 'The review data Helium 10 downloads but doesn't analyze — here's what to do with it' — bridges T3 trigger to VOC AI use case"
+      - "Nurture Day 14: Category report for the trial user's stated category of interest — 'Here's what we found in [their category]: the top 5 complaint patterns and the one gap no product has solved'"
+      - "Re-engagement Day 21 (for inactive trials): 'You signed up 3 weeks ago. Here's the one thing most trial users miss — and why it changes what you see in the product'"
+
   10-yelp:
-    activate: false
-    goal: "n/a — Yelp is local-business review territory; irrelevant to brand-side Consumer Insights and Amazon-marketplace ICP."
+    activate: true
+    goal: "Build a credible, growing review presence on G2 and Capterra that captures the T5 trigger (new role onboarding, tool comparison) — making VOC AI the top-ranked option when a new brand manager or Amazon PM Googles 'best amazon review analytics tool' and lands on a software review site."
     kpi:
-      weekly_target: "n/a"
-      measure: "n/a"
-    topics: []
+      weekly_target: "2 customer review outreach messages sent (rotating through customer base); 1 new verified review published per week average"
+      measure: "Total verified reviews on G2 (target: 25 within 6 months); G2 category ranking for 'Amazon Seller Tools' and 'Voice of Customer Software'; Capterra rating maintained at 4.5★ or above"
+    topics:
+      - "G2 review collection from primary ICP (Amazon FBA brand operators) — focused on the specific use case: 'how it helped them diagnose a listing problem or find a product gap'"
+      - "G2 review collection from secondary ICP (brand PMs at Anker/Panasonic/Dreame tier) — focused on competitive intelligence use case and comparison to Brandwatch"
+      - "Capterra listing optimization: category placement in 'Amazon Seller Tools', 'Voice of Customer', 'Market Research Software' — with keyword-rich product description matching T3/T4 queries"
+      - "ProductHunt launch (one-time burst): timed to a category report release or new feature drop — target top 5 Product of the Day in 'SaaS Tools' or 'Analytics' category"
+      - "Responding to all existing reviews publicly — demonstrating founder-level engagement and rapid product response, which is visible to T5 evaluators reading review pages"
+
   11-poster:
     activate: false
-    goal: "n/a — WeChat / Xiaohongshu / Chinese-domestic poster GTM does not match the NA/EU HQ Consumer Insights and E-commerce VP buyer. Even Anker / Dreame buy through US/EU subsidiaries. Revisit if an explicit APAC HQ buyer motion opens."
+    goal: "Not applicable — VOC AI's ICP is US/EU Amazon FBA sellers and DTC brands; WeChat and Chinese social platform distribution targets a market segment (Chinese-market sellers) that is outside the stated positioning and would dilute brand coherence against the US/EU-first differentiation."
     kpi:
-      weekly_target: "n/a"
-      measure: "n/a"
-    topics: []
+      weekly_target: "N/A"
+      measure: "N/A"
+    topics:
+      - "Revisit if VOC AI explicitly launches a Chinese-market seller product line with separate positioning"
 ---AGENT-HYDRATION-END---

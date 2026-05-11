@@ -11,40 +11,43 @@ audience:
   primary: Amazon FBA sellers, DTC brands $100K-$10M revenue
   secondary: E-commerce-curious solopreneurs, indie hackers exploring D2C
 positioning:
-  one_liner: The only tool with 2B+ Amazon reviews indexed. Find product opportunities
+  one_liner: >-
+    The only tool with 2B+ Amazon reviews indexed. Find product opportunities
     competitors can't see.
-  vs_status_quo: Helium 10 / Jungle Scout show keywords. We show what customers actually
+  vs_status_quo: >-
+    Helium 10 / Jungle Scout show keywords. We show what customers actually
     hate.
   vs_competitors:
-  - Helium 10 — keyword-first; we are review-first
-  - Jungle Scout — same keyword pool; we have unique review depth
-  - SellerSprite — Chinese-market focus; we focus US/EU sellers
+    - Helium 10 — keyword-first; we are review-first
+    - Jungle Scout — same keyword pool; we have unique review depth
+    - SellerSprite — Chinese-market focus; we focus US/EU sellers
 customers:
   active:
-  - Anker
-  - Panasonic
-  - ESR
-  - Dreame
-  - Insta360
+    - Anker
+    - Panasonic
+    - ESR
+    - Dreame
+    - Insta360
   case_studies: []
 competitors:
   direct:
-  - Helium 10
-  - Jungle Scout
-  - SellerSprite
-  - Feedback Whiz
+    - Helium 10
+    - Jungle Scout
+    - SellerSprite
+    - Feedback Whiz
   adjacent:
-  - Brandwatch (enterprise-only sentiment)
-  - manual review reading
+    - Brandwatch (enterprise-only sentiment)
+    - manual review reading
 engine:
   source_path: ~/solvea-content-engine
   variant: voc-ai-style
 contentos_agent:
   state: built
-  last_run: '2026-05-11T06:12:14.243758+00:00'
-  notes: Engine already exists with 17 production-depth files. ContentOS Agent v2
+  last_run: '2026-05-11T21:43:00.756Z'
+  notes: >-
+    Engine already exists with 17 production-depth files. ContentOS Agent v2
     will re-run strategy discovery on top.
-  built_at: '2026-05-11T06:13:14.292068+00:00'
+  built_at: '2026-05-11T21:43:20.919Z'
   agents_hydrated: 11
 paperclip:
   company_id: null

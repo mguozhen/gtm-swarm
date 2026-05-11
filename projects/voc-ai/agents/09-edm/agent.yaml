@@ -4,31 +4,46 @@ category: revenue
 platform: Email
 builder: ''
 reviewer: ''
-goal: Run two parallel streams — a thought-leadership newsletter that earns inbox
-  trust like Marketplace Pulse, and a precision cold-outreach engine timed to enterprise
-  renewal windows.
+goal: >-
+  Convert trial users to paid subscribers through a 30-day nurture sequence that
+  delivers category-specific review intelligence, teaches the review mining
+  workflow one step at a time, and makes the category-level aha moment
+  unavoidable — targeting 35% trial-to-paid conversion.
 default_product: voc-ai
 kpi:
-  weekly_target: '200 sequenced cold emails/week (40/day × 5 days) → 8 SQLs/week;
-    Newsletter: 1 issue/month, 35%+ open rate'
-  measure: Newsletter subscriber count (target 2,500 in 90 days) + open rate; outbound
-    reply rate + meetings booked from sequenced ABM list
+  weekly_target: >-
+    1 nurture email sent to active trial segment; 1 re-engagement email to
+    dormant trial segment; weekly tip email to subscriber list
+  measure: >-
+    Trial-to-paid conversion rate tracked per cohort (30-day window); target
+    35%; email open rate target 40%; click-to-trial-activation rate target 15%
+    per email
 schedule: TBD
 budget_monthly_usd: 0
 status: blocked
 blocked_reason: 'Builder + Reviewer both missing (Principle 3: No Triangle = No Agent)'
 reuse:
-- ~/google-ads/dropin
-- ~/google-ads/crm
+  - ~/google-ads/dropin
+  - ~/google-ads/crm
 activate: true
 topics:
-- Monthly newsletter 'The Marketplace Voice Brief' — gap-analysis case study + analyst-grade
-  essay + 3 industry stats
-- 'Cold sequence: Brandwatch / Sprinklr renewal-window outreach (60 days before known
-  renewal)'
-- 'Cold sequence: NPI post-mortem outreach to E-commerce VPs at brands with recent
-  product launches'
-- 'Cold sequence: Q4 board-prep urgency outreach (mid-September to mid-November)'
-- 'Re-engagement sequence: warm-but-stalled named accounts that visited comparison
-  pages but did not book'
-contentos_hydrated_at: '2026-05-11T06:13:14.288634+00:00'
+  - >-
+    Welcome sequence Day 1: 'The one thing to do first in VOC AI' — route
+    directly to category-level view, not single-ASIN; include a pre-built
+    category example relevant to their signup context
+  - >-
+    Nurture Day 3: 'How to read a complaint cluster: what the percentage
+    actually means for your product decision' — mini workflow tutorial with
+    screenshot
+  - >-
+    Nurture Day 7: 'The review data Helium 10 downloads but doesn't analyze —
+    here's what to do with it' — bridges T3 trigger to VOC AI use case
+  - >-
+    Nurture Day 14: Category report for the trial user's stated category of
+    interest — 'Here's what we found in [their category]: the top 5 complaint
+    patterns and the one gap no product has solved'
+  - >-
+    Re-engagement Day 21 (for inactive trials): 'You signed up 3 weeks ago.
+    Here's the one thing most trial users miss — and why it changes what you see
+    in the product'
+contentos_hydrated_at: '2026-05-11T21:43:20.918Z'

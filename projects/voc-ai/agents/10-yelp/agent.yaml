@@ -4,18 +4,46 @@ category: revenue
 platform: Yelp
 builder: ''
 reviewer: ''
-goal: n/a — Yelp is local-business review territory; irrelevant to brand-side Consumer
-  Insights and Amazon-marketplace ICP.
+goal: >-
+  Build a credible, growing review presence on G2 and Capterra that captures the
+  T5 trigger (new role onboarding, tool comparison) — making VOC AI the
+  top-ranked option when a new brand manager or Amazon PM Googles 'best amazon
+  review analytics tool' and lands on a software review site.
 default_product: solvea
 kpi:
-  weekly_target: n/a
-  measure: n/a
+  weekly_target: >-
+    2 customer review outreach messages sent (rotating through customer base); 1
+    new verified review published per week average
+  measure: >-
+    Total verified reviews on G2 (target: 25 within 6 months); G2 category
+    ranking for 'Amazon Seller Tools' and 'Voice of Customer Software'; Capterra
+    rating maintained at 4.5★ or above
 schedule: TBD
 budget_monthly_usd: 0
-status: deactivated_by_contentos
+status: active
 blocked_reason: 'Builder + Reviewer both missing (Principle 3: No Triangle = No Agent)'
 reuse:
-- 295 TX leads pilot (existing data)
-activate: false
-topics: []
-contentos_hydrated_at: '2026-05-11T06:13:14.289838+00:00'
+  - 295 TX leads pilot (existing data)
+activate: true
+topics:
+  - >-
+    G2 review collection from primary ICP (Amazon FBA brand operators) — focused
+    on the specific use case: 'how it helped them diagnose a listing problem or
+    find a product gap'
+  - >-
+    G2 review collection from secondary ICP (brand PMs at Anker/Panasonic/Dreame
+    tier) — focused on competitive intelligence use case and comparison to
+    Brandwatch
+  - >-
+    Capterra listing optimization: category placement in 'Amazon Seller Tools',
+    'Voice of Customer', 'Market Research Software' — with keyword-rich product
+    description matching T3/T4 queries
+  - >-
+    ProductHunt launch (one-time burst): timed to a category report release or
+    new feature drop — target top 5 Product of the Day in 'SaaS Tools' or
+    'Analytics' category
+  - >-
+    Responding to all existing reviews publicly — demonstrating founder-level
+    engagement and rapid product response, which is visible to T5 evaluators
+    reading review pages
+contentos_hydrated_at: '2026-05-11T21:43:20.918Z'

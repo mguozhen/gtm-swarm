@@ -2,39 +2,33 @@ slug: flatkey
 name: Flatkey
 url: null
 category: TBD
-tagline: "TBD — awaiting Founder brief"
+tagline: TBD — awaiting Founder brief
 status: stub
-
 founder:
   name: Hunter Guo
   role: TBD
-
 audience:
   primary: TBD
   secondary: TBD
-
 positioning:
   one_liner: TBD
   vs_status_quo: TBD
   vs_competitors: []
-
 customers:
   active: []
   case_studies: []
-
 competitors:
   direct: []
   adjacent: []
-
 engine:
   source_path: null
   variant: TBD
-
 contentos_agent:
-  state: not_started
-  last_run: null
-  notes: "Stub placeholder. Founder to provide brief — what does Flatkey do, who is it for."
-
+  state: step_3_done
+  last_run: '2026-05-11T21:39:05.660Z'
+  notes: >-
+    Stub placeholder. Founder to provide brief — what does Flatkey do, who is it
+    for.
 paperclip:
   company_id: null
   synced_at: null

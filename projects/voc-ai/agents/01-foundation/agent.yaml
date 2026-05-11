@@ -4,30 +4,37 @@ category: foundation
 platform: Internal Dashboard
 builder: 钟石龙
 reviewer: Boyuan
-goal: Build the website infrastructure that converts brand-side Insights and E-commerce
-  decision-makers — comparison pages against Brandwatch / Profitero, named case studies,
-  and a pricing surface that filters out SMB.
+goal: >-
+  Build the SEO infrastructure that captures Amazon sellers and brand managers
+  at the exact moment they search for review intelligence — through comparison
+  landing pages, category report pages, and pain-matched pillar content that
+  ranks for T1/T3/T4 trigger queries.
 default_product: all
 kpi:
-  weekly_target: 1 foundation asset shipped (comparison page, case study section,
-    pricing iteration, or onboarding collateral)
-  measure: Pages shipped + organic ranking for at least 2 enterprise-intent comparison
-    keywords within 90 days
+  weekly_target: 3 new pages published or updated; 1 new category report page live per month
+  measure: >-
+    Google Search Console: track ranking position for 20 target queries; goal =
+    5 queries in top 10 by month 3, 20 queries in top 10 by month 6
 schedule: always-on
 budget_monthly_usd: 0
 status: deployable
 reuse:
-- ~/agent-teams (Paperclip) schema for agents/goals/issues/approvals
-- dashboard/ in this repo
+  - ~/agent-teams (Paperclip) schema for agents/goals/issues/approvals
+  - dashboard/ in this repo
 activate: true
 topics:
-- vs Brandwatch — the Amazon review depth gap, side-by-side
-- vs Profitero / Stackline — where marketplace intelligence stops and review intelligence
-  begins
-- 'Named case study: how an Anker-class brand uses VOC AI alongside their existing
-  Brandwatch / Profitero stack'
-- Pricing page rewrite — enterprise-tier framing, SOC2 / SSO / DPA visibility, deliberate
-  filter on SMB inbound
-- ROI calculator — analyst hours saved + NPI miss cost avoided, calibrated for $100M+
-  brand economics
-contentos_hydrated_at: '2026-05-11T06:13:14.279851+00:00'
+  - >-
+    VOC AI vs Helium 10: two different questions, two different tools —
+    comparison landing page
+  - 'VOC AI vs Jungle Scout: market size data vs customer complaint data'
+  - >-
+    VOC AI vs Brandwatch: Amazon-native depth at 1/20th the price for brand
+    teams under $50M
+  - >-
+    VOC AI vs manual review reading + ChatGPT: 20 reviews pasted vs 47,000
+    reviews indexed
+  - >-
+    Programmatic category report pages: [category] amazon review analysis —
+    targeting '[category] review insights', 'what customers hate about
+    [category]', '[category] product gap'
+contentos_hydrated_at: '2026-05-11T21:43:20.912Z'

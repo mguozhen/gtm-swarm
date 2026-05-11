@@ -19,14 +19,19 @@ function getClient() {
 
 export async function complete(prompt, opts = {}) {
   const c = getClient()
-  const msg = await c.messages.create({
+  // Stream so long generations don't trip Cloudflare 524 timeouts on proxies
+  // like api.flatkey.ai (120s origin-read window).
+  const stream = c.messages.stream({
     model: opts.model || MODEL,
     max_tokens: opts.maxTokens || MAX_TOKENS,
     messages: [{ role: 'user', content: prompt }],
   })
-  const text = msg.content
-    .filter(b => b.type === 'text')
-    .map(b => b.text)
-    .join('')
-  return { text, usage: msg.usage, stopReason: msg.stop_reason }
+  let text = ''
+  for await (const event of stream) {
+    if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+      text += event.delta.text
+    }
+  }
+  const final = await stream.finalMessage()
+  return { text, usage: final.usage, stopReason: final.stop_reason }
 }

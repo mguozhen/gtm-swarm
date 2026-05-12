@@ -204,23 +204,49 @@ export function mountApi(app) {
   // ===== ContentOS Agent (wizard backend) =====
   const STEP_KEYS = ['01-market-insight', '02-user-insight', '03-competitor-analysis', '04-content-strategy']
 
-  r.get('/contentos/:slug/state', (req, res) => {
-    const dir = path.join(PROJECTS_DIR, req.params.slug)
+  r.get('/contentos/:slug/state', async (req, res) => {
+    const { slug } = req.params
+    if (hasDB()) {
+      try {
+        const ws = await store.getWorkspace(slug)
+        if (ws) {
+          const cosState = await store.getContentOSState(ws.id)
+          return res.json({ slug, state: cosState || { current_step: 0, steps: {} } })
+        }
+      } catch (e) {
+        console.warn('[api] contentos state DB read failed, falling back:', e.message)
+      }
+    }
+    // filesystem fallback
+    const dir = path.join(PROJECTS_DIR, slug)
     if (!existsSync(dir)) return res.status(404).json({ error: 'project not found' })
     const stateFile = path.join(dir, '.contentos-state.json')
     const state = existsSync(stateFile) ? JSON.parse(readFileSync(stateFile, 'utf-8'))
       : { current_step: 0, steps: {} }
     const projectYaml = existsSync(path.join(dir, 'project.yaml'))
       ? readFileSync(path.join(dir, 'project.yaml'), 'utf-8') : ''
-    res.json({ slug: req.params.slug, state, project_yaml: projectYaml })
+    res.json({ slug, state, project_yaml: projectYaml })
   })
 
-  r.get('/contentos/:slug/strategy', (req, res) => {
+  r.get('/contentos/:slug/strategy', async (req, res) => {
+    const { slug } = req.params
     const step = req.query.step
     const idx = parseInt(step, 10)
     if (!step || idx < 1 || idx > 4) return res.status(400).json({ error: 'step 1..4 required' })
     const key = STEP_KEYS[idx - 1]
-    const f = path.join(PROJECTS_DIR, req.params.slug, 'strategy', `${key}.md`)
+    if (hasDB()) {
+      try {
+        const ws = await store.getWorkspace(slug)
+        if (ws) {
+          const doc = await store.getStrategyDoc(ws.id, key)
+          if (doc) return res.json({ step, content: doc.content })
+        }
+      } catch (e) {
+        console.warn('[api] strategy doc DB read failed, falling back:', e.message)
+      }
+    }
+    // filesystem fallback
+    const f = path.join(PROJECTS_DIR, slug, 'strategy', `${key}.md`)
     const exists = existsSync(f)
     res.json({ step, file: path.relative(REPO_ROOT, f), exists, content: exists ? readFileSync(f, 'utf-8') : '' })
   })

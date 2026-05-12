@@ -20,3 +20,4 @@ venv/
 reviews/**/decided/
 dashboard/dist/
 .gstack/
+multica/

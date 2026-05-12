@@ -16,6 +16,8 @@ export { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 
 import { hasDB, query } from './db.js'
 import * as store from './store.js'
+import { createContentDrop } from './drops.js'
+import { hasMultica } from './multica-db.js'
 
 async function listProjects() {
   if (hasDB()) {
@@ -537,6 +539,34 @@ export function mountApi(app) {
       if (!agent_id || !person_id || !role) return res.status(400).json({ error: 'agent_id, person_id, role required' })
       const result = await store.assign(agent_id, person_id, role)
       res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  // ===== ContentDrop =====
+  r.post('/drops', requireAuth, async (req, res) => {
+    if (!hasMultica()) return res.status(503).json({ error: 'MULTICA_DATABASE_URL not configured' })
+    try {
+      const { workspace_slug, angle, context, channels, priority } = req.body
+      if (!workspace_slug || !angle) {
+        return res.status(400).json({ error: 'workspace_slug and angle required' })
+      }
+      const result = await createContentDrop({ workspace_slug, angle, context, channels, priority })
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.get('/drops/status/:issueId', async (req, res) => {
+    if (!hasMultica()) return res.status(503).json({ error: 'MULTICA_DATABASE_URL not configured' })
+    try {
+      const { getIssue, getIssueComments } = await import('./multica-db.js')
+      const issue = await getIssue(req.params.issueId)
+      if (!issue) return res.status(404).json({ error: 'issue not found' })
+      const comments = await getIssueComments(req.params.issueId)
+      res.json({ issue, comments })
     } catch (e) {
       res.status(500).json({ error: e.message })
     }

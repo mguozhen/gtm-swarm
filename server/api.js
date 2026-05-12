@@ -10,6 +10,7 @@ import { runContentOSStep, hydrateAgents } from './contentos.js'
 import { runAgent } from './runner.js'
 import { sourceIdeas } from './source-ideas.js'
 import { hasAnthropic } from './llm.js'
+import { analyzeProduct, getAnalysis } from './onboarding.js'
 import { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 export { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 
@@ -393,6 +394,51 @@ export function mountApi(app) {
     } catch (e) {
       res.status(500).json({ error: e.message })
     }
+  })
+
+  // ===== Workspace CRUD (DB-backed) =====
+  r.post('/workspaces', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const { slug, name, urls = {}, project_config = {} } = req.body
+      if (!slug || !name) return res.status(400).json({ error: 'slug and name required' })
+      const ws = await store.createWorkspace({ slug, name, urls, project_config, lifecycle_state: 'onboarding' })
+      await store.saveContentOSState(ws.id, { current_step: 0, steps: {} })
+      await store.auditLog(ws.id, req.headers['x-actor'] || 'api', 'workspace.created', { slug, name })
+      res.json(ws)
+    } catch (e) {
+      if (e.message && e.message.includes('unique')) return res.status(409).json({ error: 'slug already exists' })
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.patch('/workspaces/:slug', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const ws = await store.updateWorkspace(req.params.slug, req.body)
+      if (!ws) return res.status(404).json({ error: 'not found' })
+      res.json(ws)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  // ===== Onboarding analyze =====
+  r.post('/onboarding/analyze', requireAuth, async (req, res) => {
+    const { website, github_kb } = req.body
+    if (!website) return res.status(400).json({ error: 'website URL required' })
+    try {
+      const id = await analyzeProduct({ website, github_kb })
+      res.json({ id })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.get('/onboarding/analysis/:id', async (req, res) => {
+    const result = getAnalysis(req.params.id)
+    if (!result) return res.status(404).json({ error: 'analysis not found' })
+    res.json(result)
   })
 
   app.use('/api', r)

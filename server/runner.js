@@ -198,6 +198,11 @@ export async function runAgent(agentId, { project = 'voc-ai', topic, source = nu
       const commentBody = `## Draft: ${platform}\n\n${firstPost.content.trim()}`
       await postComment(multica_issue_id, { body: commentBody, authorId: botId })
       console.log(`[runner] draft posted to Multica issue ${multica_issue_id}`)
+      // Auto-trigger AI review (non-blocking)
+      const { runAIReview } = await import('./ai-review.js')
+      runAIReview({ issue_id: multica_issue_id, channel: agentId, workspace_slug: project })
+        .then(r => console.log(`[runner] AI review: ${r.score}/100 ${r.recommendation}`))
+        .catch(e => console.warn('[runner] AI review failed (non-fatal):', e.message))
     } catch (e) {
       console.warn('[runner] Multica comment failed (non-fatal):', e.message)
     }

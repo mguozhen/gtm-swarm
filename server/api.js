@@ -18,6 +18,7 @@ import { hasDB, query } from './db.js'
 import * as store from './store.js'
 import { createContentDrop } from './drops.js'
 import { hasMultica } from './multica-db.js'
+import { runAIReview } from './ai-review.js'
 
 async function listProjects() {
   if (hasDB()) {
@@ -567,6 +568,21 @@ export function mountApi(app) {
       if (!issue) return res.status(404).json({ error: 'issue not found' })
       const comments = await getIssueComments(req.params.issueId)
       res.json({ issue, comments })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  // ===== AI Review =====
+  r.post('/ai-review', requireAuth, async (req, res) => {
+    if (!hasMultica()) return res.status(503).json({ error: 'MULTICA_DATABASE_URL not configured' })
+    try {
+      const { issue_id, channel, workspace_slug } = req.body
+      if (!issue_id || !channel || !workspace_slug) {
+        return res.status(400).json({ error: 'issue_id, channel, workspace_slug required' })
+      }
+      const result = await runAIReview({ issue_id, channel, workspace_slug })
+      res.json(result)
     } catch (e) {
       res.status(500).json({ error: e.message })
     }

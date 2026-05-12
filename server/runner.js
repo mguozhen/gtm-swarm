@@ -4,6 +4,8 @@ import yaml from 'js-yaml'
 import matter from 'gray-matter'
 import { complete } from './llm.js'
 import { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
+import { hasDB } from './db.js'
+import * as store from './store.js'
 
 const ENGINE_READING_ORDER = [
   'CLAUDE.md', 'index.md',
@@ -160,6 +162,24 @@ export async function runAgent(agentId, { project = 'voc-ai', topic, source = nu
     const out = path.join(targetDir, fname)
     writeFileSync(out, matter.stringify(p.content, p.data))
     written.push(path.relative(REPO_ROOT, out))
+    if (hasDB()) {
+      try {
+        const ws = await store.getWorkspace(project)
+        if (ws) {
+          const agRows = await store.listAgentsForWorkspace(ws.id)
+          const ag = agRows.find(a => a.channel === platform)
+          await store.createContentItem({
+            workspace_id: ws.id,
+            agent_id: ag?.id || null,
+            state: status === 'rejected' ? 'draft' : 'draft',
+            frontmatter: p.data,
+            body: p.content,
+          })
+        }
+      } catch (e) {
+        console.warn('[runner] DB write failed (non-fatal):', e.message)
+      }
+    }
     if (status !== 'rejected') {
       const link = path.join(reviewerDir, fname)
       try { unlinkSync(link) } catch {}

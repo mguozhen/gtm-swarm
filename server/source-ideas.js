@@ -4,6 +4,8 @@ import yaml from 'js-yaml'
 import matter from 'gray-matter'
 import { complete } from './llm.js'
 import { REPO_ROOT, PROJECTS_DIR } from './paths.js'
+import { hasDB } from './db.js'
+import * as store from './store.js'
 
 const IDEA_SEPARATOR = '---IDEA---'
 
@@ -148,6 +150,22 @@ export async function sourceIdeas({ project, agent, n = 5 }) {
         const f = path.join(newIdeaDir, `${ts}-${slugify(topic)}.md`)
         writeFileSync(f, matter.stringify(parsed.content, parsed.data))
         written++
+        if (hasDB()) {
+          try {
+            const ws = await store.getWorkspace(project)
+            if (ws) {
+              await store.createContentItem({
+                workspace_id: ws.id,
+                agent_id: null,
+                state: 'new-idea',
+                frontmatter: parsed.data,
+                body: parsed.content,
+              })
+            }
+          } catch (e) {
+            console.warn('[source-ideas] DB write failed (non-fatal):', e.message)
+          }
+        }
       } catch (e) { console.warn('skip malformed:', e?.message) }
     }
     total += written

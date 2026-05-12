@@ -4,6 +4,11 @@ import { fileURLToPath } from 'node:url'
 import { PROJECTS_DIR, REVIEWS_DIR, BOOTSTRAP_FROM, REPO_ROOT } from './paths.js'
 import pg from 'pg'
 const { Pool } = pg
+import {
+  hasMultica, getOrCreateWorkspace, getOrCreateGTMUser, upsertMember,
+  upsertChannelAgent, getOrCreateLabel,
+} from './multica-db.js'
+import { hasDB } from './db.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dirname, '..')
 
@@ -55,4 +60,42 @@ export async function bootstrapDB() {
   } finally {
     await pool.end()
   }
+}
+
+const GTM_CHANNELS = ['reddit', 'x', 'blog', 'video', 'kol-koc', 'landing']
+const GTM_LABELS = [
+  { name: 'gtm-content', color: '#10b981' },
+  { name: 'gtm-drop', color: '#6366f1' },
+  { name: 'gtm-insight', color: '#f59e0b' },
+]
+
+export async function bootstrapMultica() {
+  if (!hasMultica()) return
+  const botId = await getOrCreateGTMUser()
+
+  let slugs = []
+  if (hasDB()) {
+    const { listWorkspaces } = await import('./store.js')
+    const rows = await listWorkspaces()
+    slugs = rows.map(ws => ({ slug: ws.slug, name: ws.name || ws.slug }))
+  } else {
+    const { readdirSync, existsSync, statSync } = await import('node:fs')
+    const { PROJECTS_DIR } = await import('./paths.js')
+    if (existsSync(PROJECTS_DIR)) {
+      for (const n of readdirSync(PROJECTS_DIR)) {
+        if (n.startsWith('_') || n.startsWith('.')) continue
+        const p = path.join(PROJECTS_DIR, n)
+        if (statSync(p).isDirectory()) slugs.push({ slug: n, name: n })
+      }
+    }
+  }
+
+  for (const { slug, name } of slugs) {
+    const wsId = await getOrCreateWorkspace(slug, name)
+    await upsertMember(wsId, botId, 'admin')
+    for (const ch of GTM_CHANNELS) await upsertChannelAgent(wsId, ch)
+    for (const lb of GTM_LABELS) await getOrCreateLabel(wsId, lb.name, lb.color)
+    console.log(`[bootstrapMultica] ${slug} ready`)
+  }
+  console.log('[bootstrapMultica] done')
 }

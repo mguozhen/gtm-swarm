@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { existsSync } from 'node:fs'
 import { mountApi, REPO_ROOT } from './api.js'
 import { startCron } from './cron.js'
-import { bootstrap, bootstrapDB } from './bootstrap.js'
+import { bootstrap, bootstrapDB, bootstrapMultica } from './bootstrap.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -36,6 +36,7 @@ const PORT = process.env.PORT || 8082;
 (async () => {
   bootstrap()
   await bootstrapDB()
+  await bootstrapMultica()
   app.listen(PORT, () => {
     console.log(`gtm-swarm listening on :${PORT}`)
     console.log(`REPO_ROOT = ${REPO_ROOT}`)

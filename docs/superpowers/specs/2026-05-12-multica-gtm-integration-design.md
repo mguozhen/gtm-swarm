@@ -1,6 +1,6 @@
 # GTM × Multica Integration Design
 
-> Spec v1.0 · 2026-05-12
+> Spec v1.1 · 2026-05-12
 > Branch: feature/multica-review-agent
 
 ## Overview
@@ -11,6 +11,69 @@
 - **小循环（持续涌现）**：Agent 在日常互动中发现高价值 Insight → 自动进审核队列 → 人审批 → 好的升级成新 ContentDrop
 
 Multica 负责**任务协作层**（Issue 管理、评论、实时状态、AI 协同）；gtm-swarm 负责**内容执行层**（LLM 生成、Engine 上下文、发布流水线）。
+
+## 多产品 × 共享人员 × 复用 Agent
+
+### 一个产品 = 一个 Multica Workspace
+
+| 产品 | Multica workspace slug |
+|---|---|
+| VOC AI | `voc-ai` |
+| Solvea | `solvea` |
+| BTCMind | `btcmind` |
+| Flatkey | `flatkey` |
+| PairCode | `paircode` |
+
+每个 workspace 独立管理自己的 ContentDrop、Issue 流水线和内容 bank。
+
+### 人（Builders / Reviewers）跨 workspace 共享
+
+Wayne、Ivy、张基琳 等人是**所有 workspace 的 member**，在 Multica 的 `member` 表里每人有 N 条记录（一个 workspace 一条）。gtm-swarm 在 bootstrap 时自动 upsert：
+
+```
+for each product workspace:
+  for each person in people table:
+    INSERT INTO member (workspace_id, user_id, role) ON CONFLICT DO NOTHING
+```
+
+Reviewer 在 Multica 里可以自由切换 workspace，看到自己负责的各产品 review 队列。
+
+### Agent 执行逻辑完全复用，按产品注入上下文
+
+GTM Agent（Reddit、Blog、X 等）的执行代码是**同一套 runner.js**，不同产品只是传入不同的：
+- `workspace_slug`（决定读哪个产品的 engine files）
+- `project_config`（产品定位、受众、竞品）
+
+在每个 Multica workspace 里，gtm-swarm bootstrap 时自动注册同一批 channel agents：
+
+```
+for each product workspace:
+  for each channel in [reddit, x, blog, video, kol-koc, landing]:
+    upsert agent row in Multica agent table
+    // name: "GTM-Reddit", runtime_mode: "cloud", runtime_config: { gtm_channel: "reddit" }
+```
+
+同一个 "GTM-Reddit agent" 在所有 workspace 里都存在，但执行时读取的是当前 workspace 对应产品的 engine context。
+
+### gtm-swarm 现有流水线完全保留
+
+Multica 集成是**叠加层**，不替换现有任何逻辑：
+
+```
+有 MULTICA_DATABASE_URL → 草稿同步到 Multica issue comment + AI review 触发
+没有 MULTICA_DATABASE_URL → 走现有 filesystem/PostgreSQL 流水线，完全不变
+```
+
+现有的：
+- `projects/` 目录结构
+- `content-bank/` 文件
+- `reviews/<reviewer>/` symlink 队列
+- `POST /api/review` approve/reject
+- Dashboard `/dashboard/:slug` 现有视图
+
+**全部保留**。Multica 的 review 是**并行渠道**，不是替换。
+
+---
 
 ## 集成方式：共享 PostgreSQL
 
@@ -232,23 +295,40 @@ gtm-swarm 创建的 issue 统一打上以下 label（自动 upsert）：
 - `server/source-ideas.js`：高价值 Insight 标记 + 写入 Multica issue
 - `server/runner.js`：执行完毕后将草稿 POST 到对应 Multica issue comment
 
+## Bootstrap 逻辑（多 workspace 初始化）
+
+`server/bootstrap.js` 的 `bootstrapDB()` 扩展，当 `MULTICA_DATABASE_URL` 设置时额外执行：
+
+```
+1. 对 gtm-swarm 每个 workspace (voc-ai, solvea, ...) 在 Multica 中 upsert workspace 记录
+2. 对 people 表每个人，在每个 Multica workspace 里 upsert member 记录
+3. 对每个 Multica workspace，注册 6 个 channel agent 记录
+4. 创建 GTM label (gtm-content, gtm-drop, gtm-insight) 到每个 workspace
+```
+
+一次 bootstrap 跑完，后续按需增量更新。
+
+---
+
 ## 实现顺序
 
-Phase 1 — 基础桥接（无 UI）：
-1. `server/multica-db.js` + 环境变量
-2. `POST /api/drops` + Multica issue fan-out
-3. runner.js → 草稿 POST 为 Multica comment
+Phase 1 — 基础桥接 + 多 workspace bootstrap（无 UI）：
+1. `server/multica-db.js` + 环境变量 (`MULTICA_DATABASE_URL`, `MULTICA_DEFAULT_USER_ID`)
+2. Bootstrap：所有产品 workspace → Multica workspace upsert + 人员 member 注册 + channel agent 注册
+3. `POST /api/drops` + Multica issue fan-out（支持指定 workspace_slug）
+4. runner.js → 执行完草稿 POST 为对应 Multica workspace child issue 的 comment
 
 Phase 2 — AI Review：
-4. `server/ai-review.js` + `POST /api/ai-review`
-5. Multica 前端 `GTMReviewPanel`
+5. `server/ai-review.js` + `POST /api/ai-review`
+6. Multica 前端 `GTMReviewPanel`（`packages/views/src/issues/`）
+7. Approve → gtm-swarm content_items state 更新为 bank
 
 Phase 3 — Insight 小循环：
-6. source-ideas.js Insight 标记
-7. Multica 前端 Insights 视图
+8. source-ideas.js 高价值 Insight 标记 + 写入 Multica insight issue
+9. Multica 前端 Insights 视图 + "升级为 Drop" 操作
 
 Phase 4 — ContentDrop UI：
-8. Multica 前端 Drop 触发表单
+10. Multica 前端 Drop 触发表单（`/[workspaceSlug]/drops/new`）
 
 ## Out of Scope
 

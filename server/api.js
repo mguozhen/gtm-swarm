@@ -13,7 +13,19 @@ import { hasAnthropic } from './llm.js'
 import { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 export { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 
-function listProjects() {
+import { hasDB, query } from './db.js'
+import * as store from './store.js'
+
+async function listProjects() {
+  if (hasDB()) {
+    const rows = await store.listWorkspaces()
+    return rows.map(ws => ({
+      slug: ws.slug,
+      name: ws.name,
+      lifecycle_state: ws.lifecycle_state,
+      ...ws.project_config,
+    }))
+  }
   if (!existsSync(PROJECTS_DIR)) return []
   return readdirSync(PROJECTS_DIR).filter(n => {
     if (n.startsWith('_') || n.startsWith('.')) return false
@@ -120,8 +132,8 @@ export function mountApi(app) {
   })
 
   // ===== Project + content read endpoints =====
-  r.get('/projects', (_req, res) => {
-    res.json({ registry: readRegistry(), discovered: listProjects() })
+  r.get('/projects', async (_req, res) => {
+    res.json({ registry: readRegistry(), discovered: await listProjects() })
   })
 
   r.get('/agents', (req, res) => {
@@ -324,8 +336,37 @@ export function mountApi(app) {
     }
   })
 
-  r.get('/health', (_req, res) => {
-    res.json({ ok: true, anthropic: hasAnthropic(), projects: listProjects() })
+  r.get('/health', async (_req, res) => {
+    res.json({ ok: true, anthropic: hasAnthropic(), projects: await listProjects() })
+  })
+
+  // ===== Workspace endpoints (DB-backed) =====
+  r.get('/workspaces', async (_req, res) => {
+    if (!hasDB()) return res.json({ error: 'no database' })
+    try {
+      const workspaces = await store.listWorkspaces()
+      const result = []
+      for (const ws of workspaces) {
+        const cosState = await store.getContentOSState(ws.id)
+        result.push({ ...ws, contentos_state: cosState })
+      }
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.get('/workspaces/:slug', async (req, res) => {
+    if (!hasDB()) return res.json({ error: 'no database' })
+    try {
+      const ws = await store.getWorkspace(req.params.slug)
+      if (!ws) return res.status(404).json({ error: 'not found' })
+      const cosState = await store.getContentOSState(ws.id)
+      const agents = await store.listAgentsForWorkspace(ws.id)
+      res.json({ ...ws, contentos_state: cosState, agents })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
   })
 
   app.use('/api', r)

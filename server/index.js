@@ -4,9 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { existsSync } from 'node:fs'
 import { mountApi, REPO_ROOT } from './api.js'
 import { startCron } from './cron.js'
-import { bootstrap } from './bootstrap.js'
-
-bootstrap()
+import { bootstrap, bootstrapDB, bootstrapMultica } from './bootstrap.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -33,13 +31,19 @@ if (existsSync(DIST)) {
   console.warn(`⚠ dashboard/dist not found at ${DIST} — run pnpm build first`)
 }
 
-const PORT = process.env.PORT || 8082
-app.listen(PORT, () => {
-  console.log(`gtm-swarm listening on :${PORT}`)
-  console.log(`REPO_ROOT = ${REPO_ROOT}`)
-  console.log(`anthropic key set: ${Boolean(process.env.ANTHROPIC_API_KEY)}`)
-  console.log(`anthropic base url: ${process.env.ANTHROPIC_BASE_URL || '(default api.anthropic.com)'}`)
-  console.log(`anthropic model: ${process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6 (default)'}`)
-  console.log(`writes auth: ${process.env.GTM_WRITES_TOKEN ? 'required (Bearer)' : 'OPEN (set GTM_WRITES_TOKEN env to protect)'}`)
-  startCron()
-})
+const PORT = process.env.PORT || 8082;
+
+(async () => {
+  bootstrap()
+  await bootstrapDB()
+  await bootstrapMultica()
+  app.listen(PORT, () => {
+    console.log(`gtm-swarm listening on :${PORT}`)
+    console.log(`REPO_ROOT = ${REPO_ROOT}`)
+    console.log(`anthropic key set: ${Boolean(process.env.ANTHROPIC_API_KEY)}`)
+    console.log(`anthropic base url: ${process.env.ANTHROPIC_BASE_URL || '(default api.anthropic.com)'}`)
+    console.log(`anthropic model: ${process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6 (default)'}`)
+    console.log(`writes auth: ${process.env.GTM_WRITES_TOKEN ? 'required (Bearer)' : 'OPEN (set GTM_WRITES_TOKEN env to protect)'}`)
+    startCron()
+  })
+})()

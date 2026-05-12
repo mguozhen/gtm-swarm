@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Header } from './components/Header'
 import { TabBar, type TabKey } from './components/TabBar'
@@ -20,6 +20,80 @@ const TAB_TO_STATE: Record<Exclude<TabKey, 'overview' | 'review'>, 'new-idea' | 
   published: 'published',
 }
 
+const LIFECYCLE_STEPS = ['onboarding', 'strategy', 'engine_building', 'active']
+const LIFECYCLE_LABELS: Record<string, string> = {
+  onboarding: 'Onboarding',
+  strategy: 'Strategy',
+  engine_building: 'Building Engine',
+  active: 'Active',
+}
+
+type AgentRow = {
+  id: string
+  channel: string
+  status: string
+  config: Record<string, unknown>
+  metrics: Record<string, unknown>
+  review_checklist: string[]
+  dashboard_widgets: unknown[]
+  kpi_defaults: Record<string, string>
+}
+
+function LifecycleBar({ state }: { state: string }) {
+  const idx = LIFECYCLE_STEPS.indexOf(state)
+  return (
+    <div style={{ padding: '12px 0', borderBottom: '1px solid #1f2937', marginBottom: 12 }}>
+      <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Lifecycle</div>
+      {LIFECYCLE_STEPS.map((s, i) => (
+        <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+          <div style={{ width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
+            background: i < idx ? '#10b981' : i === idx ? '#3b82f6' : '#374151' }} />
+          <span style={{ fontSize: 11, color: i <= idx ? '#f9fafb' : '#6b7280' }}>
+            {LIFECYCLE_LABELS[s]}
+          </span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const CHANNEL_COLORS: Record<string, string> = {
+  reddit: '#ff4500', x: '#1d9bf0', blog: '#10b981',
+  'kol-koc': '#f59e0b', video: '#ef4444',
+}
+
+function AgentChannelCard({ agent }: { agent: AgentRow }) {
+  const color = CHANNEL_COLORS[agent.channel] || '#6b7280'
+  const metrics30d = (agent.metrics as Record<string, Record<string, number>>)?.rolling_30d || {}
+  return (
+    <div style={{ background: '#1f2937', border: `1px solid ${color}33`, borderRadius: 10, padding: 14, minWidth: 160, flex: '0 0 auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+        <div style={{ width: 7, height: 7, borderRadius: '50%', background: agent.status === 'active' ? '#10b981' : '#6b7280' }} />
+        <span style={{ fontWeight: 700, fontSize: 12, color }}>{agent.channel}</span>
+        <span style={{ fontSize: 10, color: '#6b7280', marginLeft: 'auto' }}>{agent.status}</span>
+      </div>
+      {agent.kpi_defaults?.weekly_target && (
+        <div style={{ fontSize: 10, color: '#9ca3af', marginBottom: 6 }}>
+          {agent.kpi_defaults.weekly_target}
+        </div>
+      )}
+      {Object.keys(metrics30d).length > 0 && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, marginBottom: 8 }}>
+          {Object.entries(metrics30d).map(([k, v]) => (
+            <div key={k} style={{ fontSize: 9, color: '#9ca3af' }}>
+              <span style={{ color: '#f9fafb', fontWeight: 600 }}>{v}</span> {k}
+            </div>
+          ))}
+        </div>
+      )}
+      <button style={{ fontSize: 10, padding: '3px 8px', borderRadius: 5, border: '1px solid #374151',
+        background: 'transparent', color: '#9ca3af', cursor: 'pointer', width: '100%' }}>
+        查看队列
+      </button>
+    </div>
+  )
+}
+
 function App() {
   const { slug: routeSlug } = useParams<{ slug?: string }>()
   const registry = useProjects()
@@ -29,6 +103,18 @@ function App() {
   const [token, setToken, clearToken] = useToken()
 
   const [tab, setTab] = useState<TabKey>('overview')
+
+  const [wsData, setWsData] = useState<{
+    lifecycle_state?: string
+    agents?: AgentRow[]
+  } | null>(null)
+
+  useEffect(() => {
+    fetch(`/api/workspaces/${slug}`)
+      .then(r => r.json())
+      .then(d => { if (d && !d.error) setWsData(d) })
+      .catch(() => {})
+  }, [slug])
 
   const requestedState = tab === 'overview' ? undefined
     : tab === 'review' ? undefined
@@ -115,7 +201,31 @@ function App() {
       <TabBar active={tab} onChange={setTab} counts={tabCounts} />
 
       {tab === 'overview' ? (
-        <ProjectOverview slug={slug} />
+        <div>
+          {wsData?.lifecycle_state && (
+            <div style={{ padding: '16px 24px 0', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+              <div style={{ width: 160, flexShrink: 0 }}>
+                <LifecycleBar state={wsData.lifecycle_state} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <ProjectOverview slug={slug} />
+              </div>
+            </div>
+          )}
+          {!wsData?.lifecycle_state && <ProjectOverview slug={slug} />}
+          {wsData?.agents && wsData.agents.length > 0 && (
+            <div style={{ padding: '0 24px 24px' }}>
+              <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Agent Channels
+              </div>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                {wsData.agents.map(agent => (
+                  <AgentChannelCard key={agent.id} agent={agent} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       ) : tab === 'ideas' ? (
         <IdeasPool
           items={items.filter(i => i.state === 'new-idea')}

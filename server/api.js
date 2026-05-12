@@ -10,10 +10,26 @@ import { runContentOSStep, hydrateAgents } from './contentos.js'
 import { runAgent } from './runner.js'
 import { sourceIdeas } from './source-ideas.js'
 import { hasAnthropic } from './llm.js'
+import { analyzeProduct, getAnalysis } from './onboarding.js'
 import { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 export { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 
-function listProjects() {
+import { hasDB, query } from './db.js'
+import * as store from './store.js'
+import { createContentDrop } from './drops.js'
+import { hasMultica } from './multica-db.js'
+import { runAIReview } from './ai-review.js'
+
+async function listProjects() {
+  if (hasDB()) {
+    const rows = await store.listWorkspaces()
+    return rows.map(ws => ({
+      slug: ws.slug,
+      name: ws.name,
+      lifecycle_state: ws.lifecycle_state,
+      ...ws.project_config,
+    }))
+  }
   if (!existsSync(PROJECTS_DIR)) return []
   return readdirSync(PROJECTS_DIR).filter(n => {
     if (n.startsWith('_') || n.startsWith('.')) return false
@@ -120,8 +136,8 @@ export function mountApi(app) {
   })
 
   // ===== Project + content read endpoints =====
-  r.get('/projects', (_req, res) => {
-    res.json({ registry: readRegistry(), discovered: listProjects() })
+  r.get('/projects', async (_req, res) => {
+    res.json({ registry: readRegistry(), discovered: await listProjects() })
   })
 
   r.get('/agents', (req, res) => {
@@ -192,23 +208,49 @@ export function mountApi(app) {
   // ===== ContentOS Agent (wizard backend) =====
   const STEP_KEYS = ['01-market-insight', '02-user-insight', '03-competitor-analysis', '04-content-strategy']
 
-  r.get('/contentos/:slug/state', (req, res) => {
-    const dir = path.join(PROJECTS_DIR, req.params.slug)
+  r.get('/contentos/:slug/state', async (req, res) => {
+    const { slug } = req.params
+    if (hasDB()) {
+      try {
+        const ws = await store.getWorkspace(slug)
+        if (ws) {
+          const cosState = await store.getContentOSState(ws.id)
+          return res.json({ slug, state: cosState || { current_step: 0, steps: {} } })
+        }
+      } catch (e) {
+        console.warn('[api] contentos state DB read failed, falling back:', e.message)
+      }
+    }
+    // filesystem fallback
+    const dir = path.join(PROJECTS_DIR, slug)
     if (!existsSync(dir)) return res.status(404).json({ error: 'project not found' })
     const stateFile = path.join(dir, '.contentos-state.json')
     const state = existsSync(stateFile) ? JSON.parse(readFileSync(stateFile, 'utf-8'))
       : { current_step: 0, steps: {} }
     const projectYaml = existsSync(path.join(dir, 'project.yaml'))
       ? readFileSync(path.join(dir, 'project.yaml'), 'utf-8') : ''
-    res.json({ slug: req.params.slug, state, project_yaml: projectYaml })
+    res.json({ slug, state, project_yaml: projectYaml })
   })
 
-  r.get('/contentos/:slug/strategy', (req, res) => {
+  r.get('/contentos/:slug/strategy', async (req, res) => {
+    const { slug } = req.params
     const step = req.query.step
     const idx = parseInt(step, 10)
     if (!step || idx < 1 || idx > 4) return res.status(400).json({ error: 'step 1..4 required' })
     const key = STEP_KEYS[idx - 1]
-    const f = path.join(PROJECTS_DIR, req.params.slug, 'strategy', `${key}.md`)
+    if (hasDB()) {
+      try {
+        const ws = await store.getWorkspace(slug)
+        if (ws) {
+          const doc = await store.getStrategyDoc(ws.id, key)
+          if (doc) return res.json({ step, content: doc.content })
+        }
+      } catch (e) {
+        console.warn('[api] strategy doc DB read failed, falling back:', e.message)
+      }
+    }
+    // filesystem fallback
+    const f = path.join(PROJECTS_DIR, slug, 'strategy', `${key}.md`)
     const exists = existsSync(f)
     res.json({ step, file: path.relative(REPO_ROOT, f), exists, content: exists ? readFileSync(f, 'utf-8') : '' })
   })
@@ -324,8 +366,226 @@ export function mountApi(app) {
     }
   })
 
-  r.get('/health', (_req, res) => {
-    res.json({ ok: true, anthropic: hasAnthropic(), projects: listProjects() })
+  r.get('/health', async (_req, res) => {
+    res.json({ ok: true, anthropic: hasAnthropic(), projects: await listProjects() })
+  })
+
+  // ===== Workspace endpoints (DB-backed) =====
+  r.get('/workspaces', async (_req, res) => {
+    if (!hasDB()) return res.json({ error: 'no database' })
+    try {
+      const workspaces = await store.listWorkspaces()
+      const result = []
+      for (const ws of workspaces) {
+        const cosState = await store.getContentOSState(ws.id)
+        result.push({ ...ws, contentos_state: cosState })
+      }
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.get('/workspaces/:slug', async (req, res) => {
+    if (!hasDB()) return res.json({ error: 'no database' })
+    try {
+      const ws = await store.getWorkspace(req.params.slug)
+      if (!ws) return res.status(404).json({ error: 'not found' })
+      const cosState = await store.getContentOSState(ws.id)
+      const agents = await store.listAgentsForWorkspace(ws.id)
+      res.json({ ...ws, contentos_state: cosState, agents })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  // ===== Workspace CRUD (DB-backed) =====
+  r.post('/workspaces', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const { slug, name, urls = {}, project_config = {} } = req.body
+      if (!slug || !name) return res.status(400).json({ error: 'slug and name required' })
+      const ws = await store.createWorkspace({ slug, name, urls, project_config, lifecycle_state: 'onboarding' })
+      await store.saveContentOSState(ws.id, { current_step: 0, steps: {} })
+      await store.auditLog(ws.id, req.headers['x-actor'] || 'api', 'workspace.created', { slug, name })
+      res.json(ws)
+    } catch (e) {
+      if (e.message && e.message.includes('unique')) return res.status(409).json({ error: 'slug already exists' })
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.patch('/workspaces/:slug', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const ws = await store.updateWorkspace(req.params.slug, req.body)
+      if (!ws) return res.status(404).json({ error: 'not found' })
+      res.json(ws)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  // ===== Onboarding analyze =====
+  r.post('/onboarding/analyze', requireAuth, async (req, res) => {
+    const { website, github_kb } = req.body
+    if (!website) return res.status(400).json({ error: 'website URL required' })
+    try {
+      const id = await analyzeProduct({ website, github_kb })
+      res.json({ id })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.get('/onboarding/analysis/:id', async (req, res) => {
+    const result = getAnalysis(req.params.id)
+    if (!result) return res.status(404).json({ error: 'analysis not found' })
+    res.json(result)
+  })
+
+  // ===== Engine file API =====
+  r.get('/engines/:ws/file/*', async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const ws = await store.getWorkspace(req.params.ws)
+      if (!ws) return res.status(404).json({ error: 'workspace not found' })
+      const filePath = req.params[0]
+      const content = await store.getEngineFile(ws.id, filePath)
+      if (content === null) return res.status(404).json({ error: 'file not found' })
+      res.json({ file_path: filePath, content, workspace: ws.slug })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.put('/engines/:ws/file/*', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const ws = await store.getWorkspace(req.params.ws)
+      if (!ws) return res.status(404).json({ error: 'workspace not found' })
+      const filePath = req.params[0]
+      const { content } = req.body
+      if (!content) return res.status(400).json({ error: 'content required' })
+      const result = await store.upsertEngineFile(ws.id, filePath, content)
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.get('/engines/:ws', async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const ws = await store.getWorkspace(req.params.ws)
+      if (!ws) return res.status(404).json({ error: 'workspace not found' })
+      const files = await store.listEngineFiles(ws.id)
+      res.json(files)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  // ===== People pool =====
+  r.get('/pool', async (_req, res) => {
+    if (!hasDB()) return res.json({ error: 'no database' })
+    try {
+      const people = await store.listPeople()
+      const result = []
+      for (const p of people) {
+        const assignments = await query(
+          `SELECT aa.agent_id, w.slug AS workspace_slug, a.channel
+           FROM agent_assignments aa
+           JOIN agents a ON a.id = aa.agent_id
+           JOIN workspaces w ON w.id = a.workspace_id
+           WHERE aa.person_id = $1`,
+          [p.id]
+        )
+        result.push({ ...p, assignments, current_workload: assignments.length })
+      }
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.post('/pool', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const { handle, name, role, channels, max_workload } = req.body
+      if (!handle || !name || !role) return res.status(400).json({ error: 'handle, name, role required' })
+      const person = await store.createPerson({ handle, name, role, channels, max_workload })
+      res.json(person)
+    } catch (e) {
+      if (e.message && e.message.includes('unique')) return res.status(409).json({ error: 'handle already exists' })
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.patch('/pool/:id', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const person = await store.updatePerson(req.params.id, req.body)
+      if (!person) return res.status(404).json({ error: 'not found' })
+      res.json(person)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.post('/assignments', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const { agent_id, person_id, role } = req.body
+      if (!agent_id || !person_id || !role) return res.status(400).json({ error: 'agent_id, person_id, role required' })
+      const result = await store.assign(agent_id, person_id, role)
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  // ===== ContentDrop =====
+  r.post('/drops', requireAuth, async (req, res) => {
+    if (!hasMultica()) return res.status(503).json({ error: 'MULTICA_DATABASE_URL not configured' })
+    try {
+      const { workspace_slug, angle, context, channels, priority } = req.body
+      if (!workspace_slug || !angle) {
+        return res.status(400).json({ error: 'workspace_slug and angle required' })
+      }
+      const result = await createContentDrop({ workspace_slug, angle, context, channels, priority })
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.get('/drops/status/:issueId', async (req, res) => {
+    if (!hasMultica()) return res.status(503).json({ error: 'MULTICA_DATABASE_URL not configured' })
+    try {
+      const { getIssue, getIssueComments } = await import('./multica-db.js')
+      const issue = await getIssue(req.params.issueId)
+      if (!issue) return res.status(404).json({ error: 'issue not found' })
+      const comments = await getIssueComments(req.params.issueId)
+      res.json({ issue, comments })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  // ===== AI Review =====
+  r.post('/ai-review', requireAuth, async (req, res) => {
+    if (!hasMultica()) return res.status(503).json({ error: 'MULTICA_DATABASE_URL not configured' })
+    try {
+      const { issue_id, channel, workspace_slug } = req.body
+      if (!issue_id || !channel || !workspace_slug) {
+        return res.status(400).json({ error: 'issue_id, channel, workspace_slug required' })
+      }
+      const result = await runAIReview({ issue_id, channel, workspace_slug })
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
   })
 
   app.use('/api', r)

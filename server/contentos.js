@@ -3,6 +3,8 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import yaml from 'js-yaml'
 import { complete } from './llm.js'
 import { REPO_ROOT, PROJECTS_DIR, TEMPLATES_DIR } from './paths.js'
+import { hasDB } from './db.js'
+import * as store from './store.js'
 
 const STEPS = [
   { n: 1, slug: '01-market-insight', label: 'Market Insight', deps: [] },
@@ -76,6 +78,23 @@ export async function runContentOSStep(slug, n) {
   }
   state.current_step = n
   saveState(projectDir, state)
+
+  // DB write (additive — filesystem already written above)
+  if (hasDB()) {
+    try {
+      const ws = await store.getWorkspace(slug)
+      if (ws) {
+        await store.saveStrategyDoc(ws.id, step.slug, text, usage || null)
+        const freshState = loadState(projectDir)
+        await store.saveContentOSState(ws.id, {
+          current_step: freshState.current_step,
+          steps: freshState.steps,
+        })
+      }
+    } catch (e) {
+      console.warn('[contentos] DB write failed (non-fatal):', e.message)
+    }
+  }
 
   projectYaml.contentos_agent = projectYaml.contentos_agent || {}
   projectYaml.contentos_agent.state = n < 4 ? `step_${n}_done` : 'step_4_done'

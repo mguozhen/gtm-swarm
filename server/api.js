@@ -441,6 +441,107 @@ export function mountApi(app) {
     res.json(result)
   })
 
+  // ===== Engine file API =====
+  r.get('/engines/:ws/file/*', async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const ws = await store.getWorkspace(req.params.ws)
+      if (!ws) return res.status(404).json({ error: 'workspace not found' })
+      const filePath = req.params[0]
+      const content = await store.getEngineFile(ws.id, filePath)
+      if (content === null) return res.status(404).json({ error: 'file not found' })
+      res.json({ file_path: filePath, content, workspace: ws.slug })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.put('/engines/:ws/file/*', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const ws = await store.getWorkspace(req.params.ws)
+      if (!ws) return res.status(404).json({ error: 'workspace not found' })
+      const filePath = req.params[0]
+      const { content } = req.body
+      if (!content) return res.status(400).json({ error: 'content required' })
+      const result = await store.upsertEngineFile(ws.id, filePath, content)
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.get('/engines/:ws', async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const ws = await store.getWorkspace(req.params.ws)
+      if (!ws) return res.status(404).json({ error: 'workspace not found' })
+      const files = await store.listEngineFiles(ws.id)
+      res.json(files)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  // ===== People pool =====
+  r.get('/pool', async (_req, res) => {
+    if (!hasDB()) return res.json({ error: 'no database' })
+    try {
+      const people = await store.listPeople()
+      const result = []
+      for (const p of people) {
+        const assignments = await query(
+          `SELECT aa.agent_id, w.slug AS workspace_slug, a.channel
+           FROM agent_assignments aa
+           JOIN agents a ON a.id = aa.agent_id
+           JOIN workspaces w ON w.id = a.workspace_id
+           WHERE aa.person_id = $1`,
+          [p.id]
+        )
+        result.push({ ...p, assignments, current_workload: assignments.length })
+      }
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.post('/pool', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const { handle, name, role, channels, max_workload } = req.body
+      if (!handle || !name || !role) return res.status(400).json({ error: 'handle, name, role required' })
+      const person = await store.createPerson({ handle, name, role, channels, max_workload })
+      res.json(person)
+    } catch (e) {
+      if (e.message && e.message.includes('unique')) return res.status(409).json({ error: 'handle already exists' })
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.patch('/pool/:id', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const person = await store.updatePerson(req.params.id, req.body)
+      if (!person) return res.status(404).json({ error: 'not found' })
+      res.json(person)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.post('/assignments', requireAuth, async (req, res) => {
+    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
+    try {
+      const { agent_id, person_id, role } = req.body
+      if (!agent_id || !person_id || !role) return res.status(400).json({ error: 'agent_id, person_id, role required' })
+      const result = await store.assign(agent_id, person_id, role)
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
   app.use('/api', r)
 }
 

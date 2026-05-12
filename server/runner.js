@@ -6,6 +6,7 @@ import { complete } from './llm.js'
 import { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 import { hasDB } from './db.js'
 import * as store from './store.js'
+import { hasMultica, postComment, updateIssueStatus, getOrCreateGTMUser } from './multica-db.js'
 
 const ENGINE_READING_ORDER = [
   'CLAUDE.md', 'index.md',
@@ -111,7 +112,7 @@ function bumpMetric(agentDir, field, delta = 1) {
   writeFileSync(f, JSON.stringify(data, null, 2))
 }
 
-export async function runAgent(agentId, { project = 'voc-ai', topic, source = null } = {}) {
+export async function runAgent(agentId, { project = 'voc-ai', topic, source = null, multica_issue_id = null } = {}) {
   const projectDir = path.join(PROJECTS_DIR, project)
   if (!existsSync(projectDir)) throw new Error(`project not found: ${project}`)
   const agentDir = path.join(projectDir, 'agents', agentId)
@@ -187,5 +188,20 @@ export async function runAgent(agentId, { project = 'voc-ai', topic, source = nu
     }
   }
   bumpMetric(agentDir, 'drafted', written.length)
+
+  // Mirror draft to Multica issue if configured (additive, non-fatal)
+  if (hasMultica() && multica_issue_id && posts.length) {
+    try {
+      const botId = await getOrCreateGTMUser()
+      const firstPost = posts[0]
+      const platform = firstPost.data?.platform || agentId
+      const commentBody = `## Draft: ${platform}\n\n${firstPost.content.trim()}`
+      await postComment(multica_issue_id, { body: commentBody, authorId: botId })
+      console.log(`[runner] draft posted to Multica issue ${multica_issue_id}`)
+    } catch (e) {
+      console.warn('[runner] Multica comment failed (non-fatal):', e.message)
+    }
+  }
+
   return { drafted: written.length, written, reviewer: cfg.reviewer }
 }

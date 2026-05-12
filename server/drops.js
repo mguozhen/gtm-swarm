@@ -4,6 +4,7 @@ import {
 } from './multica-db.js'
 import { hasDB } from './db.js'
 import * as store from './store.js'
+import { runAgent } from './runner.js'
 
 const CHANNEL_PRIORITY = {
   reddit: 'high', x: 'high', blog: 'medium', video: 'medium',
@@ -56,6 +57,15 @@ export async function createContentDrop({
     })
     await addIssueLabel(childId, contentLabel)
     childIssues.push({ channel, issue_id: childId, agent_id: agentId })
+  }
+
+  // Fire agent runs in background (non-blocking)
+  for (const { channel, issue_id } of childIssues) {
+    runAgent(channel, {
+      project: workspace_slug,
+      topic: angle,
+      multica_issue_id: issue_id,
+    }).catch(e => console.warn(`[drops] runAgent ${channel} failed:`, e.message))
   }
 
   return {

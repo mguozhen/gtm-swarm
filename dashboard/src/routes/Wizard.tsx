@@ -206,6 +206,7 @@ export default function Wizard() {
         <div className="wizard-meta">
           {allDone ? '✓ Ready to build' : `Step ${currentStep} of 4`}
           {totalElapsedMs > 0 && <span className="wt-elapsed"> · {fmtDuration(totalElapsedMs)} total</span>}
+          <Link to={`/dashboard/${slug}`} className="btn btn-ghost" style={{ fontSize: 12, marginLeft: 12 }}>跳过 →</Link>
         </div>
       </header>
 

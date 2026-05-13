@@ -147,37 +147,35 @@ export default function Onboard() {
 
         {phase === 'confirm' && editedAnalysis && (
           <div>
-            <h2 style={{ marginBottom: 8 }}>Confirm Product Info</h2>
-            <p style={{ color: '#9ca3af', marginBottom: 24 }}>Review and correct the AI's analysis.</p>
+            <h2 style={{ marginBottom: 8 }}>新建产品</h2>
             {error && <p style={{ color: '#ef4444', marginBottom: 16 }}>{error}</p>}
             {([
-              { key: 'name', label: 'Product Name' },
-              { key: 'slug', label: 'Slug (URL-safe)' },
-              { key: 'tagline', label: 'Tagline' },
-              { key: 'category', label: 'Category' },
-              { key: 'positioning', label: 'Positioning' },
-            ] as const).map(({ key, label }) => (
+              { key: 'name', label: '产品名称', placeholder: 'Solvea' },
+              { key: 'slug', label: 'Slug（URL）', placeholder: 'solvea' },
+            ] as const).map(({ key, label, placeholder }) => (
               <div key={key} style={{ marginBottom: 16 }}>
                 <label style={{ display: 'block', marginBottom: 4, fontWeight: 600, fontSize: 13 }}>{label}</label>
                 <input
                   value={(editedAnalysis as any)[key] || ''}
-                  onChange={e => setEditedAnalysis({ ...editedAnalysis, [key]: e.target.value })}
+                  onChange={e => {
+                    const val = key === 'slug'
+                      ? e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-')
+                      : e.target.value
+                    setEditedAnalysis({ ...editedAnalysis, [key]: val })
+                  }}
+                  placeholder={placeholder}
                   style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #374151',
                     background: '#1f2937', color: '#f9fafb', fontSize: 14, boxSizing: 'border-box' as const }}
                 />
               </div>
             ))}
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ display: 'block', marginBottom: 4, fontWeight: 600, fontSize: 13 }}>Competitors (comma-separated)</label>
-              <input
-                value={editedAnalysis.competitors?.join(', ') || ''}
-                onChange={e => setEditedAnalysis({ ...editedAnalysis, competitors: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
-                style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #374151',
-                  background: '#1f2937', color: '#f9fafb', fontSize: 14, boxSizing: 'border-box' as const }}
-              />
-            </div>
-            <button className="btn btn-primary" onClick={createProduct} style={{ width: '100%' }}>
-              Create Product & Start ContentOS Wizard →
+            <button
+              className="btn btn-primary"
+              onClick={createProduct}
+              disabled={!editedAnalysis.name?.trim() || !editedAnalysis.slug?.trim()}
+              style={{ width: '100%' }}
+            >
+              创建产品 →
             </button>
           </div>
         )}

@@ -129,15 +129,36 @@ export function mountApi(app) {
 
   // ===== Project + content read endpoints =====
   r.get('/projects', async (_req, res) => {
+    // Multica DB → list workspaces as projects
+    if (hasMultica()) {
+      const { listAllWorkspaces } = await import('./multica-db.js')
+      const workspaces = await listAllWorkspaces()
+      const projects = Object.fromEntries(workspaces.map(w => [
+        w.slug, { slug: w.slug, name: w.name, url: '', category: '', tagline: '', status: 'active' }
+      ]))
+      const defaultSlug = workspaces[0]?.slug || ''
+      return res.json({ registry: { default: defaultSlug, projects }, discovered: workspaces.map(w => w.slug) })
+    }
     res.json({ registry: readRegistry(), discovered: await listProjects() })
   })
 
-  r.get('/agents', (req, res) => {
+  r.get('/agents', async (req, res) => {
     const project = req.query.project
-    const agentsDir = path.join(PROJECTS_DIR, project || '', 'agents')
-    if (!project || !existsSync(agentsDir)) {
-      return res.status(404).json({ error: 'project agents dir not found' })
+    if (!project) return res.status(400).json({ error: 'project required' })
+    // Multica DB → agents
+    if (hasMultica()) {
+      const { getWorkspaceAgents } = await import('./multica-db.js')
+      const agents = await getWorkspaceAgents(project)
+      const out = agents.map(a => ({
+        id: a.channel,
+        yaml: { id: a.channel, name: a.channel, status: a.status, platform: a.channel, activate: a.status !== 'offline', ...a.config },
+        metrics: a.metrics,
+      }))
+      return res.json({ project, agents: out })
     }
+    // filesystem fallback
+    const agentsDir = path.join(PROJECTS_DIR, project, 'agents')
+    if (!existsSync(agentsDir)) return res.status(404).json({ error: 'project agents dir not found' })
     const out = readdirSync(agentsDir)
       .filter(n => existsSync(path.join(agentsDir, n, 'agent.yaml')))
       .sort()
@@ -145,9 +166,7 @@ export function mountApi(app) {
         const y = readYaml(path.join(agentsDir, id, 'agent.yaml'))
         const metricsPath = path.join(agentsDir, id, 'metrics.json')
         let metrics = {}
-        if (existsSync(metricsPath)) {
-          try { metrics = JSON.parse(readFileSync(metricsPath, 'utf-8')) } catch {}
-        }
+        if (existsSync(metricsPath)) { try { metrics = JSON.parse(readFileSync(metricsPath, 'utf-8')) } catch {} }
         return { id, yaml: y, metrics }
       })
     res.json({ project, agents: out })
@@ -174,17 +193,25 @@ export function mountApi(app) {
     res.json({ project, project_yaml: projectYaml, state, briefs })
   })
 
-  r.get('/content', (req, res) => {
+  r.get('/content', async (req, res) => {
     const project = req.query.project
     const state = req.query.state
+    // Multica DB → issues as content items
+    if (hasMultica()) {
+      const { getIssuesAsContent } = await import('./multica-db.js')
+      const items = await getIssuesAsContent(project, state)
+      const counts = {
+        'new-idea': items.filter(i => i.state === 'new-idea').length,
+        'draft': items.filter(i => i.state === 'draft').length,
+        'bank': items.filter(i => i.state === 'bank').length,
+        'published': items.filter(i => i.state === 'published').length,
+      }
+      return res.json({ items, counts, reviewers: {}, project: project || null })
+    }
+    // filesystem fallback
     const agent = req.query.agent
     const items = collect({ project, state, agent })
-    res.json({
-      items,
-      counts: countsFor(project),
-      reviewers: reviewerQueueCount(),
-      project: project || null,
-    })
+    res.json({ items, counts: countsFor(project), reviewers: reviewerQueueCount(), project: project || null })
   })
 
   r.get('/file', (req, res) => {

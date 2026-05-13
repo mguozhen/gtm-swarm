@@ -166,6 +166,57 @@ export async function getWorkspaceAgents(workspaceSlug) {
   })
 }
 
+export async function listAllWorkspaces() {
+  return q('SELECT id, slug, name FROM workspace ORDER BY name')
+}
+
+export async function getIssuesAsContent(workspaceSlug, statusFilter) {
+  const ws = await q1('SELECT id FROM workspace WHERE slug = $1', [workspaceSlug])
+  if (!ws) return []
+
+  // Map Multica statuses to gtm-swarm content states
+  const STATUS_MAP = {
+    backlog: 'new-idea',
+    todo: 'new-idea',
+    in_progress: 'draft',
+    in_review: 'draft',
+    done: 'bank',
+    cancelled: 'draft',
+  }
+
+  let sql = `
+    SELECT i.id, i.title, i.description, i.status, i.created_at, i.updated_at,
+           a.name AS agent_name
+    FROM issue i
+    LEFT JOIN agent a ON a.id = i.assignee_id
+    WHERE i.workspace_id = $1`
+  const params = [ws.id]
+
+  if (statusFilter) {
+    // reverse map: content state → multica statuses
+    const reverse = { 'new-idea': ['backlog','todo'], 'draft': ['in_progress','in_review'], 'bank': ['done'], 'published': ['done'] }
+    const statuses = reverse[statusFilter] || []
+    if (statuses.length) {
+      sql += ` AND i.status = ANY($2)`
+      params.push(statuses)
+    }
+  }
+  sql += ' ORDER BY i.updated_at DESC LIMIT 100'
+
+  const rows = await q(sql, params)
+  return rows.map(r => ({
+    id: r.id,
+    project: workspaceSlug,
+    agent: r.agent_name || 'unknown',
+    state: STATUS_MAP[r.status] || 'draft',
+    file: `multica://${r.id}`,
+    size: (r.description || '').length,
+    mtime: new Date(r.updated_at || r.created_at).getTime(),
+    frontmatter: { topic: r.title, status: STATUS_MAP[r.status] || 'draft' },
+    preview: (r.description || '').replace(/^#+.+\n/gm, '').trim().slice(0, 400),
+  }))
+}
+
 export async function pollIssueDone(issueId, onDone, intervalMs = 5000, maxWaitMs = 1800000) {
   const start = Date.now()
   const check = async () => {

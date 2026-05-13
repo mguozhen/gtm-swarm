@@ -45,6 +45,7 @@ export default function Wizard() {
   const runStartedAtRef = useRef<number | null>(null)
   const [token] = useToken()
   const [cia, setCia] = useState<CIAStatus | null>(null)
+  const [ciaSkipped, setCiaSkipped] = useState(false)
   const ciaPollerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const pollCIA = useCallback(() => {
@@ -239,8 +240,11 @@ export default function Wizard() {
           )}
 
           {/* CIA Analysis panel */}
-          <div style={{ marginTop: 16, padding: '12px', background: '#0f172a', borderRadius: 8, border: '1px solid #1e293b' }}>
-            <div style={{ fontSize: 11, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8 }}>CIA 市场分析</div>
+          {!ciaSkipped && <div style={{ marginTop: 16, padding: '12px', background: '#0f172a', borderRadius: 8, border: '1px solid #1e293b' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+              <div style={{ fontSize: 11, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '.08em' }}>CIA 市场分析</div>
+              <button onClick={() => setCiaSkipped(true)} style={{ fontSize: 11, color: '#4b5563', background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px' }}>跳过</button>
+            </div>
             {(!cia || cia.phase === 'idle') && (
               <button className="btn btn-ghost" style={{ width: '100%', fontSize: 12 }} onClick={triggerCIA}>
                 🔍 触发 CIA 分析
@@ -270,7 +274,7 @@ export default function Wizard() {
                 </button>
               </div>
             )}
-          </div>
+          </div>}
         </aside>
 
         <main className="wizard-main">

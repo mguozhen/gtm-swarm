@@ -436,8 +436,8 @@ export function mountApi(app) {
       const result = { slug, name, lifecycle_state: 'onboarding', ...projData }
       res.json(result)
 
-      // Auto-trigger CIA analysis in background if token is configured
-      if (process.env.CIA_HUB_TOKEN) {
+      // CIA auto-analysis: set CIA_AUTO=1 to enable on product create
+      if (process.env.CIA_HUB_TOKEN && process.env.CIA_AUTO === '1') {
         runCIAAnalysis(name, slug).catch(e =>
           console.warn('[cia] auto-analyze failed:', e.message)
         )

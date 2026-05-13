@@ -19,6 +19,7 @@ import * as store from './store.js'
 import { createContentDrop } from './drops.js'
 import { hasMultica } from './multica-db.js'
 import { runAIReview } from './ai-review.js'
+import { runCIAAnalysis, getCIAStatus } from './cia.js'
 
 async function listProjects() {
   if (hasDB()) {
@@ -432,7 +433,15 @@ export function mountApi(app) {
       reg.projects[slug] = { slug, name, url: projData.url, category: projData.category, tagline: projData.tagline, status: 'active' }
       writeFileSync(regPath, JSON.stringify(reg, null, 2))
 
-      res.json({ slug, name, lifecycle_state: 'onboarding', ...projData })
+      const result = { slug, name, lifecycle_state: 'onboarding', ...projData }
+      res.json(result)
+
+      // Auto-trigger CIA analysis in background if token is configured
+      if (process.env.CIA_HUB_TOKEN) {
+        runCIAAnalysis(name, slug).catch(e =>
+          console.warn('[cia] auto-analyze failed:', e.message)
+        )
+      }
     } catch (e) {
       res.status(500).json({ error: e.message })
     }
@@ -630,6 +639,25 @@ export function mountApi(app) {
     } catch (e) {
       res.status(500).json({ error: e.message })
     }
+  })
+
+  // ===== CIA Analysis =====
+  r.post('/cia/analyze', requireAuth, async (req, res) => {
+    const { name, slug } = req.body
+    if (!name || !slug) return res.status(400).json({ error: 'name and slug required' })
+    if (!process.env.CIA_HUB_TOKEN) return res.status(503).json({ error: 'CIA_HUB_TOKEN not configured' })
+    try {
+      const result = await runCIAAnalysis(name, slug)
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.get('/cia/status/:slug', (req, res) => {
+    const status = getCIAStatus(req.params.slug)
+    if (!status) return res.json({ phase: 'idle', done: false, log: [] })
+    res.json(status)
   })
 
   app.use('/api', r)

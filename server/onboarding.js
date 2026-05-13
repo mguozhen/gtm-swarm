@@ -11,26 +11,28 @@ export async function analyzeProduct({ website, github_kb }) {
   const id = newAnalysisId()
   analyses.set(id, { status: 'running', started_at: new Date().toISOString() })
 
-  const prompt = `You are a product analyst. Analyze the following product URL(s) and extract structured GTM metadata.
+  const prompt = `You are a GTM product analyst. Based on the following URL(s), infer the product's GTM metadata using your knowledge of the company/product if you know it, or make reasonable inferences from the domain name and any context.
 
 Website URL: ${website}
-${github_kb ? `GitHub KB URL: ${github_kb}` : ''}
+${github_kb ? `GitHub Knowledge Base: ${github_kb}` : ''}
 
-Return ONLY a JSON object (no markdown, no preamble) with these fields:
+Return ONLY a valid JSON object (no markdown fences, no preamble):
 {
   "name": "Product name",
-  "slug": "kebab-case-slug",
-  "tagline": "One-sentence tagline",
-  "category": "B2B SaaS | B2C | Dev tools | etc",
+  "slug": "kebab-case-slug-max-30-chars",
+  "tagline": "One sharp sentence describing what the product does and for whom",
+  "category": "B2B SaaS | B2C App | Dev Tools | AI Tool | E-commerce | etc",
   "url": "${website}",
   "audience": {
-    "primary": "Primary audience description",
-    "secondary": "Secondary audience"
+    "primary": "Specific primary user persona (role + context)",
+    "secondary": "Secondary audience or use case"
   },
-  "positioning": "1-2 sentence positioning statement",
-  "competitors": ["competitor1", "competitor2", "competitor3"],
-  "suggested_channels": ["reddit", "x", "blog", "kol-koc"]
-}`
+  "positioning": "1-2 sentences on what makes this product different",
+  "competitors": ["top competitor 1", "competitor 2", "competitor 3"],
+  "suggested_channels": ["reddit", "x", "blog", "kol-koc", "video", "landing"]
+}
+
+Be specific and concrete. Infer from domain/URL patterns if needed.`
 
   complete(prompt, { maxTokens: 2000 }).then(({ text }) => {
     try {

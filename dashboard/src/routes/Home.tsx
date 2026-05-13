@@ -8,7 +8,6 @@ type Project = {
   lifecycle_state?: string
 }
 
-type Registry = { default: string; projects: Record<string, Project> }
 
 const STATE_COLOR: Record<string, string> = {
   onboarding: '#f59e0b',
@@ -46,23 +45,34 @@ function LifecycleBadge({ state }: { state: string }) {
 }
 
 export default function Home() {
-  const [registry, setRegistry] = useState<Registry | null>(null)
+  const [projects, setProjects] = useState<Project[]>([])
   const [states, setStates] = useState<Record<string, number>>({})
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/projects').then(r => r.json()).then(d => setRegistry(d.registry))
+    fetch('/api/projects').then(r => r.json()).then(d => {
+      // Merge registry + discovered (filesystem projects not yet in registry)
+      const regProjects: Record<string, Project> = d.registry?.projects || {}
+      const discovered: string[] = d.discovered || []
+      const merged: Record<string, Project> = { ...regProjects }
+      for (const slug of discovered) {
+        if (!merged[slug]) merged[slug] = { slug, name: slug, url: null, category: '', tagline: '', status: 'active' }
+      }
+      setProjects(Object.values(merged))
+      setLoading(false)
+    }).catch(() => setLoading(false))
   }, [])
 
   useEffect(() => {
-    if (!registry) return
-    Promise.all(Object.keys(registry.projects).map(slug =>
-      fetch(`/api/contentos/${slug}/state`).then(r => r.json())
-        .then(d => [slug, d.state.current_step || 0] as const)
-        .catch(() => [slug, 0] as const)
+    if (!projects.length) return
+    Promise.all(projects.map(p =>
+      fetch(`/api/contentos/${p.slug}/state`).then(r => r.json())
+        .then(d => [p.slug, d.state?.current_step || 0] as const)
+        .catch(() => [p.slug, 0] as const)
     )).then(pairs => setStates(Object.fromEntries(pairs)))
-  }, [registry])
+  }, [projects])
 
-  if (!registry) return <div className="home-loading">loading projects...</div>
+  if (loading) return <div className="home-loading">loading projects...</div>
 
   return (
     <div className="home">
@@ -76,7 +86,13 @@ export default function Home() {
       </header>
 
       <section className="project-grid">
-        {Object.values(registry.projects).map(p => {
+        {projects.length === 0 && (
+          <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '64px 0', color: '#6b7280' }}>
+            <p style={{ marginBottom: 16 }}>No products yet.</p>
+            <Link to="/onboard" className="btn btn-primary">+ Create your first product</Link>
+          </div>
+        )}
+        {projects.map(p => {
           const step = states[p.slug] || 0
           const isStub = p.status === 'stub'
           const isBuilt = step >= 4
@@ -117,7 +133,7 @@ export default function Home() {
       </section>
 
       <footer className="home-footer">
-        <span>GTM Swarm v0.1 · {Object.keys(registry.projects).length} projects · ContentOS Agent powered by Claude</span>
+        <span>GTM Swarm v0.1 · {projects.length} projects · ContentOS Agent powered by Claude</span>
       </footer>
     </div>
   )

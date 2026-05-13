@@ -399,18 +399,50 @@ export function mountApi(app) {
     }
   })
 
-  // ===== Workspace CRUD (DB-backed) =====
+  // ===== Workspace CRUD (DB-backed with filesystem fallback) =====
   r.post('/workspaces', requireAuth, async (req, res) => {
-    if (!hasDB()) return res.status(503).json({ error: 'DATABASE_URL required' })
     try {
       const { slug, name, urls = {}, project_config = {} } = req.body
       if (!slug || !name) return res.status(400).json({ error: 'slug and name required' })
-      const ws = await store.createWorkspace({ slug, name, urls, project_config, lifecycle_state: 'onboarding' })
-      await store.saveContentOSState(ws.id, { current_step: 0, steps: {} })
-      await store.auditLog(ws.id, req.headers['x-actor'] || 'api', 'workspace.created', { slug, name })
-      res.json(ws)
+
+      if (hasDB()) {
+        const ws = await store.createWorkspace({ slug, name, urls, project_config, lifecycle_state: 'onboarding' })
+        await store.saveContentOSState(ws.id, { current_step: 0, steps: {} })
+        await store.auditLog(ws.id, req.headers['x-actor'] || 'api', 'workspace.created', { slug, name })
+        return res.json(ws)
+      }
+
+      // Filesystem fallback
+      const projectDir = path.join(PROJECTS_DIR, slug)
+      if (existsSync(projectDir)) return res.status(409).json({ error: 'slug already exists' })
+      mkdirSync(path.join(projectDir, 'strategy'), { recursive: true })
+      mkdirSync(path.join(projectDir, 'agents'), { recursive: true })
+
+      const projData = {
+        slug, name,
+        url: urls.website || project_config.url || '',
+        github_kb: urls.github_kb || '',
+        category: project_config.category || '',
+        tagline: project_config.tagline || '',
+        audience: project_config.audience || { primary: '', secondary: '' },
+        positioning: project_config.positioning || '',
+        competitors: project_config.competitors || [],
+        suggested_channels: project_config.suggested_channels || [],
+        status: 'active',
+      }
+      writeFileSync(path.join(projectDir, 'project.yaml'), yaml.dump(projData, { lineWidth: 0, sortKeys: false }))
+
+      // Update _registry.json
+      const regPath = path.join(PROJECTS_DIR, '_registry.json')
+      let reg = {}
+      try { reg = JSON.parse(readFileSync(regPath, 'utf-8')) } catch {}
+      if (!reg.projects) reg.projects = {}
+      if (!reg.default) reg.default = slug
+      reg.projects[slug] = { slug, name, url: projData.url, category: projData.category, tagline: projData.tagline, status: 'active' }
+      writeFileSync(regPath, JSON.stringify(reg, null, 2))
+
+      res.json({ slug, name, lifecycle_state: 'onboarding', ...projData })
     } catch (e) {
-      if (e.message && e.message.includes('unique')) return res.status(409).json({ error: 'slug already exists' })
       res.status(500).json({ error: e.message })
     }
   })

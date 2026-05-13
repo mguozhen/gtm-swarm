@@ -52,3 +52,11 @@ contentos_agent:
 paperclip:
   company_id: null
   synced_at: null
+aihot:
+  enabled: true
+  since_hours: 24
+  categories:
+    - ai-products
+    - industry
+    - tip
+  max_items: 15

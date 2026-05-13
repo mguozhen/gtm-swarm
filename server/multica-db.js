@@ -61,38 +61,30 @@ export async function upsertMember(workspaceId, userId, role = 'member') {
 
 export async function upsertChannelAgent(workspaceId, channel) {
   const name = `GTM-${channel.charAt(0).toUpperCase() + channel.slice(1)}`
-  // Try upsert; fall back to SELECT if no unique constraint on (workspace_id, name)
-  try {
-    const row = await q1(
-      `INSERT INTO agent (workspace_id, name, runtime_mode, runtime_config, status)
-       VALUES ($1, $2, 'cloud', $3, 'idle')
-       ON CONFLICT (workspace_id, name) DO UPDATE SET runtime_config = EXCLUDED.runtime_config
-       RETURNING id`,
-      [workspaceId, name, JSON.stringify({ gtm_channel: channel })]
-    )
-    if (row) return row.id
-  } catch {}
   const existing = await q1(
     'SELECT id FROM agent WHERE workspace_id = $1 AND name = $2',
     [workspaceId, name]
   )
-  return existing?.id
+  if (existing) return existing.id
+  const row = await q1(
+    `INSERT INTO agent (workspace_id, name, runtime_mode, runtime_config, status)
+     VALUES ($1, $2, 'cloud', $3, 'idle') RETURNING id`,
+    [workspaceId, name, JSON.stringify({ gtm_channel: channel })]
+  )
+  return row?.id
 }
 
 export async function getOrCreateLabel(workspaceId, name, color) {
-  try {
-    const row = await q1(
-      `INSERT INTO issue_label (workspace_id, name, color) VALUES ($1, $2, $3)
-       ON CONFLICT (workspace_id, name) DO UPDATE SET color = EXCLUDED.color RETURNING id`,
-      [workspaceId, name, color]
-    )
-    if (row) return row.id
-  } catch {}
   const existing = await q1(
     'SELECT id FROM issue_label WHERE workspace_id = $1 AND name = $2',
     [workspaceId, name]
   )
-  return existing?.id
+  if (existing) return existing.id
+  const row = await q1(
+    'INSERT INTO issue_label (workspace_id, name, color) VALUES ($1, $2, $3) RETURNING id',
+    [workspaceId, name, color]
+  )
+  return row?.id
 }
 
 export async function createIssue(workspaceId, {

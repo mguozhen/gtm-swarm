@@ -588,6 +588,27 @@ export function mountApi(app) {
     }
   })
 
+  // ===== Test: Hello World control loop =====
+  r.post('/test/hello-world', requireAuth, async (req, res) => {
+    try {
+      const { initHelloWorld } = await import('./test-hello-world.js')
+      const result = await initHelloWorld()
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
+  r.post('/test/retry/:issueId', requireAuth, async (req, res) => {
+    try {
+      const { retryWithFeedback } = await import('./test-hello-world.js')
+      const result = await retryWithFeedback(req.params.issueId)
+      res.json(result)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
+
   app.use('/api', r)
 }
 

@@ -1,32 +1,60 @@
+// Supports DeepSeek (default) or Anthropic via env vars
+// DEEPSEEK_API_KEY  → use DeepSeek  (https://api.deepseek.com)
+// ANTHROPIC_API_KEY → use Anthropic (fallback)
+
 import Anthropic from '@anthropic-ai/sdk'
 
-const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6'
-const MAX_TOKENS = parseInt(process.env.ANTHROPIC_MAX_TOKENS || '16000', 10)
-const BASE_URL = process.env.ANTHROPIC_BASE_URL || undefined
+const DEEPSEEK_BASE = 'https://api.deepseek.com/v1'
+const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat'
 
-export const hasAnthropic = () => Boolean(process.env.ANTHROPIC_API_KEY)
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6'
+const ANTHROPIC_BASE_URL = process.env.ANTHROPIC_BASE_URL || undefined
 
-let client = null
-function getClient() {
-  if (!client) {
-    if (!hasAnthropic()) throw new Error('ANTHROPIC_API_KEY not set')
-    const opts = { apiKey: process.env.ANTHROPIC_API_KEY }
-    if (BASE_URL) opts.baseURL = BASE_URL
-    client = new Anthropic(opts)
+export function hasAnthropic() {
+  return Boolean(process.env.DEEPSEEK_API_KEY || process.env.ANTHROPIC_API_KEY)
+}
+
+async function completeDeepSeek(prompt, opts = {}) {
+  const res = await fetch(`${DEEPSEEK_BASE}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: opts.model || DEEPSEEK_MODEL,
+      max_tokens: opts.maxTokens || 8000,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`DeepSeek API error ${res.status}: ${err.slice(0, 200)}`)
   }
-  return client
+  const data = await res.json()
+  const text = data.choices?.[0]?.message?.content || ''
+  const usage = data.usage
+  return { text, usage, stopReason: data.choices?.[0]?.finish_reason }
+}
+
+let anthropicClient = null
+async function completeAnthropic(prompt, opts = {}) {
+  if (!anthropicClient) {
+    const clientOpts = { apiKey: process.env.ANTHROPIC_API_KEY }
+    if (ANTHROPIC_BASE_URL) clientOpts.baseURL = ANTHROPIC_BASE_URL
+    anthropicClient = new Anthropic(clientOpts)
+  }
+  const msg = await anthropicClient.messages.create({
+    model: opts.model || ANTHROPIC_MODEL,
+    max_tokens: opts.maxTokens || 16000,
+    messages: [{ role: 'user', content: prompt }],
+  })
+  const text = msg.content.filter(b => b.type === 'text').map(b => b.text).join('')
+  return { text, usage: msg.usage, stopReason: msg.stop_reason }
 }
 
 export async function complete(prompt, opts = {}) {
-  const c = getClient()
-  const msg = await c.messages.create({
-    model: opts.model || MODEL,
-    max_tokens: opts.maxTokens || MAX_TOKENS,
-    messages: [{ role: 'user', content: prompt }],
-  })
-  const text = msg.content
-    .filter(b => b.type === 'text')
-    .map(b => b.text)
-    .join('')
-  return { text, usage: msg.usage, stopReason: msg.stop_reason }
+  if (process.env.DEEPSEEK_API_KEY) return completeDeepSeek(prompt, opts)
+  if (process.env.ANTHROPIC_API_KEY) return completeAnthropic(prompt, opts)
+  throw new Error('No LLM configured — set DEEPSEEK_API_KEY or ANTHROPIC_API_KEY')
 }

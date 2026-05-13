@@ -4,6 +4,8 @@ import path from 'node:path'
 import { PROJECTS_DIR } from './paths.js'
 import { sourceIdeas } from './source-ideas.js'
 import { hasAnthropic } from './llm.js'
+import { buildDailyDigest, formatDigestMarkdown } from './digest.js'
+import { hasDingTalk, pushMarkdown } from './dingtalk.js'
 
 const SCHEDULE = process.env.GTM_IDEAS_CRON || '0 8 * * *'  // daily 08:00 UTC
 const IDEAS_PER_AGENT = parseInt(process.env.GTM_IDEAS_PER_AGENT || '5', 10)
@@ -41,6 +43,17 @@ async function runDailyIdeas() {
       console.log(`[cron] ${slug}: +${out.total} ideas (${out.log.join(' / ')})`)
     } catch (e) {
       console.error(`[cron] ${slug} failed:`, e?.message || e)
+    }
+  }
+  // After ideas are generated, push a digest to DingTalk (silent if not configured)
+  if (hasDingTalk()) {
+    try {
+      const publicUrl = process.env.GTM_PUBLIC_URL || 'https://gtm-swarm-production-b9ff.up.railway.app'
+      const digest = buildDailyDigest({ sinceHours: 24, publicUrl })
+      const md = formatDigestMarkdown(digest)
+      await pushMarkdown(`GTM Swarm Daily — ${digest.ts.slice(0, 10)}`, md)
+    } catch (e) {
+      console.error('[cron] dingtalk digest failed:', e?.message || e)
     }
   }
   console.log(`[cron ${new Date().toISOString()}] daily Ideas Pool refresh end`)

@@ -61,17 +61,23 @@ export async function upsertMember(workspaceId, userId, role = 'member') {
 
 export async function upsertChannelAgent(workspaceId, channel) {
   const name = `GTM-${channel.charAt(0).toUpperCase() + channel.slice(1)}`
-  const existing = await q1(
-    'SELECT id FROM agent WHERE workspace_id = $1 AND name = $2',
-    [workspaceId, name]
-  )
-  if (existing) return existing.id
-  const row = await q1(
-    `INSERT INTO agent (workspace_id, name, runtime_mode, runtime_config, status)
-     VALUES ($1, $2, 'cloud', $3, 'idle') RETURNING id`,
-    [workspaceId, name, JSON.stringify({ gtm_channel: channel })]
-  )
-  return row?.id
+  try {
+    const existing = await q1(
+      'SELECT id FROM agent WHERE workspace_id = $1 AND name = $2',
+      [workspaceId, name]
+    )
+    if (existing) return existing.id
+    const row = await q1(
+      `INSERT INTO agent (workspace_id, name, runtime_mode, runtime_config, status)
+       VALUES ($1, $2, 'cloud', $3, 'idle') RETURNING id`,
+      [workspaceId, name, JSON.stringify({ gtm_channel: channel })]
+    )
+    return row?.id
+  } catch (e) {
+    // Agent table schema may require extra fields (e.g. runtime_id) — skip silently
+    console.warn(`[multica-db] upsertChannelAgent ${channel} skipped:`, e.message.split('\n')[0])
+    return null
+  }
 }
 
 export async function getOrCreateLabel(workspaceId, name, color) {

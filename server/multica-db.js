@@ -142,6 +142,30 @@ export async function getIssueComments(issueId) {
   )
 }
 
+export async function getWorkspaceAgents(workspaceSlug) {
+  const ws = await q1('SELECT id FROM workspace WHERE slug = $1', [workspaceSlug])
+  if (!ws) return []
+  const agents = await q(
+    `SELECT a.id, a.name, a.status, a.runtime_config, a.runtime_mode
+     FROM agent a WHERE a.workspace_id = $1 ORDER BY a.name`,
+    [ws.id]
+  )
+  return agents.map(a => {
+    let cfg = {}
+    try { cfg = typeof a.runtime_config === 'string' ? JSON.parse(a.runtime_config) : (a.runtime_config || {}) } catch {}
+    return {
+      id: a.id,
+      channel: cfg.gtm_channel || a.name.replace(/^GTM-/i, '').toLowerCase(),
+      status: a.status || 'active',
+      config: cfg,
+      metrics: {},
+      review_checklist: [],
+      dashboard_widgets: [],
+      kpi_defaults: {},
+    }
+  })
+}
+
 export async function pollIssueDone(issueId, onDone, intervalMs = 5000, maxWaitMs = 1800000) {
   const start = Date.now()
   const check = async () => {

@@ -379,13 +379,23 @@ export function mountApi(app) {
   })
 
   r.get('/workspaces/:slug', async (req, res) => {
-    if (!hasDB()) return res.json({ error: 'no database' })
+    const slug = req.params.slug
     try {
-      const ws = await store.getWorkspace(req.params.slug)
-      if (!ws) return res.status(404).json({ error: 'not found' })
-      const cosState = await store.getContentOSState(ws.id)
-      const agents = await store.listAgentsForWorkspace(ws.id)
-      res.json({ ...ws, contentos_state: cosState, agents })
+      // DB path
+      if (hasDB()) {
+        const ws = await store.getWorkspace(slug)
+        if (!ws) return res.status(404).json({ error: 'not found' })
+        const cosState = await store.getContentOSState(ws.id)
+        const agents = await store.listAgentsForWorkspace(ws.id)
+        return res.json({ ...ws, contentos_state: cosState, agents })
+      }
+      // Multica-only path: read agents from Multica DB
+      if (hasMultica()) {
+        const { getWorkspaceAgents } = await import('./multica-db.js')
+        const agents = await getWorkspaceAgents(slug)
+        return res.json({ slug, name: slug, lifecycle_state: 'active', agents })
+      }
+      res.status(503).json({ error: 'no database configured' })
     } catch (e) {
       res.status(500).json({ error: e.message })
     }

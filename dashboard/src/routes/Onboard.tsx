@@ -27,8 +27,17 @@ export default function Onboard() {
   const [token] = useToken()
   const navigate = useNavigate()
 
+  const skipToManual = () => {
+    setEditedAnalysis({
+      name: '', slug: '', tagline: '', category: '',
+      url: website, audience: { primary: '', secondary: '' },
+      positioning: '', competitors: [], suggested_channels: ['reddit', 'x', 'blog'],
+    })
+    setPhase('confirm')
+  }
+
   const runAnalysis = async () => {
-    if (!website.trim()) { setError('Website URL is required'); return }
+    if (!website.trim()) { skipToManual(); return }
     setError('')
     setPhase('analyzing')
     const r = await fetch('/api/onboarding/analyze', {
@@ -99,12 +108,12 @@ export default function Onboard() {
       <div style={{ maxWidth: 640, margin: '0 auto', padding: '32px 16px' }}>
         {phase === 'input' && (
           <div>
-            <h2 style={{ marginBottom: 8 }}>Product URLs</h2>
+            <h2 style={{ marginBottom: 8 }}>New Product</h2>
             <p style={{ color: '#9ca3af', marginBottom: 24 }}>
-              Paste your product website URL. AI will analyze it and pre-fill the product config.
+              填 URL 让 AI 自动分析，或者直接跳过手动填写。
             </p>
             {error && <p style={{ color: '#ef4444', marginBottom: 16 }}>{error}</p>}
-            <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Website URL *</label>
+            <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Website URL <span style={{ color: '#6b7280', fontWeight: 400 }}>(optional)</span></label>
             <input
               type="url"
               value={website}
@@ -113,7 +122,7 @@ export default function Onboard() {
               style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #374151',
                 background: '#1f2937', color: '#f9fafb', fontSize: 14, marginBottom: 16, boxSizing: 'border-box' as const }}
             />
-            <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>GitHub KB URL (optional)</label>
+            <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>GitHub KB URL <span style={{ color: '#6b7280', fontWeight: 400 }}>(optional)</span></label>
             <input
               type="url"
               value={githubKb}
@@ -122,8 +131,8 @@ export default function Onboard() {
               style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #374151',
                 background: '#1f2937', color: '#f9fafb', fontSize: 14, marginBottom: 24, boxSizing: 'border-box' as const }}
             />
-            <button className="btn btn-primary" onClick={runAnalysis} style={{ width: '100%' }}>
-              Analyze Product →
+            <button className="btn btn-primary" onClick={runAnalysis} style={{ width: '100%', marginBottom: 10 }}>
+              {website.trim() ? 'AI 分析产品 →' : '手动填写 →'}
             </button>
           </div>
         )}

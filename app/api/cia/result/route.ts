@@ -10,21 +10,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
-  if (!hasDB()) return NextResponse.json({ error: 'GTM_DATABASE required' }, { status: 503 })
+  if (!hasDB()) return NextResponse.json({ error: 'DATABASE_URL required' }, { status: 503 })
 
   const body = await request.json().catch(() => null)
   if (!body?.slug || !body?.synthesis) {
     return NextResponse.json({ error: 'slug and synthesis required' }, { status: 400 })
   }
 
-  const ws = await getWorkspace(body.slug)
-  if (!ws) return NextResponse.json({ error: 'workspace not found' }, { status: 404 })
+  try {
+    const ws = await getWorkspace(body.slug)
+    if (!ws) return NextResponse.json({ error: 'workspace not found' }, { status: 404 })
 
-  const result = {
-    ...body.synthesis,
-    analyzed_at: body.analyzed_at || new Date().toISOString(),
+    const result = {
+      ...body.synthesis,
+      analyzed_at: body.analyzed_at || new Date().toISOString(),
+    }
+    await saveWorkspaceCIAResult(body.slug, result)
+
+    return NextResponse.json({ ok: true })
+  } catch (e: unknown) {
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 })
   }
-  await saveWorkspaceCIAResult(body.slug, result)
-
-  return NextResponse.json({ ok: true })
 }

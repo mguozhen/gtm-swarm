@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
 import { hasDB } from '@/server/db.js'
 import { getWorkspace, saveWorkspaceCIAResult } from '@/server/store.js'
+import { PROJECTS_DIR } from '@/server/paths.js'
+import { runMissingContentOSSteps } from '@/server/contentos.js'
 
 export async function POST(request: NextRequest) {
   // Auth
@@ -26,6 +30,24 @@ export async function POST(request: NextRequest) {
       analyzed_at: body.analyzed_at || new Date().toISOString(),
     }
     await saveWorkspaceCIAResult(body.slug, result)
+
+    // Write synthesis.md to filesystem for Python contentos-agent.py path
+    if (result.synthesis_md) {
+      try {
+        const ciaDir = path.join(PROJECTS_DIR, body.slug, 'cia')
+        mkdirSync(ciaDir, { recursive: true })
+        writeFileSync(path.join(ciaDir, 'synthesis.md'), result.synthesis_md)
+      } catch (e) {
+        console.warn('[cia/result] synthesis.md write failed (non-fatal):', (e as Error).message)
+      }
+    }
+
+    // Fire background ContentOS generation for missing steps
+    setImmediate(() => {
+      runMissingContentOSSteps(body.slug).catch((e: Error) =>
+        console.warn('[cia/result] background contentos failed:', e.message)
+      )
+    })
 
     return NextResponse.json({ ok: true })
   } catch (e: unknown) {

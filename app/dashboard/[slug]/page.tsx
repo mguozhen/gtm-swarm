@@ -144,7 +144,7 @@ export default function App() {
 
   const filtered = useMemo(() => {
     if (tab === 'review') {
-      return items.filter(it => it.state === 'draft')
+      return items.filter(it => it.state === 'draft' && it.multica_status !== 'cancelled')
     }
     return items
   }, [items, tab])

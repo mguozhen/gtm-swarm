@@ -101,3 +101,4 @@ CREATE INDEX IF NOT EXISTS idx_audit_log_workspace ON audit_log(workspace_id, cr
 CREATE INDEX IF NOT EXISTS idx_strategy_docs_workspace ON strategy_docs(workspace_id, step_key);
 
 ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS cia_result JSONB;
+ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS multica_workspace_slug TEXT;

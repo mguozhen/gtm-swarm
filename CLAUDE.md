@@ -14,8 +14,15 @@ Two separate databases. Never mix them up.
 - External Multica project management database
 - Used **only** by `server/multica-db.js` (`hasMultica()` checks `MULTICA_DATABASE_URL`)
 - Contains workspaces, agents, issues from Multica's schema
-- **Only workspace `slug = 'gtm'` is used. Ignore all other workspaces.** workspace_id `95c76175-b7d0-4031-ae1e-51a1f2c895e9`
-- Never query by any other workspace slug (voc-ai, solvea, flatkey, etc.) — always hardcode or resolve to `'gtm'`
+- **Each GTM project must be explicitly bound to one Multica workspace** via `multica_workspace_slug` column on the GTM `workspaces` table
+- Never hardcode a Multica workspace slug — always look it up from `ws.multica_workspace_slug`
+- If a GTM project has no binding (`multica_workspace_slug IS NULL`), APIs return 400; the UI shows a blocking bind modal
+
+### Multica Workspace Binding
+- Stored in GTM DB: `workspaces.multica_workspace_slug TEXT`
+- **One-time, immutable**: set via `PATCH /api/workspaces/[slug]` with `{ multica_workspace_slug }` only once; subsequent attempts return 409
+- Available Multica workspaces listed via `GET /api/multica/workspaces`
+- Dashboard detects unbound projects and shows `<BindWorkspaceModal>` before any other UI
 
 ### Priority in API routes
 Agents data comes **exclusively from Multica**. No GTM DB fallback for agents — if `MULTICA_DATABASE_URL` is not set, return 503.
@@ -23,9 +30,11 @@ Agents data comes **exclusively from Multica**. No GTM DB fallback for agents �
 ## Key Conventions
 
 - `/api/projects` — lists workspaces from DB only, no filesystem fallback
-- `/api/agents` — **multica only**, no GTM DB fallback; queries by project slug first, then falls back to `'gtm'` workspace; returns 503 if multica not configured
-- `/api/workspaces/[slug]` — agents always fetched from multica `'gtm'` workspace when multica is available
-- `/api/content` — **multica only** when `MULTICA_DATABASE_URL` is set; reads Issues from Multica DB exclusively; no GTM DB content_items, no filesystem fallback
+- `/api/agents` — **multica only**, no GTM DB fallback; looks up `ws.multica_workspace_slug` from GTM DB; returns 503 if multica not configured, 400 if project unbound
+- `/api/workspaces/[slug]` — agents fetched from the project's bound Multica workspace only
+- `/api/content` — **multica only** when `MULTICA_DATABASE_URL` is set; reads Issues from bound Multica workspace; no GTM DB content_items, no filesystem fallback
+- `/api/ledger` — requires `?project=` param; looks up bound Multica workspace
+- `/api/review-multica` — requires `project` in request body to look up bound Multica workspace
 
 ## 核心原则：永远不走文件系统路径
 

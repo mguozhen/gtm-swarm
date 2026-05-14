@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { hasMultica } from '@/server/multica-db.js'
-import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
+import { hasDB } from '@/server/db.js'
+import * as store from '@/server/store.js'
 
 const UNIT_COST_RMB = 10
 
@@ -14,8 +15,17 @@ function detectType(agentName: string): 'blog' | 'video' | 'reddit' | 'other' {
 
 export async function GET(request: NextRequest) {
   if (!hasMultica()) return NextResponse.json({ error: 'multica not configured' }, { status: 503 })
+  if (!hasDB()) return NextResponse.json({ error: 'GTM_DATABASE required' }, { status: 503 })
 
-  const page = Number(request.nextUrl.searchParams.get('page') || '1')
+  const p = request.nextUrl.searchParams
+  const page = Number(p.get('page') || '1')
+  const project = p.get('project') || ''
+  if (!project) return NextResponse.json({ error: 'project required' }, { status: 400 })
+
+  const gtmWs = await store.getWorkspace(project)
+  if (!gtmWs?.multica_workspace_slug) return NextResponse.json({ error: 'no multica workspace bound to this project' }, { status: 400 })
+  const multicaSlug = gtmWs.multica_workspace_slug
+
   const pageSize = 20
 
   const { default: pg } = await import('pg')
@@ -23,8 +33,8 @@ export async function GET(request: NextRequest) {
 
   try {
     const { getWorkspaceBySlug } = await import('@/server/multica-db.js')
-    const ws = await getWorkspaceBySlug(MULTICA_WORKSPACE_SLUG)
-    if (!ws) return NextResponse.json({ error: 'workspace not found' }, { status: 404 })
+    const ws = await getWorkspaceBySlug(multicaSlug)
+    if (!ws) return NextResponse.json({ error: 'multica workspace not found' }, { status: 404 })
 
     // Counts per agent per status (child issues only)
     const { rows: countRows } = await pool.query(`

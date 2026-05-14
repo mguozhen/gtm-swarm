@@ -36,6 +36,14 @@ export async function updateWorkspace(slug, patch) {
   return queryOne(`UPDATE workspaces SET ${fields.join(', ')} WHERE slug = $${i} RETURNING *`, vals)
 }
 
+export async function bindMulticaWorkspace(slug, multicaSlug) {
+  return queryOne(
+    `UPDATE workspaces SET multica_workspace_slug = $1, updated_at = now()
+     WHERE slug = $2 AND multica_workspace_slug IS NULL RETURNING *`,
+    [multicaSlug, slug]
+  )
+}
+
 export async function saveWorkspaceCIAResult(slug, synthesis) {
   return queryOne(
     `UPDATE workspaces SET cia_result = $1, updated_at = now() WHERE slug = $2 RETURNING *`,

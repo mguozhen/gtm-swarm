@@ -6,7 +6,8 @@ import { PROJECTS_DIR } from '@/lib/fs-api'
 import { hasAnthropic } from '@/server/llm.js'
 import { runAgent } from '@/server/runner.js'
 import { hasMultica } from '@/server/multica-db.js'
-import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
+import { hasDB } from '@/server/db.js'
+import * as store from '@/server/store.js'
 
 function agentBrief(channel: string, topic: string, angle: string, hook: string, agentId: string, agentName: string): string {
   const mention = `[@${agentName}](mention://agent/${agentId})`
@@ -44,6 +45,11 @@ export async function POST(request: NextRequest) {
   }
 
   if (hasMultica()) {
+    if (!hasDB()) return NextResponse.json({ error: 'GTM_DATABASE required' }, { status: 503 })
+    const gtmWs = await store.getWorkspace(project)
+    if (!gtmWs?.multica_workspace_slug) return NextResponse.json({ error: 'no multica workspace bound to this project' }, { status: 400 })
+    const multicaSlug = gtmWs.multica_workspace_slug
+
     const {
       getIssue, updateIssueStatus, getWorkspaceBySlug,
       getWorkspaceAgents, createIssue, getOrCreateGTMUser, postComment, dispatchAgentTask,
@@ -60,10 +66,10 @@ export async function POST(request: NextRequest) {
     const angle = descLines.find((l: string) => l.startsWith('**Angle**:'))?.replace('**Angle**:', '').trim() || ''
     const hook = descLines.find((l: string) => l.startsWith('**Hook seed**:'))?.replace('**Hook seed**:', '').trim() || ''
 
-    const ws = await getWorkspaceBySlug(MULTICA_WORKSPACE_SLUG)
-    if (!ws) return NextResponse.json({ error: 'gtm workspace not found in Multica' }, { status: 404 })
+    const ws = await getWorkspaceBySlug(multicaSlug)
+    if (!ws) return NextResponse.json({ error: `multica workspace "${multicaSlug}" not found` }, { status: 404 })
 
-    const agents = await getWorkspaceAgents(MULTICA_WORKSPACE_SLUG)
+    const agents = await getWorkspaceAgents(multicaSlug)
     if (!agents.length) return NextResponse.json({ error: 'no agents in workspace' }, { status: 503 })
 
     const creatorId = await getOrCreateGTMUser(ws.id)

@@ -37,7 +37,7 @@ export function Ledger({ slug }: { slug: string }) {
 
   function load(p: number) {
     setErr('')
-    fetch(`/api/ledger?page=${p}`)
+    fetch(`/api/ledger?page=${p}&project=${encodeURIComponent(slug)}`)
       .then(r => r.json())
       .then(d => { if (d.error) setErr(d.error); else setData(d) })
       .catch(e => setErr(String(e)))

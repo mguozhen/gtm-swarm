@@ -225,7 +225,13 @@ export async function getWorkspaceAgents(workspaceSlug) {
 }
 
 export async function listAllWorkspaces() {
-  return q('SELECT id, slug, name FROM workspace ORDER BY name')
+  return q(`
+    SELECT DISTINCT w.id, w.slug, w.name FROM workspace w
+    WHERE EXISTS (
+      SELECT 1 FROM agent a WHERE a.workspace_id = w.id AND a.runtime_id IS NOT NULL
+    )
+    ORDER BY w.name
+  `)
 }
 
 const STATUS_MAP = {

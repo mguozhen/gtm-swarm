@@ -10,6 +10,7 @@ import { PreviewPane } from '@/_components/PreviewPane'
 import { ProjectOverview } from '@/_components/ProjectOverview'
 import { IdeasPool } from '@/_components/IdeasPool'
 import { Ledger } from '@/_components/Ledger'
+import { BindWorkspaceModal } from '@/_components/BindWorkspaceModal'
 import { useContent } from '@/_hooks/useContent'
 import { useProjects } from '@/_hooks/useProjects'
 import { useRole } from '@/_hooks/useRole'
@@ -132,16 +133,19 @@ export default function App() {
 
   const [wsData, setWsData] = useState<{
     lifecycle_state?: string
+    multica_workspace_slug?: string | null
     agents?: AgentRow[]
     cia_result?: CIAResult | null
   } | null>(null)
 
-  useEffect(() => {
+  const fetchWsData = () => {
     fetch(`/api/workspaces/${slug}`)
       .then(r => r.json())
       .then(d => { if (d && !d.error) setWsData(d) })
       .catch(() => {})
-  }, [slug])
+  }
+
+  useEffect(() => { fetchWsData() }, [slug])
 
   const requestedState = tab === 'overview' ? undefined
     : tab === 'review' ? undefined
@@ -181,7 +185,7 @@ export default function App() {
   const reviewAction = async (item: typeof items[number], action: 'approve' | 'reject', reason?: string) => {
     const isMultica = item.file?.startsWith('multica://')
     if (isMultica) {
-      const r = await postJson<{ ok?: boolean; error?: string }>('/api/review-multica', { issue_id: item.id, action, reason: reason || '' }, token)
+      const r = await postJson<{ ok?: boolean; error?: string }>('/api/review-multica', { issue_id: item.id, action, reason: reason || '', project: slug }, token)
       if (r.error) alert('Review failed: ' + r.error)
     } else {
       const reviewer = (item.frontmatter.reviewer as string) || ''
@@ -238,6 +242,10 @@ export default function App() {
 
       <Header onRefresh={refresh} />
       <TabBar active={tab} onChange={setTab} counts={tabCounts} />
+
+      {wsData && wsData.multica_workspace_slug == null && (
+        <BindWorkspaceModal slug={slug} onBound={() => { fetchWsData(); refresh() }} />
+      )}
 
       {tab === 'overview' ? (
         <div>

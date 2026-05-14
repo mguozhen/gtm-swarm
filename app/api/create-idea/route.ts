@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { hasMultica } from '@/server/multica-db.js'
-import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
+import { hasDB } from '@/server/db.js'
+import * as store from '@/server/store.js'
 
 export async function POST(request: NextRequest) {
   const { project, topic, angle, hook } = await request.json()
@@ -8,10 +9,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'project and topic are required' }, { status: 400 })
   }
   if (!hasMultica()) return NextResponse.json({ error: 'No database configured' }, { status: 503 })
+  if (!hasDB()) return NextResponse.json({ error: 'GTM_DATABASE required' }, { status: 503 })
   try {
+    const gtmWs = await store.getWorkspace(project)
+    if (!gtmWs?.multica_workspace_slug) return NextResponse.json({ error: 'no multica workspace bound to this project' }, { status: 400 })
     const { getWorkspaceBySlug, getOrCreateGTMUser, createIssue } = await import('@/server/multica-db.js')
-    const ws = await getWorkspaceBySlug(MULTICA_WORKSPACE_SLUG)
-    if (!ws) return NextResponse.json({ error: `workspace "${project}" not found` }, { status: 404 })
+    const ws = await getWorkspaceBySlug(gtmWs.multica_workspace_slug)
+    if (!ws) return NextResponse.json({ error: `multica workspace "${gtmWs.multica_workspace_slug}" not found` }, { status: 404 })
     const creatorId = await getOrCreateGTMUser()
     const parts: string[] = []
     if (angle) parts.push(`**Angle**: ${angle}`)

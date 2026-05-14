@@ -23,4 +23,5 @@ dashboard/dist/
 next-env.d.ts
 .gstack/
 multica/
+!app/api/multica/
 tools/cia-insight/

@@ -3,20 +3,24 @@ import { hasMultica, getIssue, updateIssueStatus, getOrCreateGTMUser,
   postComment, dispatchAgentTask, getWorkspaceBySlug, getWorkspaceAgents } from '@/server/multica-db.js'
 import { hasDB } from '@/server/db.js'
 import * as store from '@/server/store.js'
-import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
 
 export async function POST(request: NextRequest) {
   try {
-    const { issue_id, action, reason } = await request.json()
+    const { issue_id, action, reason, project } = await request.json()
     if (!issue_id || !['approve', 'reject'].includes(action)) {
       return NextResponse.json({ error: 'issue_id and action (approve|reject) required' }, { status: 400 })
     }
     if (!hasMultica()) return NextResponse.json({ error: 'multica not configured' }, { status: 503 })
+    if (!hasDB() || !project) return NextResponse.json({ error: 'GTM_DATABASE and project required' }, { status: 503 })
+
+    const gtmWs = await store.getWorkspace(project)
+    if (!gtmWs?.multica_workspace_slug) return NextResponse.json({ error: 'no multica workspace bound to this project' }, { status: 400 })
+    const multicaSlug = gtmWs.multica_workspace_slug
 
     const issue = await getIssue(issue_id)
     if (!issue) return NextResponse.json({ error: 'issue not found' }, { status: 404 })
 
-    const ws = await getWorkspaceBySlug(MULTICA_WORKSPACE_SLUG)
+    const ws = await getWorkspaceBySlug(multicaSlug)
     const botId = await getOrCreateGTMUser(ws?.id)
     const agentId: string | null = issue.assignee_id || null
     const agentName: string | null = issue.assignee_name || null
@@ -28,7 +32,7 @@ export async function POST(request: NextRequest) {
         const commentId = await postComment(issue_id, {
           body: commentBody, authorId: botId, authorType: 'member', workspaceId: ws?.id,
         })
-        const agents = await getWorkspaceAgents(MULTICA_WORKSPACE_SLUG)
+        const agents = await getWorkspaceAgents(multicaSlug)
         const agentRow = agents.find((a: { id: string }) => a.id === agentId)
         if (agentRow?.runtime_id) {
           await dispatchAgentTask(agentId, agentRow.runtime_id, issue_id, {
@@ -38,16 +42,11 @@ export async function POST(request: NextRequest) {
         }
       }
       await updateIssueStatus(issue_id, 'done')
-      if (hasDB()) {
-        const gtmWs = await store.getWorkspace(MULTICA_WORKSPACE_SLUG)
-        if (gtmWs) {
-          await store.upsertReviewResult(issue_id, {
-            workspace_id: gtmWs.id,
-            state: 'bank',
-            frontmatter: { topic: issue.title, review_action: 'approve', reviewed_at: new Date().toISOString() },
-          })
-        }
-      }
+      await store.upsertReviewResult(issue_id, {
+        workspace_id: gtmWs.id,
+        state: 'bank',
+        frontmatter: { topic: issue.title, review_action: 'approve', reviewed_at: new Date().toISOString() },
+      })
       return NextResponse.json({ ok: true, action: 'approve', issue_id })
     }
 
@@ -61,16 +60,11 @@ export async function POST(request: NextRequest) {
       })
     }
     await updateIssueStatus(issue_id, 'cancelled')
-    if (hasDB()) {
-      const gtmWs = await store.getWorkspace(MULTICA_WORKSPACE_SLUG)
-      if (gtmWs) {
-        await store.upsertReviewResult(issue_id, {
-          workspace_id: gtmWs.id,
-          state: 'draft',
-          frontmatter: { topic: issue.title, review_action: 'reject', review_reason: rejectReason, reviewed_at: new Date().toISOString() },
-        })
-      }
-    }
+    await store.upsertReviewResult(issue_id, {
+      workspace_id: gtmWs.id,
+      state: 'draft',
+      frontmatter: { topic: issue.title, review_action: 'reject', review_reason: rejectReason, reviewed_at: new Date().toISOString() },
+    })
     return NextResponse.json({ ok: true, action: 'reject', issue_id })
 
   } catch (e: unknown) {

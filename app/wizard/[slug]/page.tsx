@@ -92,6 +92,21 @@ export default function Wizard() {
     await loadStep(step)
   }
 
+  const regenerateStep = async () => {
+    if (!slug) return
+    setLoading('running')
+    const r = await fetch(`/api/contentos/${slug}/run-with-cia?step=${currentStep}`, {
+      method: 'POST',
+    }).then(r => r.json())
+    setLoading('idle')
+    if (r.error) {
+      alert('Regeneration failed:\n' + r.error)
+      return
+    }
+    await refreshState()
+    await loadStep(currentStep)
+  }
+
   const saveEdit = async () => {
     if (!slug) return
     setLoading('saving')
@@ -233,6 +248,9 @@ export default function Wizard() {
                   {!editing ? (
                     <>
                       <button className="btn btn-ghost" onClick={() => setEditing(true)}>✏️ Edit</button>
+                      <button className="btn btn-ghost" onClick={regenerateStep} disabled={loading !== 'idle'}>
+                        🔄 重新生成
+                      </button>
                       {currentStep < 4 ? (
                         <button className="btn btn-primary" onClick={() => runStep((currentStep + 1) as 2 | 3 | 4)} disabled={loading !== 'idle'}>
                           Approve & Run Step {currentStep + 1} →

@@ -164,10 +164,16 @@ export default function App() {
   }
 
   const reviewAction = role === 'reviewer' ? async (item: typeof items[number], action: 'approve' | 'reject', reason?: string) => {
-    const reviewer = (item.frontmatter.reviewer as string) || ''
-    if (!reviewer) { alert('No reviewer in frontmatter'); return }
-    const r = await postJson<{ ok?: boolean; error?: string; stderr?: string }>('/api/review', { reviewer, id: item.id, action, reason: reason || '' }, token)
-    if (r.error) alert('Review failed: ' + r.error + (r.error.includes('401') ? ' — click Sign in (top bar).' : ''))
+    const isMultica = item.file?.startsWith('multica://')
+    if (isMultica) {
+      const r = await postJson<{ ok?: boolean; error?: string }>('/api/review-multica', { issue_id: item.id, action, reason: reason || '' }, token)
+      if (r.error) alert('Review failed: ' + r.error)
+    } else {
+      const reviewer = (item.frontmatter.reviewer as string) || ''
+      if (!reviewer) { alert('No reviewer in frontmatter'); return }
+      const r = await postJson<{ ok?: boolean; error?: string }>('/api/review', { reviewer, id: item.id, action, reason: reason || '' }, token)
+      if (r.error) alert('Review failed: ' + r.error)
+    }
     refresh()
   } : undefined
 

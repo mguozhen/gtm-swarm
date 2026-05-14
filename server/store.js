@@ -233,6 +233,24 @@ export async function updateContentItemState(id, state) {
   )
 }
 
+export async function upsertReviewResult(multica_issue_id, { workspace_id, state, frontmatter }) {
+  const existing = await queryOne(
+    `SELECT id FROM content_items WHERE frontmatter->>'multica_issue_id' = $1`,
+    [multica_issue_id]
+  )
+  const fm = JSON.stringify({ ...frontmatter, multica_issue_id })
+  if (existing) {
+    return queryOne(
+      'UPDATE content_items SET state = $1, frontmatter = $2, mtime = now() WHERE id = $3 RETURNING *',
+      [state, fm, existing.id]
+    )
+  }
+  return queryOne(
+    'INSERT INTO content_items (workspace_id, state, frontmatter) VALUES ($1, $2, $3) RETURNING *',
+    [workspace_id, state, fm]
+  )
+}
+
 // ── Audit Log ─────────────────────────────────────────────────────────────────
 
 export async function auditLog(workspaceId, actor, action, detail = {}) {

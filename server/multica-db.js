@@ -159,7 +159,12 @@ export async function updateIssueStatus(issueId, status) {
 }
 
 export async function getIssue(issueId) {
-  return q1('SELECT * FROM issue WHERE id = $1', [issueId])
+  return q1(
+    `SELECT i.*, a.name AS assignee_name
+     FROM issue i LEFT JOIN agent a ON a.id = i.assignee_id
+     WHERE i.id = $1`,
+    [issueId]
+  )
 }
 
 export async function getIssueComments(issueId) {

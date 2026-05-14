@@ -2,175 +2,143 @@
 import { useEffect, useState } from 'react'
 import './Ledger.css'
 
-type AgentRow = {
-  id: string
-  name: string
-  platform: string
-  category: string
-  builder: string | null
-  reviewer: string | null
-  status: string
-  activate: boolean
-  goal: string
-  ironTriangleOK: boolean
-  window: {
-    new_ideas: number
-    claimed: number
-    drafts: number
-    bank: number
-    published: number
-    rejected: number
-  }
-  pending_review: number
-  total_published: number
-  total_bank: number
-  recent_topics: string[]
-  anti_patterns_snippet: string
-}
+type TypeCount = { blog: number; video: number; reddit: number; other: number }
+type CostEntry = { count: number; unit: number; total: number }
+type CostEstimate = { blog: CostEntry; video: CostEntry; reddit: CostEntry; other: CostEntry; grand_total: number }
+type Issue = { id: string; title: string; status: string; created_at: string; updated_at: string; agent_name: string | null }
 
 type LedgerData = {
-  project: string
-  window_hours: number
-  generated_at: string
-  totals: { freshIdeas: number; freshDrafts: number; freshBank: number; freshPublished: number; pendingReview: number }
-  agents: AgentRow[]
+  counts: TypeCount
+  cost_estimate: CostEstimate
+  issues: Issue[]
+  total_issues: number
+  page: number
+  page_size: number
 }
+
+const STATUS_LABEL: Record<string, { label: string; color: string; bg: string }> = {
+  done:        { label: '已完成',    color: '#166534', bg: '#dcfce7' },
+  in_progress: { label: '进行中',    color: '#1d4ed8', bg: '#dbeafe' },
+  in_review:   { label: '待审核',    color: '#92400e', bg: '#fef3c7' },
+  cancelled:   { label: '已取消',    color: '#6b7280', bg: '#f3f4f6' },
+  backlog:     { label: '待开始',    color: '#6b7280', bg: '#f3f4f6' },
+}
+
+const TYPE_META = [
+  { key: 'blog',   label: '官网博客', emoji: '📝', color: '#16a34a' },
+  { key: 'video',  label: '视频',     emoji: '🎬', color: '#dc2626' },
+  { key: 'reddit', label: 'Reddit',   emoji: '🔴', color: '#ff4500' },
+]
 
 export function Ledger({ slug }: { slug: string }) {
   const [data, setData] = useState<LedgerData | null>(null)
-  const [windowH, setWindowH] = useState(168)
-  const [expanded, setExpanded] = useState<string>('')
+  const [page, setPage] = useState(1)
   const [err, setErr] = useState('')
 
-  useEffect(() => {
+  function load(p: number) {
     setErr('')
-    setData(null)
-    fetch(`/api/ledger?project=${slug}&window_hours=${windowH}`)
+    fetch(`/api/ledger?page=${p}`)
       .then(r => r.json())
       .then(d => { if (d.error) setErr(d.error); else setData(d) })
       .catch(e => setErr(String(e)))
-  }, [slug, windowH])
+  }
 
-  if (err) return <div className="ledger-err">Error loading ledger: {err}</div>
-  if (!data) return <div className="ledger-loading">Loading swarm ledger…</div>
+  useEffect(() => { load(page) }, [page, slug])
 
-  const windowLabel = windowH === 24 ? '24h' : windowH === 168 ? '7d' : windowH === 720 ? '30d' : `${windowH}h`
+  if (err) return <div className="ledger-err">Error: {err}</div>
+  if (!data) return <div className="ledger-loading">Loading ledger…</div>
+
+  const { counts, cost_estimate: cost, issues, total_issues, page_size } = data
+  const totalPages = Math.ceil(total_issues / page_size)
+  const totalDone = counts.blog + counts.video + counts.reddit + counts.other
 
   return (
     <div className="ledger">
       <div className="ledger-header">
-        <div className="ledger-title">
-          <span>📒 Swarm Ledger — {data.project}</span>
-          <span className="ledger-meta">window: {windowLabel}  ·  generated {new Date(data.generated_at).toLocaleString()}</span>
-        </div>
-        <div className="ledger-window-toggle">
-          {[24, 168, 720].map(h => (
-            <button
-              key={h}
-              className={windowH === h ? 'is-active' : ''}
-              onClick={() => setWindowH(h)}
-            >{h === 24 ? '24h' : h === 168 ? '7d' : '30d'}</button>
-          ))}
+        <div className="ledger-title">📒 Swarm Ledger</div>
+      </div>
+
+      {/* Metric cards */}
+      <div className="ldg-cards">
+        {TYPE_META.map(t => (
+          <div key={t.key} className="ldg-card">
+            <div className="ldg-card-emoji">{t.emoji}</div>
+            <div className="ldg-card-count" style={{ color: t.color }}>
+              {counts[t.key as keyof TypeCount]}
+            </div>
+            <div className="ldg-card-label">{t.label}</div>
+            <div className="ldg-card-sub">已完成</div>
+          </div>
+        ))}
+        <div className="ldg-card ldg-card-total">
+          <div className="ldg-card-emoji">✅</div>
+          <div className="ldg-card-count">{totalDone}</div>
+          <div className="ldg-card-label">总产出</div>
+          <div className="ldg-card-sub">已完成</div>
         </div>
       </div>
 
-      <div className="ledger-totals">
-        <div className="ledger-stat"><span className="ledger-stat-n">{data.totals.freshIdeas}</span><span className="ledger-stat-l">new ideas</span></div>
-        <div className="ledger-stat"><span className="ledger-stat-n">{data.totals.freshDrafts}</span><span className="ledger-stat-l">drafts</span></div>
-        <div className="ledger-stat"><span className="ledger-stat-n">{data.totals.freshBank}</span><span className="ledger-stat-l">approved</span></div>
-        <div className="ledger-stat"><span className="ledger-stat-n">{data.totals.freshPublished}</span><span className="ledger-stat-l">published</span></div>
-        <div className="ledger-stat is-alert"><span className="ledger-stat-n">{data.totals.pendingReview}</span><span className="ledger-stat-l">⚠ pending review</span></div>
+      {/* Cost estimate */}
+      <div className="ldg-cost-card">
+        <div className="ldg-cost-title">💰 费用预估</div>
+        <div className="ldg-cost-rows">
+          {TYPE_META.map(t => {
+            const c = cost[t.key as keyof CostEstimate] as CostEntry
+            return (
+              <div key={t.key} className="ldg-cost-row">
+                <span>{t.emoji} {t.label}</span>
+                <span className="ldg-cost-calc">{c.count} × ¥{c.unit}</span>
+                <span className="ldg-cost-amount">¥{c.total}</span>
+              </div>
+            )
+          })}
+          <div className="ldg-cost-divider" />
+          <div className="ldg-cost-row ldg-cost-total-row">
+            <span>合计</span>
+            <span />
+            <span className="ldg-cost-grand">¥{cost.grand_total}</span>
+          </div>
+        </div>
       </div>
 
+      {/* Issues list */}
+      <div className="ldg-section-title">最近任务 ({total_issues})</div>
       <table className="ledger-table">
         <thead>
           <tr>
+            <th>标题</th>
             <th>Agent</th>
-            <th>Iron Triangle</th>
-            <th>Status</th>
-            <th>Δ Ideas</th>
-            <th>Δ Drafts</th>
-            <th>Δ Bank</th>
-            <th>Δ Pub</th>
-            <th>Pending</th>
-            <th>Goal</th>
+            <th>状态</th>
+            <th>更新时间</th>
           </tr>
         </thead>
         <tbody>
-          {data.agents.map(a => {
-            const isExpanded = expanded === a.id
-            const inactive = !a.activate
+          {issues.map(issue => {
+            const s = STATUS_LABEL[issue.status] || { label: issue.status, color: '#888', bg: '#f4f4f4' }
             return (
-              <>
-                <tr
-                  key={a.id}
-                  className={`ledger-row ${inactive ? 'is-inactive' : ''} ${isExpanded ? 'is-expanded' : ''}`}
-                  onClick={() => setExpanded(isExpanded ? '' : a.id)}
-                >
-                  <td className="ledger-agent">
-                    <span className="ledger-agent-id">{a.id}</span>
-                    <span className="ledger-agent-platform">{a.platform || '—'}</span>
-                  </td>
-                  <td>
-                    {a.ironTriangleOK ? (
-                      <div className="ledger-triangle">
-                        <span title="builder">🧱 {a.builder}</span>
-                        <span title="reviewer">👁 {a.reviewer}</span>
-                      </div>
-                    ) : (
-                      <span className="ledger-triangle-broken">⚠ incomplete (B:{a.builder || '—'} R:{a.reviewer || '—'})</span>
-                    )}
-                  </td>
-                  <td>
-                    <span className={`ledger-status ledger-status-${a.activate ? 'active' : 'off'}`}>
-                      {inactive ? 'off' : a.status || 'active'}
-                    </span>
-                  </td>
-                  <td className="ledger-n">{a.window.new_ideas || ''}</td>
-                  <td className="ledger-n">{a.window.drafts || ''}</td>
-                  <td className="ledger-n">{a.window.bank || ''}</td>
-                  <td className="ledger-n">{a.window.published || ''}</td>
-                  <td className={`ledger-n ${a.pending_review ? 'is-alert' : ''}`}>{a.pending_review || ''}</td>
-                  <td className="ledger-goal">{(a.goal || '').slice(0, 80) || '—'}</td>
-                </tr>
-                {isExpanded && (
-                  <tr key={a.id + '-x'} className="ledger-expand">
-                    <td colSpan={9}>
-                      <div className="ledger-expand-inner">
-                        <div>
-                          <div className="ledger-section">Recent topics ({windowLabel})</div>
-                          {a.recent_topics.length ? (
-                            <ul className="ledger-topics">
-                              {a.recent_topics.map((t, i) => <li key={i}>{t}</li>)}
-                            </ul>
-                          ) : <span className="ledger-empty">no fresh activity in this window</span>}
-                        </div>
-                        <div>
-                          <div className="ledger-section">Lifetime</div>
-                          <ul className="ledger-life">
-                            <li>bank: {a.total_bank}</li>
-                            <li>published: {a.total_published}</li>
-                          </ul>
-                        </div>
-                        {a.anti_patterns_snippet ? (
-                          <div className="ledger-anti">
-                            <div className="ledger-section">Latest reviewer feedback</div>
-                            <pre>{a.anti_patterns_snippet}</pre>
-                          </div>
-                        ) : null}
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </>
+              <tr key={issue.id}>
+                <td className="ldg-issue-title">{issue.title}</td>
+                <td><span className="dj-type-pill">{issue.agent_name || '—'}</span></td>
+                <td>
+                  <span style={{ background: s.bg, color: s.color, padding: '2px 8px', borderRadius: 10, fontSize: 11, fontWeight: 600 }}>
+                    {s.label}
+                  </span>
+                </td>
+                <td className="ldg-issue-date">{new Date(issue.updated_at).toLocaleDateString('zh-CN')}</td>
+              </tr>
             )
           })}
         </tbody>
       </table>
 
-      <div className="ledger-foot">
-        Click any row to expand · data from <code>/api/ledger?project={data.project}&amp;window_hours={windowH}</code>
-      </div>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="ldg-pagination">
+          <button disabled={page <= 1} onClick={() => setPage(p => p - 1)}>← 上一页</button>
+          <span>{page} / {totalPages}</span>
+          <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>下一页 →</button>
+        </div>
+      )}
     </div>
   )
 }

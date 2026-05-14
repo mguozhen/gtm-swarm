@@ -1,96 +1,82 @@
 .ledger { padding: 20px 28px 40px; }
 .ledger-err { padding: 40px; color: #c33; }
 .ledger-loading { padding: 40px; color: #888; }
+.ledger-header { margin-bottom: 20px; }
+.ledger-title { font-size: 18px; font-weight: 600; color: #1c1c1c; }
 
-.ledger-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 18px;
+/* Metric cards */
+.ldg-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
 }
-.ledger-title {
-  display: flex; flex-direction: column; gap: 4px;
-  font-size: 18px; font-weight: 600; color: #1c1c1c;
+.ldg-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
-.ledger-meta { font-size: 12px; font-weight: 400; color: #999; }
-.ledger-window-toggle { display: flex; gap: 4px; background: #f4f4f4; padding: 3px; border-radius: 6px; }
-.ledger-window-toggle button {
-  border: 0; background: transparent; padding: 5px 12px; border-radius: 4px;
-  font-size: 13px; color: #666; cursor: pointer;
-}
-.ledger-window-toggle button.is-active { background: #fff; color: #1c1c1c; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+.ldg-card-total { background: #fafafa; }
+.ldg-card-emoji { font-size: 20px; margin-bottom: 4px; }
+.ldg-card-count { font-size: 32px; font-weight: 700; line-height: 1; }
+.ldg-card-label { font-size: 14px; font-weight: 500; color: #333; margin-top: 4px; }
+.ldg-card-sub { font-size: 11px; color: #aaa; }
 
-.ledger-totals {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
-  margin-bottom: 20px;
+/* Cost card */
+.ldg-cost-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
 }
-.ledger-stat {
-  display: flex; flex-direction: column; gap: 4px;
-  background: #fafafa; border: 1px solid #eee; border-radius: 8px;
-  padding: 14px 16px;
+.ldg-cost-title { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 14px; }
+.ldg-cost-rows { display: flex; flex-direction: column; gap: 8px; }
+.ldg-cost-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 80px;
+  font-size: 13px;
+  color: #555;
 }
-.ledger-stat-n { font-size: 24px; font-weight: 600; color: #1c1c1c; }
-.ledger-stat-l { font-size: 12px; color: #888; }
-.ledger-stat.is-alert { background: #fff5e6; border-color: #ffd699; }
-.ledger-stat.is-alert .ledger-stat-l { color: #b35900; }
+.ldg-cost-calc { color: #999; text-align: right; }
+.ldg-cost-amount { text-align: right; font-weight: 500; color: #333; }
+.ldg-cost-divider { border-top: 1px solid #eee; margin: 4px 0; }
+.ldg-cost-total-row { font-weight: 600; color: #1c1c1c; }
+.ldg-cost-grand { text-align: right; font-size: 16px; color: #16a34a; }
 
+/* Issues table */
+.ldg-section-title {
+  font-size: 13px; font-weight: 600; color: #666;
+  text-transform: uppercase; letter-spacing: 0.4px;
+  margin-bottom: 10px;
+}
 .ledger-table {
   width: 100%; border-collapse: collapse; font-size: 13px;
   background: #fff; border: 1px solid #eee; border-radius: 8px; overflow: hidden;
 }
 .ledger-table thead { background: #fafafa; }
 .ledger-table th {
-  padding: 10px 12px; text-align: left; font-weight: 500; color: #666;
+  padding: 10px 14px; text-align: left; font-weight: 500; color: #666;
   font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
   border-bottom: 1px solid #eee;
 }
-.ledger-table td { padding: 12px; border-bottom: 1px solid #f4f4f4; vertical-align: middle; }
+.ledger-table td { padding: 12px 14px; border-bottom: 1px solid #f4f4f4; vertical-align: middle; }
+.ledger-table tbody tr:last-child td { border-bottom: none; }
+.ldg-issue-title { color: #1c1c1c; max-width: 400px; }
+.ldg-issue-date { color: #aaa; font-size: 12px; white-space: nowrap; }
 
-.ledger-row { cursor: pointer; transition: background 0.1s; }
-.ledger-row:hover { background: #fafafa; }
-.ledger-row.is-expanded { background: #f8f9fb; }
-.ledger-row.is-inactive { color: #aaa; }
-.ledger-row.is-inactive .ledger-agent-id { color: #aaa; }
-
-.ledger-agent { min-width: 160px; }
-.ledger-agent-id { display: block; font-weight: 600; color: #1c1c1c; }
-.ledger-agent-platform { display: block; font-size: 11px; color: #999; margin-top: 2px; }
-
-.ledger-triangle { display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
-.ledger-triangle span { color: #555; }
-.ledger-triangle-broken { color: #b35900; font-size: 12px; }
-
-.ledger-status {
-  display: inline-block; padding: 2px 8px; font-size: 11px; border-radius: 10px;
-  text-transform: uppercase; letter-spacing: 0.3px;
+/* Pagination */
+.ldg-pagination {
+  display: flex; align-items: center; gap: 12px;
+  justify-content: center; margin-top: 16px;
 }
-.ledger-status-active { background: #e7f5e7; color: #2a7a2a; }
-.ledger-status-off { background: #f0f0f0; color: #999; }
-
-.ledger-n { text-align: center; font-variant-numeric: tabular-nums; font-weight: 500; }
-.ledger-n.is-alert { color: #c95400; font-weight: 700; }
-
-.ledger-goal { color: #666; font-size: 12px; max-width: 280px; }
-
-.ledger-expand td { background: #f8f9fb; padding: 16px 24px; }
-.ledger-expand-inner { display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 32px; }
-.ledger-section {
-  font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
-  color: #888; margin-bottom: 8px; font-weight: 500;
+.ldg-pagination button {
+  padding: 6px 14px; border: 1px solid #ddd; border-radius: 6px;
+  background: #fff; cursor: pointer; font-size: 13px; color: #555;
 }
-.ledger-topics, .ledger-life { margin: 0; padding-left: 18px; font-size: 13px; color: #444; }
-.ledger-topics li, .ledger-life li { margin-bottom: 4px; }
-.ledger-empty { color: #aaa; font-size: 12px; font-style: italic; }
-.ledger-anti pre {
-  background: #fff;
-  border: 1px solid #eee;
-  padding: 10px;
-  border-radius: 4px;
-  font-size: 11px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  max-height: 120px;
-  overflow-y: auto;
-  margin: 0;
-}
-
-.ledger-foot { margin-top: 16px; font-size: 11px; color: #aaa; }
-.ledger-foot code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 11px; }
+.ldg-pagination button:disabled { color: #ccc; cursor: default; }
+.ldg-pagination span { font-size: 13px; color: #888; }

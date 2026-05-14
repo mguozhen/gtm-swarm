@@ -9,6 +9,7 @@ import { ContentTable } from '@/_components/ContentTable'
 import { PreviewPane } from '@/_components/PreviewPane'
 import { ProjectOverview } from '@/_components/ProjectOverview'
 import { IdeasPool } from '@/_components/IdeasPool'
+import { Ledger } from '@/_components/Ledger'
 import { useContent } from '@/_hooks/useContent'
 import { useProjects } from '@/_hooks/useProjects'
 import { useRole } from '@/_hooks/useRole'
@@ -300,6 +301,8 @@ export default function App() {
             </div>
           )}
         </div>
+      ) : tab === 'ledger' ? (
+        <Ledger slug={slug} />
       ) : tab === 'ideas' ? (
         <IdeasPool
           items={items.filter(i => i.state === 'new-idea')}

@@ -100,6 +100,13 @@ const BANNER_LABEL: Record<string, string> = {
   published: 'Published',
 }
 
+const BANNER_DESC: Record<string, string> = {
+  drafts:    'Agent 正在执行的任务草稿，内容尚未送审。Reviewer 可在此直接审核。',
+  review:    'Reviewer 待审队列。切换到 Reviewer 视图后可 inline Approve / Reject。角标红色 = 有待审内容。',
+  bank:      '已通过审核的内容储备库，等待调度发布。',
+  published: '已发布到对应平台的内容，作为历史记录保留。',
+}
+
 export default function App() {
   const params = useParams()
   const routeSlug = params?.slug as string | undefined
@@ -254,8 +261,8 @@ export default function App() {
                 {BANNER_LABEL[tab] || tab}
               </span>
               <span className="state-banner-count">{filtered.length} items</span>
-              {tab === 'review' && role !== 'reviewer' && (
-                <span className="state-banner-hint">Switch to Reviewer view (top right) to approve/reject inline.</span>
+              {BANNER_DESC[tab] && (
+                <span className="state-banner-hint">{BANNER_DESC[tab]}</span>
               )}
             </div>
             <ContentTable

@@ -9,11 +9,28 @@ import { hasMultica } from '@/server/multica-db.js'
 import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
 
 function agentBrief(channel: string, topic: string, angle: string, hook: string): string {
-  const lines = [`Topic: ${topic}`]
-  if (angle) lines.push(`Angle: ${angle}`)
-  if (hook) lines.push(`Hook: ${hook}`)
-  lines.push(`\nYour task: plan and execute ${channel} content for this topic. Break it down your own way.`)
-  return lines.join('\n')
+  return `## Task Brief — ${channel}
+
+**Topic:** ${topic}${angle ? `\n**Angle:** ${angle}` : ''}${hook ? `\n**Hook:** ${hook}` : ''}
+
+## Your Job
+Produce a draft of ${channel} content for this topic. Plan it first, then write an initial version.
+
+## Workflow Rules (strictly follow)
+
+1. **Draft first, never publish directly.**
+   Complete your draft and move the task to **"In Review"** (in_review status).
+   Do NOT publish to any public platform, website, or channel before human approval.
+
+2. **Wait for human Reviewer.**
+   A human Reviewer will inspect your draft. If approved, the task moves to **"In Bank"**.
+   If not approved, revise based on feedback and submit for review again.
+   Repeat until the Reviewer explicitly approves.
+
+3. **Publishing from Bank.**
+   - If no publish time is specified: publish **1 hour after moving to In Bank**.
+   - If a publish time is specified: follow that schedule exactly.
+   - All times are in **UTC+0**. Remind the Reviewer to confirm their local timezone when scheduling.`
 }
 
 export async function POST(request: NextRequest) {

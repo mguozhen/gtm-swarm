@@ -141,23 +141,54 @@
 }
 
 .pc-progress-label {
+  display: inline-block;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.96px;
-  color: var(--text-faint);
   text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-raised);
+  color: var(--text-sub);
 }
 
-.is-built .pc-progress-label { color: var(--green); }
+.is-built .pc-progress-label {
+  background: var(--green-light);
+  color: var(--green-deep);
+}
 
 .pc-cta {
-  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
   font-weight: 500;
-  color: var(--ink);
-  letter-spacing: 0.15px;
+  background: var(--ink);
+  color: #fff;
+  letter-spacing: 0;
+  transition: background 0.15s;
 }
 
-.is-stub .pc-cta { color: var(--text-faint); }
+.project-card:hover .pc-cta { background: var(--ink-active); }
+
+.is-built .pc-cta {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--border-strong);
+}
+
+.project-card.is-built:hover .pc-cta {
+  border-color: var(--ink);
+  background: var(--surface-raised);
+}
+
+.is-stub .pc-cta {
+  background: transparent;
+  color: var(--text-faint);
+  border: 1px solid var(--border);
+}
 
 .home-footer {
   max-width: 1100px;

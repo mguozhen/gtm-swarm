@@ -54,15 +54,17 @@
 }
 
 .ov-cta {
-  display: inline-block;
-  padding: 10px 18px;
-  background: var(--gradient-pink);
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 20px;
+  background: var(--ink);
   color: #fff;
   text-decoration: none;
   border-radius: var(--radius-pill);
-  font-size: 13px;
-  font-weight: 700;
-  box-shadow: 0 6px 18px rgba(244,63,158,0.3);
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
 }
 
 .ov-kpis {

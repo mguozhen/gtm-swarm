@@ -105,7 +105,7 @@
   display: inline-block;
   margin-top: 14px;
   padding: 6px 10px;
-  background: var(--gradient-pink);
+  background: rgba(255,255,255,0.15);
   border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 700;
@@ -141,7 +141,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--gradient-pink);
+  background: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -7,6 +7,7 @@ module.exports = {
     env: {
       NODE_ENV: 'production',
       PORT: '4000',
+      NODE_EXTRA_CA_CERTS: '/etc/ssl/certs/ca-certificates.crt',
     },
   }],
 }

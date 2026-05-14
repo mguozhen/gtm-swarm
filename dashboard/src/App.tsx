@@ -208,6 +208,11 @@ function App() {
             await postJson('/api/reject-idea', { project: item.project, agent: item.agent, idea_id: item.id, reason }, token)
             refresh()
           }}
+          onCreateIdea={async (topic, angle, hook) => {
+            const r = await postJson<{ ok?: boolean; error?: string }>('/api/create-idea', { project: slug, topic, angle, hook })
+            if (!r.ok) alert('Failed to create idea: ' + (r.error || 'unknown'))
+            refresh()
+          }}
         />
       ) : (
         <div className="content-grid">

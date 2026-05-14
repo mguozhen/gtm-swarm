@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
         status: 'backlog',
         creatorId,
         parentId: idea_id,
+        assigneeId: agent.id,
       })
       notified.push({ agent: agent.name, channel: agent.channel, issue_id: issueId })
     }

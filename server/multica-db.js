@@ -99,15 +99,16 @@ export async function getOrCreateLabel(workspaceId, name, color) {
 
 export async function createIssue(workspaceId, {
   title, description = '', status = 'in_progress', priority = 'medium',
-  parentId = null, creatorId,
+  parentId = null, creatorId, assigneeId = null,
 }) {
   const row = await q1(
     `INSERT INTO issue
-       (workspace_id, title, description, status, priority, parent_issue_id, creator_type, creator_id, number)
+       (workspace_id, title, description, status, priority, parent_issue_id, creator_type, creator_id, number, assignee_id, assignee_type)
      VALUES ($1, $2, $3, $4, $5, $6, 'agent', $7,
-       (SELECT COALESCE(MAX(number), 0) + 1 FROM issue WHERE workspace_id = $1))
+       (SELECT COALESCE(MAX(number), 0) + 1 FROM issue WHERE workspace_id = $1),
+       $8, $9)
      RETURNING id`,
-    [workspaceId, title, description, status, priority, parentId || null, creatorId]
+    [workspaceId, title, description, status, priority, parentId || null, creatorId, assigneeId || null, assigneeId ? 'agent' : null]
   )
   return row.id
 }

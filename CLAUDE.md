@@ -17,10 +17,10 @@ Two separate databases. Never mix them up.
 - Multica workspace slug is **`'gtm'`** (lowercase), workspace_id `95c76175-b7d0-4031-ae1e-51a1f2c895e9`
 
 ### Priority in API routes
-When both DBs are available, multica takes precedence over GTM DB (checked first).
+Agents data comes **exclusively from Multica**. No GTM DB fallback for agents — if `MULTICA_DATABASE_URL` is not set, return 503.
 
 ## Key Conventions
 
 - `/api/projects` — lists workspaces from DB only, no filesystem fallback
-- `/api/agents` — reads agents from DB only (multica → `'gtm'` workspace; gtm-db → by project slug), no filesystem fallback
+- `/api/agents` — **multica only**, no GTM DB fallback; queries by project slug first, then falls back to `'gtm'` workspace; returns 503 if multica not configured
 - `/api/workspaces/[slug]` — agents always fetched from multica `'gtm'` workspace when multica is available

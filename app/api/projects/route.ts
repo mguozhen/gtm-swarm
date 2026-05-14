@@ -5,12 +5,12 @@ import { hasMultica } from '@/server/multica-db.js'
 
 export async function GET() {
   if (hasMultica()) {
-    const { listAllWorkspaces } = await import('@/server/multica-db.js')
-    const workspaces = await listAllWorkspaces()
-    const projects = Object.fromEntries(workspaces.map((w: { slug: string; name: string }) => [
-      w.slug, { slug: w.slug, name: w.name, url: '', category: '', tagline: '', status: 'active' }
-    ]))
-    return NextResponse.json({ registry: { projects, default: workspaces[0]?.slug }, discovered: workspaces.map((w: { slug: string }) => w.slug) })
+    // Always expose only the 'gtm' workspace — multica holds many workspaces but this app is gtm-only.
+    const { getWorkspaceBySlug } = await import('@/server/multica-db.js')
+    const ws = await getWorkspaceBySlug('gtm')
+    const entry = ws ? { slug: ws.slug, name: ws.name, url: '', category: '', tagline: '', status: 'active' } : null
+    const projects = entry ? { gtm: entry } : {}
+    return NextResponse.json({ registry: { projects, default: 'gtm' }, discovered: entry ? ['gtm'] : [] })
   }
   if (hasDB()) {
     const rows = await store.listWorkspaces()

@@ -26,7 +26,7 @@ export function ProjectOverview({ slug }: { slug: string }) {
   }
   const totalBriefSize = meta.briefs.reduce((s, b) => s + b.size, 0)
   const stepsDone = meta.briefs.filter(b => b.exists).length
-  const activeAgents = agents.filter(a => a.yaml.activate !== false).length
+  const activeAgents = agents.filter(a => a.yaml?.activate !== false).length
   const totalDrafted = agents.reduce((s, a) => s + (a.metrics?.rolling_30d?.drafted || 0), 0)
   const totalApproved = agents.reduce((s, a) => s + (a.metrics?.rolling_30d?.approved || 0), 0)
   const state = py.contentos_agent?.state || 'not_started'
@@ -121,9 +121,9 @@ function Kpi({ label, value, sub }: { label: string; value: string; sub?: string
 }
 
 function AgentCard({ agent }: { agent: AgentEntry }) {
-  const y = agent.yaml
+  const y = agent.yaml || {}
   const m = agent.metrics?.rolling_30d || {}
-  const active = y.activate !== false
+  const active = y?.activate !== false
   return (
     <div className={`agent-card ${active ? '' : 'is-deactivated'}`}>
       <header className="agent-head">

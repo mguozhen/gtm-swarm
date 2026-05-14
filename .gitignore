@@ -19,6 +19,8 @@ venv/
 
 reviews/**/decided/
 dashboard/dist/
+.next/
+next-env.d.ts
 .gstack/
 multica/
 tools/cia-insight/

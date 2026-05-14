@@ -213,7 +213,7 @@ export default function App() {
         </div>
         <TokenGate token={token} onSet={setToken} onClear={clearToken} />
         <a
-          href="https://github.com/mguozhen/gtm-swarm"
+          href="https://github.com/SolveaCX/gtm-swarm"
           target="_blank"
           rel="noreferrer"
           className="topbar-paperclip"

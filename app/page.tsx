@@ -28,16 +28,34 @@ const STATE_LABEL: Record<string, string> = {
   archived: 'Archived',
 }
 
+const LIFECYCLE_BG: Record<string, string> = {
+  onboarding: '#fef3c7',
+  strategy:   '#dbeafe',
+  engine_building: '#ede9fe',
+  active:     '#dcfce7',
+  paused:     '#f3f4f6',
+  archived:   '#f3f4f6',
+}
+
+const LIFECYCLE_COLOR: Record<string, string> = {
+  onboarding: '#92400e',
+  strategy:   '#1e40af',
+  engine_building: '#5b21b6',
+  active:     '#15803d',
+  paused:     '#6b7280',
+  archived:   '#374151',
+}
+
 function LifecycleBadge({ state }: { state: string }) {
   return (
     <span style={{
-      background: STATE_COLOR[state] || '#6b7280',
-      color: '#fff',
-      fontSize: '11px',
+      background: LIFECYCLE_BG[state] || '#f3f4f6',
+      color: LIFECYCLE_COLOR[state] || '#374151',
+      fontSize: '12px',
       fontWeight: 600,
-      padding: '2px 8px',
-      borderRadius: '12px',
-      letterSpacing: '0.05em',
+      padding: '4px 10px',
+      borderRadius: '9999px',
+      letterSpacing: '0.96px',
       textTransform: 'uppercase' as const,
     }}>
       {STATE_LABEL[state] || state}
@@ -78,17 +96,16 @@ export default function Home() {
   return (
     <div className="home">
       <header className="home-hero">
-        <div className="hero-mark">▰▱▱▱</div>
-        <h1>GTM Swarm <span className="hero-mark-accent">/ ContentOS</span></h1>
+        <h1>GTM Swarm</h1>
         <p className="hero-sub">Pick a product. ContentOS Agent runs market + user + competitor discovery. 11 GTM agents go live.</p>
-        <Link href="/onboard" className="btn btn-primary" style={{ marginTop: '16px', display: 'inline-block' }}>
+        <Link href="/onboard" className="btn btn-primary">
           + New Product
         </Link>
       </header>
 
       <section className="project-grid">
         {projects.length === 0 && (
-          <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '64px 0', color: '#6b7280' }}>
+          <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '64px 0', color: 'var(--text-faint)' }}>
             <p style={{ marginBottom: 16 }}>No products yet.</p>
             <Link href="/onboard" className="btn btn-primary">+ Create your first product</Link>
           </div>
@@ -134,7 +151,7 @@ export default function Home() {
       </section>
 
       <footer className="home-footer">
-        <span>GTM Swarm v0.1 · {projects.length} projects · ContentOS Agent powered by Claude</span>
+        GTM Swarm v0.1 · {projects.length} projects · ContentOS Agent powered by Claude
       </footer>
     </div>
   )

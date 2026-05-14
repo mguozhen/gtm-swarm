@@ -1,4 +1,14 @@
 'use client'
+import {
+  LayoutDashboard,
+  TrendingUp,
+  BookOpen,
+  Lightbulb,
+  FileText,
+  Eye,
+  Archive,
+  Send,
+} from 'lucide-react'
 import './TabBar.css'
 
 export type TabKey = 'overview' | 'north-star' | 'ledger' | 'ideas' | 'drafts' | 'review' | 'bank' | 'published'
@@ -14,15 +24,15 @@ type Counts = {
   published: number | null
 }
 
-const TABS: { key: TabKey; label: string; icon: string }[] = [
-  { key: 'overview',   icon: '📍', label: 'Overview' },
-  { key: 'north-star', icon: '📊', label: 'North Star' },
-  { key: 'ledger',     icon: '📒', label: 'Ledger' },
-  { key: 'ideas',      icon: '💡', label: 'Ideas' },
-  { key: 'drafts',     icon: '📝', label: 'Drafts' },
-  { key: 'review',     icon: '👁',  label: 'Review' },
-  { key: 'bank',       icon: '🏦', label: 'Bank' },
-  { key: 'published',  icon: '📰', label: 'Published' },
+const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+  { key: 'overview',   icon: <LayoutDashboard size={15} />, label: 'Overview' },
+  { key: 'north-star', icon: <TrendingUp size={15} />,      label: 'North Star' },
+  { key: 'ledger',     icon: <BookOpen size={15} />,        label: 'Ledger' },
+  { key: 'ideas',      icon: <Lightbulb size={15} />,       label: 'Ideas' },
+  { key: 'drafts',     icon: <FileText size={15} />,        label: 'Drafts' },
+  { key: 'review',     icon: <Eye size={15} />,             label: 'Review' },
+  { key: 'bank',       icon: <Archive size={15} />,         label: 'Bank' },
+  { key: 'published',  icon: <Send size={15} />,            label: 'Published' },
 ]
 
 export function TabBar({

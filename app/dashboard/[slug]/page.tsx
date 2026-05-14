@@ -2,6 +2,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import { User, Eye, Star, FileText, Archive, Send } from 'lucide-react'
 import { Header } from '@/_components/Header'
 import { TabBar, type TabKey } from '@/_components/TabBar'
 import { ContentTable } from '@/_components/ContentTable'
@@ -33,42 +34,70 @@ type AgentRow = {
   kpi_defaults: Record<string, string>
 }
 
-
-const CHANNEL_COLORS: Record<string, string> = {
-  reddit: '#ff4500', x: '#1d9bf0', blog: '#10b981',
-  'kol-koc': '#f59e0b', video: '#ef4444',
+const CHANNEL_ACCENT: Record<string, string> = {
+  reddit: '#ff4500', x: '#1d9bf0', blog: '#16a34a',
+  'kol-koc': '#d97706', video: '#dc2626',
 }
 
 function AgentChannelCard({ agent }: { agent: AgentRow }) {
-  const color = CHANNEL_COLORS[agent.channel] || '#6b7280'
+  const accent = CHANNEL_ACCENT[agent.channel] || 'var(--text-sub)'
   const metrics30d = (agent.metrics as Record<string, Record<string, number>>)?.rolling_30d || {}
   return (
-    <div style={{ background: '#1f2937', border: `1px solid ${color}33`, borderRadius: 10, padding: 14, minWidth: 160, flex: '0 0 auto' }}>
+    <div style={{
+      background: 'var(--card)',
+      border: '1px solid var(--border)',
+      borderRadius: 'var(--radius-lg)',
+      padding: 16,
+      minWidth: 160,
+      flex: '0 0 auto',
+      boxShadow: 'var(--shadow-sm)',
+    }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-        <div style={{ width: 7, height: 7, borderRadius: '50%', background: agent.status === 'active' ? '#10b981' : '#6b7280' }} />
-        <span style={{ fontWeight: 700, fontSize: 12, color }}>{agent.channel}</span>
-        <span style={{ fontSize: 10, color: '#6b7280', marginLeft: 'auto' }}>{agent.status}</span>
+        <div style={{
+          width: 7, height: 7, borderRadius: '50%',
+          background: agent.status === 'active' ? 'var(--green)' : 'var(--text-faint)',
+        }} />
+        <span style={{ fontWeight: 600, fontSize: 13, color: accent }}>{agent.channel}</span>
+        <span style={{ fontSize: 11, color: 'var(--text-faint)', marginLeft: 'auto' }}>{agent.status}</span>
       </div>
       {agent.kpi_defaults?.weekly_target && (
-        <div style={{ fontSize: 10, color: '#9ca3af', marginBottom: 6 }}>
+        <div style={{ fontSize: 11, color: 'var(--text-sub)', marginBottom: 8 }}>
           {agent.kpi_defaults.weekly_target}
         </div>
       )}
       {Object.keys(metrics30d).length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, marginBottom: 8 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, marginBottom: 10 }}>
           {Object.entries(metrics30d).map(([k, v]) => (
-            <div key={k} style={{ fontSize: 9, color: '#9ca3af' }}>
-              <span style={{ color: '#f9fafb', fontWeight: 600 }}>{v}</span> {k}
+            <div key={k} style={{ fontSize: 11, color: 'var(--text-sub)' }}>
+              <span style={{ color: 'var(--ink)', fontWeight: 600 }}>{v}</span> {k}
             </div>
           ))}
         </div>
       )}
-      <button style={{ fontSize: 10, padding: '3px 8px', borderRadius: 5, border: '1px solid #374151',
-        background: 'transparent', color: '#9ca3af', cursor: 'pointer', width: '100%' }}>
+      <button style={{
+        fontSize: 12, padding: '5px 10px', borderRadius: 'var(--radius-pill)',
+        border: '1px solid var(--border-strong)', background: 'transparent',
+        color: 'var(--text-sub)', cursor: 'pointer', width: '100%',
+        fontFamily: 'var(--sans)',
+      }}>
         查看队列
       </button>
     </div>
   )
+}
+
+const BANNER_ICON: Record<string, React.ReactNode> = {
+  review:    <Eye size={14} />,
+  drafts:    <FileText size={14} />,
+  bank:      <Archive size={14} />,
+  published: <Send size={14} />,
+}
+
+const BANNER_LABEL: Record<string, string> = {
+  review: 'Pending Review',
+  drafts: 'In-progress Drafts',
+  bank: 'Approved + Bank',
+  published: 'Published',
 }
 
 export default function App() {
@@ -130,7 +159,7 @@ export default function App() {
     const reviewer = (item.frontmatter.reviewer as string) || ''
     if (!reviewer) { alert('No reviewer in frontmatter'); return }
     const r = await postJson<{ ok?: boolean; error?: string; stderr?: string }>('/api/review', { reviewer, id: item.id, action, reason: reason || '' }, token)
-    if (r.error) alert('Review failed: ' + r.error + (r.error.includes('401') ? ' — click 🔒 Sign in (top bar).' : ''))
+    if (r.error) alert('Review failed: ' + r.error + (r.error.includes('401') ? ' — click Sign in (top bar).' : ''))
     refresh()
   } : undefined
 
@@ -158,11 +187,11 @@ export default function App() {
             <button
               className={role === 'founder' ? 'is-active' : ''}
               onClick={() => setRole('founder')}
-            >👤 Founder</button>
+            ><User size={12} /> Founder</button>
             <button
               className={role === 'reviewer' ? 'is-active' : ''}
               onClick={() => setRole('reviewer')}
-            >👁️ Reviewer</button>
+            ><Eye size={12} /> Reviewer</button>
           </div>
         </div>
         <TokenGate token={token} onSet={setToken} onClear={clearToken} />
@@ -173,7 +202,8 @@ export default function App() {
           className="topbar-paperclip"
           title="Source on GitHub"
         >
-          ⭐ GitHub
+          <Star size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />
+          GitHub
         </a>
       </div>
 
@@ -185,7 +215,7 @@ export default function App() {
           <ProjectOverview slug={slug} />
           {wsData?.agents && wsData.agents.length > 0 && (
             <div style={{ padding: '0 24px 24px' }}>
-              <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.96px', textTransform: 'uppercase', color: 'var(--text-faint)', marginBottom: 12 }}>
                 Agent Channels
               </div>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
@@ -201,8 +231,8 @@ export default function App() {
           items={items.filter(i => i.state === 'new-idea')}
           onPromote={async item => {
             const r = await postJson<{ ok?: boolean; topic?: string; error?: string }>('/api/promote-idea', { project: item.project, agent: item.agent, idea_id: item.id }, token)
-            if (r.ok) alert('✓ Drafted: ' + (r.topic || '').slice(0, 60))
-            else alert('Promote failed: ' + (r.error || 'unknown') + (String(r.error || '').includes('401') ? ' — click 🔒 Sign in (top bar).' : ''))
+            if (r.ok) alert('Drafted: ' + (r.topic || '').slice(0, 60))
+            else alert('Promote failed: ' + (r.error || 'unknown') + (String(r.error || '').includes('401') ? ' — click Sign in (top bar).' : ''))
             refresh()
           }}
           onReject={async (item, reason) => {
@@ -219,11 +249,9 @@ export default function App() {
         <div className="content-grid">
           <div className="content-main">
             <div className="state-banner">
-              <span className="state-banner-label">
-                {tab === 'review' ? '👁 Pending Review' :
-                 tab === 'drafts' ? '📝 In-progress Drafts' :
-                 tab === 'bank' ? '🏦 Approved + Bank' :
-                 '📰 Published'}
+              <span className="state-banner-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                {BANNER_ICON[tab]}
+                {BANNER_LABEL[tab] || tab}
               </span>
               <span className="state-banner-count">{filtered.length} items</span>
               {tab === 'review' && role !== 'reviewer' && (

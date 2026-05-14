@@ -1,21 +1,18 @@
 .home {
   min-height: 100vh;
-  background:
-    radial-gradient(800px circle at 20% -10%, rgba(244, 63, 158, 0.08), transparent 50%),
-    radial-gradient(700px circle at 90% 110%, rgba(16, 185, 129, 0.06), transparent 50%),
-    #0a0a0b;
-  color: #e5e7eb;
-  font-family: var(--mono), 'JetBrains Mono', ui-monospace, monospace;
-  padding: 64px 48px 48px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  padding: 64px 48px 96px;
 }
 
 .home-loading {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: #0a0a0b;
-  color: #6b7280;
-  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--text-faint);
+  font-family: var(--sans);
 }
 
 .home-hero {
@@ -23,38 +20,23 @@
   margin: 0 auto 56px;
 }
 
-.hero-mark {
-  font-family: var(--mono);
-  font-size: 14px;
-  letter-spacing: 0.3em;
-  color: var(--pink);
-  margin-bottom: 18px;
-}
-
 .home-hero h1 {
-  font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;
-  font-size: 56px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  margin: 0 0 14px;
-  color: #fff;
-}
-
-.hero-mark-accent {
-  background: linear-gradient(90deg, #f43f9e, #a855f7);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 500;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: -0.36px;
+  line-height: 1.17;
+  margin: 0 0 12px;
+  color: var(--ink);
 }
 
 .hero-sub {
   font-size: 16px;
-  line-height: 1.6;
-  color: #9ca3af;
-  max-width: 680px;
-  margin: 0;
-  font-family: -apple-system, system-ui, sans-serif;
+  line-height: 1.5;
+  letter-spacing: 0.16px;
+  color: var(--text-sub);
+  max-width: 580px;
+  margin: 0 0 24px;
 }
 
 .project-grid {
@@ -67,89 +49,74 @@
 
 .project-card {
   display: block;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 22px 22px 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
   text-decoration: none;
   color: inherit;
-  transition: all 0.18s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.project-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(244,63,158,0.5), transparent);
-  opacity: 0;
-  transition: opacity 0.2s;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .project-card:hover {
-  background: rgba(255,255,255,0.04);
-  border-color: rgba(244,63,158,0.3);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
 }
-
-.project-card:hover::before { opacity: 1; }
 
 .project-card.is-stub {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
-.project-card.is-built {
-  border-color: rgba(16,185,129,0.25);
-}
-
 .pc-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .pc-name {
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 19px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.01em;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0.18px;
 }
 
 .pc-status {
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 4px;
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.96px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-raised);
+  color: var(--text-sub);
 }
 
-.pc-status-live { background: rgba(16,185,129,0.15); color: #10b981; }
-.pc-status-stub { background: rgba(156,163,175,0.15); color: #9ca3af; }
+.pc-status-live {
+  background: var(--green-light);
+  color: var(--green-deep);
+}
 
 .pc-tagline {
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.55;
-  color: #9ca3af;
-  margin: 0 0 14px;
-  min-height: 40px;
+  font-size: 15px;
+  line-height: 1.47;
+  letter-spacing: 0.15px;
+  color: var(--text-sub);
+  margin: 0 0 16px;
+  min-height: 44px;
 }
 
 .pc-meta {
   display: flex;
   gap: 12px;
-  font-size: 11px;
-  color: #6b7280;
-  margin-bottom: 18px;
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-bottom: 16px;
 }
 
-.pc-category { color: #9ca3af; }
-.pc-url::before { content: '→ '; opacity: 0.5; }
+.pc-url { color: var(--text-sub); }
 
 .pc-progress {
   margin-bottom: 14px;
@@ -157,7 +124,7 @@
 
 .pc-progress-track {
   height: 3px;
-  background: rgba(255,255,255,0.05);
+  background: var(--surface-raised);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 6px;
@@ -165,40 +132,40 @@
 
 .pc-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--pink), #a855f7);
+  background: var(--ink);
   transition: width 0.4s ease;
 }
 
+.is-built .pc-progress-fill {
+  background: var(--green);
+}
+
 .pc-progress-label {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.96px;
+  color: var(--text-faint);
   text-transform: uppercase;
 }
 
-.is-built .pc-progress-fill {
-  background: linear-gradient(90deg, #10b981, #34d399);
-}
-
-.is-built .pc-progress-label {
-  color: #10b981;
-}
+.is-built .pc-progress-label { color: var(--green); }
 
 .pc-cta {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--pink);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0.15px;
 }
 
-.is-built .pc-cta { color: #10b981; }
-.is-stub .pc-cta { color: #6b7280; }
+.is-stub .pc-cta { color: var(--text-faint); }
 
 .home-footer {
   max-width: 1100px;
   margin: 80px auto 0;
-  padding-top: 28px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  font-size: 11px;
-  color: #6b7280;
-  letter-spacing: 0.05em;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-faint);
+  letter-spacing: 0.96px;
+  text-transform: uppercase;
 }

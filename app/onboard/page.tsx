@@ -3,6 +3,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useToken, authHeaders } from '@/_hooks/useToken'
+import { RefreshCw } from 'lucide-react'
+import '../../Wizard.css'
 
 type Phase = 'input' | 'analyzing' | 'confirm' | 'creating' | 'done'
 
@@ -16,6 +18,29 @@ type Analysis = {
   positioning: string
   competitors: string[]
   suggested_channels: string[]
+}
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '12px 16px',
+  height: 44,
+  borderRadius: 8,
+  border: '1px solid var(--border-strong)',
+  background: 'var(--card)',
+  color: 'var(--ink)',
+  fontSize: 16,
+  marginBottom: 20,
+  boxSizing: 'border-box',
+  outline: 'none',
+  fontFamily: 'var(--sans)',
+}
+
+const labelStyle: React.CSSProperties = {
+  display: 'block',
+  marginBottom: 6,
+  fontWeight: 500,
+  fontSize: 15,
+  color: 'var(--ink)',
 }
 
 export default function Onboard() {
@@ -91,7 +116,7 @@ export default function Onboard() {
         <div className="success-burst">
           <div className="success-checkmark">✓</div>
           <h1>Product Created</h1>
-          <p>Redirecting to ContentOS wizard...</p>
+          <p style={{ color: 'var(--text-sub)', fontSize: 16 }}>Redirecting to ContentOS wizard...</p>
         </div>
       </div>
     )
@@ -102,63 +127,73 @@ export default function Onboard() {
       <header className="wizard-header">
         <Link href="/" className="wizard-back">← projects</Link>
         <div className="wizard-title">
-          <span className="wt-label">ONBOARDING</span>
+          <span className="wt-label">Onboarding</span>
           <h1>New Product</h1>
         </div>
       </header>
 
-      <div style={{ maxWidth: 640, margin: '0 auto', padding: '32px 16px' }}>
+      <div style={{ maxWidth: 560, margin: '0 auto', padding: '48px 24px' }}>
         {phase === 'input' && (
           <div>
-            <h2 style={{ marginBottom: 8 }}>New Product</h2>
-            <p style={{ color: '#9ca3af', marginBottom: 24 }}>
+            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 32, fontWeight: 300, color: 'var(--ink)', margin: '0 0 8px', letterSpacing: '-0.32px' }}>
+              Add a product
+            </h2>
+            <p style={{ color: 'var(--text-sub)', marginBottom: 32, fontSize: 16, lineHeight: 1.5 }}>
               填 URL 让 AI 自动分析，或者直接跳过手动填写。
             </p>
-            {error && <p style={{ color: '#ef4444', marginBottom: 16 }}>{error}</p>}
-            <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Website URL <span style={{ color: '#6b7280', fontWeight: 400 }}>(optional)</span></label>
+            {error && <p style={{ color: 'var(--red)', marginBottom: 16, fontSize: 15 }}>{error}</p>}
+            <label style={labelStyle}>
+              Website URL <span style={{ fontWeight: 400, color: 'var(--text-faint)' }}>(optional)</span>
+            </label>
             <input
               type="url"
               value={website}
               onChange={e => setWebsite(e.target.value)}
               placeholder="https://your-product.com"
-              style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #374151',
-                background: '#1f2937', color: '#f9fafb', fontSize: 14, marginBottom: 16, boxSizing: 'border-box' as const }}
+              style={inputStyle}
             />
-            <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>GitHub KB URL <span style={{ color: '#6b7280', fontWeight: 400 }}>(optional)</span></label>
+            <label style={labelStyle}>
+              GitHub KB URL <span style={{ fontWeight: 400, color: 'var(--text-faint)' }}>(optional)</span>
+            </label>
             <input
               type="url"
               value={githubKb}
               onChange={e => setGithubKb(e.target.value)}
               placeholder="https://github.com/org/kb-repo"
-              style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #374151',
-                background: '#1f2937', color: '#f9fafb', fontSize: 14, marginBottom: 24, boxSizing: 'border-box' as const }}
+              style={inputStyle}
             />
-            <button className="btn btn-primary" onClick={runAnalysis} style={{ width: '100%', marginBottom: 10 }}>
+            <button className="btn btn-primary" onClick={runAnalysis} style={{ width: '100%' }}>
               {website.trim() ? 'AI 分析产品 →' : '手动填写 →'}
             </button>
           </div>
         )}
 
         {phase === 'analyzing' && (
-          <div style={{ textAlign: 'center', paddingTop: 64 }}>
-            <div style={{ fontSize: 32, marginBottom: 16 }}>⟳</div>
-            <h2>Analyzing product...</h2>
-            <p style={{ color: '#9ca3af' }}>AI is scraping {website} and extracting GTM metadata.</p>
+          <div style={{ textAlign: 'center', paddingTop: 80 }} className="wizard-spinner">
+            <RefreshCw size={32} style={{ animation: 'spin 1s linear infinite', color: 'var(--ink)' }} />
+            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 24, fontWeight: 300, color: 'var(--ink)', margin: 0 }}>
+              Analyzing product...
+            </h2>
+            <p style={{ color: 'var(--text-sub)', margin: 0, fontSize: 15 }}>
+              AI is scraping {website} and extracting GTM metadata.
+            </p>
           </div>
         )}
 
         {phase === 'confirm' && editedAnalysis && (
           <div>
-            <h2 style={{ marginBottom: 8 }}>新建产品</h2>
-            {error && <p style={{ color: '#ef4444', marginBottom: 16 }}>{error}</p>}
+            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 32, fontWeight: 300, color: 'var(--ink)', margin: '0 0 24px', letterSpacing: '-0.32px' }}>
+              新建产品
+            </h2>
+            {error && <p style={{ color: 'var(--red)', marginBottom: 16, fontSize: 15 }}>{error}</p>}
             {([
               { key: 'name', label: '产品名称', placeholder: 'Solvea' },
               { key: 'slug', label: 'Slug（URL）', placeholder: 'solvea' },
             ] as const).map(({ key, label, placeholder }) => (
-              <div key={key} style={{ marginBottom: 16 }}>
-                <label style={{ display: 'block', marginBottom: 4, fontWeight: 600, fontSize: 13 }}>{label}</label>
+              <div key={key}>
+                <label style={labelStyle}>{label}</label>
                 <input
-                  value={(editedAnalysis as any)[key] || ''}
+                  value={(editedAnalysis as unknown as Record<string, string>)[key] || ''}
                   onChange={e => {
                     const val = key === 'slug'
                       ? e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-')
@@ -166,8 +201,7 @@ export default function Onboard() {
                     setEditedAnalysis({ ...editedAnalysis, [key]: val })
                   }}
                   placeholder={placeholder}
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #374151',
-                    background: '#1f2937', color: '#f9fafb', fontSize: 14, boxSizing: 'border-box' as const }}
+                  style={inputStyle}
                 />
               </div>
             ))}
@@ -183,9 +217,11 @@ export default function Onboard() {
         )}
 
         {phase === 'creating' && (
-          <div style={{ textAlign: 'center', paddingTop: 64 }}>
-            <div style={{ fontSize: 32, marginBottom: 16 }}>⟳</div>
-            <h2>Creating product workspace...</h2>
+          <div style={{ textAlign: 'center', paddingTop: 80 }} className="wizard-spinner">
+            <RefreshCw size={32} style={{ animation: 'spin 1s linear infinite', color: 'var(--ink)' }} />
+            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 24, fontWeight: 300, color: 'var(--ink)', margin: 0 }}>
+              Creating product workspace...
+            </h2>
           </div>
         )}
       </div>

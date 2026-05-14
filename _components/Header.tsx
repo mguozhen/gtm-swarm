@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { RefreshCw } from 'lucide-react'
 import './Header.css'
 
 export function Header({ onRefresh }: { onRefresh?: () => void }) {
@@ -26,7 +27,7 @@ export function Header({ onRefresh }: { onRefresh?: () => void }) {
             setTimeout(() => setRefreshing(false), 600)
           }}
         >
-          <span className="dj-btn-icon">{refreshing ? '⟳' : '↻'}</span>
+          <RefreshCw size={14} className={refreshing ? 'dj-spin' : ''} />
           <span>{refreshing ? 'Refreshing…' : 'Refresh'}</span>
         </button>
       </div>

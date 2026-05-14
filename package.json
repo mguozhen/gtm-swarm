@@ -17,6 +17,7 @@
     "@uiw/react-md-editor": "^4.1.0",
     "gray-matter": "^4.0.3",
     "js-yaml": "^4.1.0",
+    "lucide-react": "^1.16.0",
     "next": "^15.3.2",
     "node-cron": "^3.0.3",
     "pg": "^8.13.3",

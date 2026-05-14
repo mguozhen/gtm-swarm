@@ -13,6 +13,8 @@ jobs:
       MULTICA_DATABASE_URL: ${{ secrets.MULTICA_DATABASE_URL }}
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      CIA_HUB_TOKEN: ${{ secrets.CIA_HUB_TOKEN }}
+      CIA_HUB_URL: ${{ secrets.CIA_HUB_URL }}
       PROJECT_DIR: ${{ secrets.PROJECT_DIR }}
     steps:
       - name: Deploy to server
@@ -21,7 +23,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DB_PASSWORD,GTM_DATABASE,MULTICA_DATABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,NEXT_PUBLIC_SUPABASE_URL,PROJECT_DIR
+          envs: DB_PASSWORD,GTM_DATABASE,MULTICA_DATABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,NEXT_PUBLIC_SUPABASE_URL,CIA_HUB_TOKEN,CIA_HUB_URL,PROJECT_DIR
           script: |
             set -e
             DEPLOY_DIR="${PROJECT_DIR}/dashboard"
@@ -40,6 +42,8 @@ jobs:
               echo "MULTICA_DATABASE_URL=${MULTICA_DATABASE_URL}"
               echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY}"
               echo "NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}"
+              echo "CIA_HUB_TOKEN=${CIA_HUB_TOKEN}"
+              echo "CIA_HUB_URL=${CIA_HUB_URL}"
             } > "${DEPLOY_DIR}/.env"
 
             cd "${DEPLOY_DIR}"

@@ -10,8 +10,12 @@ const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat'
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6'
 const ANTHROPIC_BASE_URL = process.env.ANTHROPIC_BASE_URL || undefined
 
+function getAnthropicKey() {
+  return process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN || ''
+}
+
 export function hasAnthropic() {
-  return Boolean(process.env.DEEPSEEK_API_KEY || process.env.ANTHROPIC_API_KEY)
+  return Boolean(process.env.DEEPSEEK_API_KEY || getAnthropicKey())
 }
 
 async function completeDeepSeek(prompt, opts = {}) {
@@ -40,7 +44,7 @@ async function completeDeepSeek(prompt, opts = {}) {
 let anthropicClient = null
 async function completeAnthropic(prompt, opts = {}) {
   if (!anthropicClient) {
-    const clientOpts = { apiKey: process.env.ANTHROPIC_API_KEY }
+    const clientOpts = { apiKey: getAnthropicKey() }
     if (ANTHROPIC_BASE_URL) clientOpts.baseURL = ANTHROPIC_BASE_URL
     anthropicClient = new Anthropic(clientOpts)
   }

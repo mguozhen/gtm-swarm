@@ -163,7 +163,7 @@ export default function App() {
     published: counts.published,
   }
 
-  const reviewAction = role === 'reviewer' ? async (item: typeof items[number], action: 'approve' | 'reject', reason?: string) => {
+  const reviewAction = async (item: typeof items[number], action: 'approve' | 'reject', reason?: string) => {
     const isMultica = item.file?.startsWith('multica://')
     if (isMultica) {
       const r = await postJson<{ ok?: boolean; error?: string }>('/api/review-multica', { issue_id: item.id, action, reason: reason || '' }, token)
@@ -175,7 +175,7 @@ export default function App() {
       if (r.error) alert('Review failed: ' + r.error)
     }
     refresh()
-  } : undefined
+  }
 
   return (
     <div className="page">
@@ -276,7 +276,7 @@ export default function App() {
               items={filtered}
               selectedId={selected?.id || ''}
               onSelect={setSelectedId}
-              onReview={tab === 'review' || tab === 'drafts' ? reviewAction : undefined}
+              onReview={tab === 'review' ? reviewAction : undefined}
             />
           </div>
           <PreviewPane item={selected} />

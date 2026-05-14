@@ -392,6 +392,26 @@ export function mountApi(app) {
     res.json({ ok: true, topic })
   })
 
+  r.post('/create-idea', async (req, res) => {
+    const { project, topic, angle, hook } = req.body || {}
+    if (!project || !topic) return res.status(400).json({ error: 'project and topic are required' })
+    if (!hasMultica()) return res.status(503).json({ error: 'No database configured' })
+    try {
+      const { getWorkspaceBySlug, getOrCreateGTMUser, createIssue } = await import('./multica-db.js')
+      const ws = await getWorkspaceBySlug(project)
+      if (!ws) return res.status(404).json({ error: `workspace "${project}" not found` })
+      const creatorId = await getOrCreateGTMUser()
+      const parts = []
+      if (angle) parts.push(`**Angle**: ${angle}`)
+      if (hook) parts.push(`**Hook seed**: ${hook}`)
+      const description = parts.join('\n\n')
+      const id = await createIssue(ws.id, { title: topic, description, status: 'backlog', creatorId })
+      res.json({ ok: true, id })
+    } catch (e) {
+      res.status(500).json({ error: String(e?.message || e) })
+    }
+  })
+
   r.post('/source-ideas', async (req, res) => {
     const { project, agent, n } = req.body || {}
     if (!project) return res.status(400).json({ error: 'project required' })

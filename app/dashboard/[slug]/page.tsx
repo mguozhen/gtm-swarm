@@ -23,6 +23,16 @@ const TAB_TO_STATE: Record<Exclude<TabKey, 'overview' | 'ledger' | 'north-star' 
   published: 'published',
 }
 
+type CIAResult = {
+  tagline?: string
+  category?: string
+  audience?: { primary?: string; secondary?: string }
+  positioning?: string
+  competitors?: string[]
+  suggested_channels?: string[]
+  analyzed_at?: string
+}
+
 type AgentRow = {
   id: string
   name: string
@@ -122,6 +132,7 @@ export default function App() {
   const [wsData, setWsData] = useState<{
     lifecycle_state?: string
     agents?: AgentRow[]
+    cia_result?: CIAResult | null
   } | null>(null)
 
   useEffect(() => {
@@ -230,6 +241,52 @@ export default function App() {
       {tab === 'overview' ? (
         <div>
           <ProjectOverview slug={slug} />
+          {wsData?.cia_result && (
+            <div style={{ padding: '0 24px 24px' }}>
+              <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.96px', textTransform: 'uppercase', color: 'var(--text-faint)', marginBottom: 12 }}>
+                CIA Insights
+                {wsData.cia_result.analyzed_at && (
+                  <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, marginLeft: 8 }}>
+                    · 分析于 {wsData.cia_result.analyzed_at.slice(0, 10)}
+                  </span>
+                )}
+              </div>
+              <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: 16, boxShadow: 'var(--shadow-sm)', display: 'grid', gap: 8 }}>
+                {wsData.cia_result.tagline && (
+                  <div style={{ fontSize: 14, color: 'var(--ink)', fontStyle: 'italic' }}>"{wsData.cia_result.tagline}"</div>
+                )}
+                {wsData.cia_result.category && (
+                  <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>
+                    <span style={{ color: 'var(--text-faint)' }}>Category </span>{wsData.cia_result.category}
+                  </div>
+                )}
+                {wsData.cia_result.positioning && (
+                  <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>
+                    <span style={{ color: 'var(--text-faint)' }}>Positioning </span>{wsData.cia_result.positioning}
+                  </div>
+                )}
+                {wsData.cia_result.audience?.primary && (
+                  <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>
+                    <span style={{ color: 'var(--text-faint)' }}>Audience </span>
+                    {wsData.cia_result.audience.primary}
+                    {wsData.cia_result.audience.secondary && ` · ${wsData.cia_result.audience.secondary}`}
+                  </div>
+                )}
+                {wsData.cia_result.competitors && wsData.cia_result.competitors.length > 0 && (
+                  <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>
+                    <span style={{ color: 'var(--text-faint)' }}>Competitors </span>
+                    {wsData.cia_result.competitors.join(' · ')}
+                  </div>
+                )}
+                {wsData.cia_result.suggested_channels && wsData.cia_result.suggested_channels.length > 0 && (
+                  <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>
+                    <span style={{ color: 'var(--text-faint)' }}>Channels </span>
+                    {wsData.cia_result.suggested_channels.join(' · ')}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           {wsData?.agents && wsData.agents.length > 0 && (
             <div style={{ padding: '0 24px 24px' }}>
               <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.96px', textTransform: 'uppercase', color: 'var(--text-faint)', marginBottom: 12 }}>

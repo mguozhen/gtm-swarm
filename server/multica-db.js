@@ -247,13 +247,13 @@ export async function getContentCounts(workspaceSlug) {
   )
   const counts = { 'new-idea': 0, draft: 0, bank: 0, published: 0 }
   for (const r of rows) {
-    const state = STATUS_MAP[r.status] || 'draft'
-    if (r.is_top_level && state === 'new-idea') counts['new-idea']++
-    else if (!r.is_top_level) {
-      if (state === 'new-idea') counts.draft++  // child with backlog = not yet started, still show as draft
-      else if (state === 'draft') counts.draft++
-      else if (state === 'bank') counts.bank++
-      else if (state === 'published') counts.published++
+    if (r.is_top_level) {
+      // Ideas: only top-level backlog/todo
+      if (r.status === 'backlog' || r.status === 'todo') counts['new-idea']++
+    } else {
+      // Draft: only active work (in_progress, in_review) — excludes cancelled
+      if (r.status === 'in_progress' || r.status === 'in_review') counts.draft++
+      else if (r.status === 'done') counts.bank++
     }
   }
   return counts

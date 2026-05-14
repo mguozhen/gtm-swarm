@@ -33,8 +33,8 @@ export function bootstrap() {
 }
 
 export async function bootstrapDB() {
-  if (!process.env.DATABASE_URL) return
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
+  if (!process.env.GTM_DATABASE) return
+  const pool = new Pool({ connectionString: process.env.GTM_DATABASE, ssl: { rejectUnauthorized: false } })
   try {
     const migrationSql = readFileSync(path.join(ROOT, 'migrations/001-initial.sql'), 'utf-8')
     await pool.query(migrationSql)

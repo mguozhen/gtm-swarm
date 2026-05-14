@@ -4,17 +4,13 @@ const { Pool } = pg
 
 let pool = null
 
-function getMulticaUrl() {
-  return process.env.MULTICA_DATABASE_URL || process.env.GTM_DATABASE
-}
-
 export function hasMultica() {
-  return Boolean(getMulticaUrl())
+  return Boolean(process.env.MULTICA_DATABASE_URL)
 }
 
 function getPool() {
   if (!pool && hasMultica()) {
-    const url = getMulticaUrl()
+    const url = process.env.MULTICA_DATABASE_URL
     pool = new Pool({
       connectionString: url,
       ssl: url.includes('localhost') || url.includes('127.0.0.1')

@@ -5,19 +5,19 @@ const { Pool } = pg
 let pool = null
 
 export function hasDB() {
-  return Boolean(process.env.DATABASE_URL)
+  return Boolean(process.env.GTM_DATABASE)
 }
 
 export function getPool() {
   if (!pool && hasDB()) {
-    pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
+    pool = new Pool({ connectionString: process.env.GTM_DATABASE, ssl: { rejectUnauthorized: false } })
   }
   return pool
 }
 
 export async function query(sql, params = []) {
   const p = getPool()
-  if (!p) throw new Error('No DATABASE_URL set')
+  if (!p) throw new Error('No GTM_DATABASE set')
   const { rows } = await p.query(sql, params)
   return rows
 }

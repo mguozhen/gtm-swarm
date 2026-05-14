@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   if (hasMultica()) {
     const {
       getIssue, updateIssueStatus, getWorkspaceBySlug,
-      getWorkspaceAgents, createIssue, getOrCreateGTMUser,
+      getWorkspaceAgents, createIssue, getOrCreateGTMUser, postComment,
     } = await import('@/server/multica-db.js')
 
     const issue = await getIssue(idea_id)
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     const agents = await getWorkspaceAgents(MULTICA_WORKSPACE_SLUG)
     if (!agents.length) return NextResponse.json({ error: 'no agents in workspace' }, { status: 503 })
 
-    const creatorId = await getOrCreateGTMUser()
+    const creatorId = await getOrCreateGTMUser(ws.id)
     await updateIssueStatus(idea_id, 'in_progress')
 
     const notified: { agent: string; channel: string; issue_id: string }[] = []
@@ -80,6 +80,9 @@ export async function POST(request: NextRequest) {
         parentId: idea_id,
         assigneeId: agent.id,
       })
+      // Post a trigger comment so Multica picks up the mention and dispatches the agent
+      const triggerComment = `[@${agent.name}](mention://agent/${agent.id}) 请执行`
+      await postComment(issueId, { body: triggerComment, authorId: creatorId, authorType: 'member', workspaceId: ws.id })
       notified.push({ agent: agent.name, channel: agent.channel, issue_id: issueId })
     }
 

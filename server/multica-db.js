@@ -45,14 +45,22 @@ export async function getOrCreateWorkspace(slug, name) {
   return row.id
 }
 
-export async function getOrCreateGTMUser() {
+export async function getOrCreateGTMUser(workspaceId = null) {
   const email = 'gtm-swarm-bot@gtm-swarm.internal'
   const row = await q1(
     `INSERT INTO "user" (name, email) VALUES ('GTM Swarm', $1)
      ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name RETURNING id`,
     [email]
   )
-  return row.id
+  const userId = row.id
+  if (workspaceId) {
+    await q(
+      `INSERT INTO member (workspace_id, user_id, role) VALUES ($1, $2, 'member')
+       ON CONFLICT (workspace_id, user_id) DO NOTHING`,
+      [workspaceId, userId]
+    )
+  }
+  return userId
 }
 
 export async function upsertMember(workspaceId, userId, role = 'member') {
@@ -121,11 +129,13 @@ export async function addIssueLabel(issueId, labelId) {
   )
 }
 
-export async function postComment(issueId, { body, authorId, authorType = 'agent' }) {
+export async function postComment(issueId, { body, authorId, authorType = 'agent', workspaceId = null }) {
+  const issue = workspaceId ? null : await q1('SELECT workspace_id FROM issue WHERE id = $1', [issueId])
+  const wsId = workspaceId || issue?.workspace_id
   const row = await q1(
-    `INSERT INTO comment (issue_id, body, author_type, author_id)
-     VALUES ($1, $2, $3, $4) RETURNING id`,
-    [issueId, body, authorType, authorId]
+    `INSERT INTO comment (issue_id, content, author_type, author_id, workspace_id)
+     VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+    [issueId, body, authorType, authorId, wsId]
   )
   return row.id
 }

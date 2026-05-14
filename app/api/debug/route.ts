@@ -13,6 +13,7 @@ export async function GET() {
       const { listAllWorkspaces, getWorkspaceAgents } = await import('@/server/multica-db.js')
       result.multica_workspaces = await listAllWorkspaces()
       result.gtm_agents = await getWorkspaceAgents('gtm')
+      result.vocai_agents = await getWorkspaceAgents('voc-ai')
     } catch (e: unknown) {
       result.multica_error = (e as Error).message
     }

@@ -6,21 +6,78 @@ export function IdeasPool({
   items,
   onPromote,
   onReject,
+  onCreateIdea,
 }: {
   items: ContentItem[]
   onPromote: (item: ContentItem) => Promise<void> | void
   onReject: (item: ContentItem, reason: string) => Promise<void> | void
+  onCreateIdea: (topic: string, angle: string, hook: string) => Promise<void>
 }) {
   const [busyId, setBusyId] = useState<string | null>(null)
   const [rejectingId, setRejectingId] = useState<string | null>(null)
   const [reason, setReason] = useState('')
+  const [showCreate, setShowCreate] = useState(false)
+  const [creating, setCreating] = useState(false)
+  const [newTopic, setNewTopic] = useState('')
+  const [newAngle, setNewAngle] = useState('')
+  const [newHook, setNewHook] = useState('')
+
+  const createForm = showCreate && (
+    <div className="ip-create-form">
+      <input
+        autoFocus
+        className="ip-create-input"
+        placeholder="Topic — what's the idea? (required)"
+        value={newTopic}
+        onChange={e => setNewTopic(e.target.value)}
+      />
+      <input
+        className="ip-create-input"
+        placeholder="Angle — framing or perspective (optional)"
+        value={newAngle}
+        onChange={e => setNewAngle(e.target.value)}
+      />
+      <input
+        className="ip-create-input"
+        placeholder="Hook seed — opening sentence (optional)"
+        value={newHook}
+        onChange={e => setNewHook(e.target.value)}
+      />
+      <div className="ip-create-actions">
+        <button
+          className="btn-ip btn-ip-cancel"
+          onClick={() => { setShowCreate(false); setNewTopic(''); setNewAngle(''); setNewHook('') }}
+        >Cancel</button>
+        <button
+          className="btn-ip btn-ip-promote"
+          disabled={!newTopic.trim() || creating}
+          onClick={async () => {
+            setCreating(true)
+            await onCreateIdea(newTopic.trim(), newAngle.trim(), newHook.trim())
+            setCreating(false)
+            setShowCreate(false)
+            setNewTopic(''); setNewAngle(''); setNewHook('')
+          }}
+        >{creating ? '⟳ Creating…' : '✓ Create'}</button>
+      </div>
+    </div>
+  )
 
   if (items.length === 0) {
     return (
-      <div className="ip-empty">
-        <div className="ip-empty-icon">💡</div>
-        <h3>Ideas Pool is empty</h3>
-        <p>Run <code>scripts/source-ideas.py --project &lt;slug&gt;</code> or wait for the daily cron at 08:00 UTC.</p>
+      <div>
+        <div className="ip-header" style={{ marginBottom: 16 }}>
+          <h3>💡 Ideas Pool</h3>
+          <button className="ip-new-btn" onClick={() => setShowCreate(v => !v)}>
+            {showCreate ? '✕ Cancel' : '+ New Idea'}
+          </button>
+        </div>
+        {createForm}
+        <div className="ip-empty">
+          <div className="ip-empty-icon">💡</div>
+          <h3>Ideas Pool is empty</h3>
+          <p>Run <code>scripts/source-ideas.py --project &lt;slug&gt;</code> or wait for the daily cron at 08:00 UTC.</p>
+        </div>
       </div>
     )
   }
@@ -30,7 +87,11 @@ export function IdeasPool({
       <div className="ip-header">
         <h3>💡 Ideas Pool · {items.length} fresh</h3>
         <span className="ip-hint">Promote → triggers runner with this topic · Reject → writes anti-pattern</span>
+        <button className="ip-new-btn" onClick={() => setShowCreate(v => !v)}>
+          {showCreate ? '✕ Cancel' : '+ New Idea'}
+        </button>
       </div>
+      {createForm}
       <div className="ip-grid">
         {items.map(it => {
           const fm = it.frontmatter as Record<string, string>

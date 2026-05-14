@@ -1,28 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
-import path from 'node:path'
-import matter from 'gray-matter'
-import { PROJECTS_DIR } from '@/lib/fs-api'
+import { hasDB } from '@/server/db.js'
+import * as store from '@/server/store.js'
+import { hasMultica } from '@/server/multica-db.js'
 
 export async function GET(request: NextRequest) {
   const project = request.nextUrl.searchParams.get('project') || ''
-  const agentsDir = path.join(PROJECTS_DIR, project, 'agents')
-  if (!project || !existsSync(agentsDir)) {
-    return NextResponse.json({ error: 'project agents dir not found' }, { status: 404 })
+  if (!project) return NextResponse.json({ error: 'project required' }, { status: 400 })
+
+  if (hasMultica()) {
+    const { getWorkspaceAgents } = await import('@/server/multica-db.js')
+    const agents = await getWorkspaceAgents('GTM')
+    return NextResponse.json({ project, agents })
   }
-  const out = readdirSync(agentsDir)
-    .filter(n => existsSync(path.join(agentsDir, n, 'agent.yaml')))
-    .sort()
-    .map(id => {
-      const raw = readFileSync(path.join(agentsDir, id, 'agent.yaml'), 'utf-8')
-      let yaml: Record<string, unknown> = {}
-      try { yaml = (matter('---\n' + raw + '\n---\n').data) as Record<string, unknown> } catch {}
-      const metricsPath = path.join(agentsDir, id, 'metrics.json')
-      let metrics: Record<string, unknown> = {}
-      if (existsSync(metricsPath)) {
-        try { metrics = JSON.parse(readFileSync(metricsPath, 'utf-8')) } catch {}
-      }
-      return { id, yaml, metrics }
-    })
-  return NextResponse.json({ project, agents: out })
+
+  if (hasDB()) {
+    const ws = await store.getWorkspace(project)
+    if (!ws) return NextResponse.json({ error: 'workspace not found' }, { status: 404 })
+    const agents = await store.listAgentsForWorkspace(ws.id)
+    return NextResponse.json({ project, agents })
+  }
+
+  return NextResponse.json({ error: 'no database configured' }, { status: 503 })
 }

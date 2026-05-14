@@ -70,7 +70,11 @@ export function formatDigestMarkdown(digest) {
   }
   if (digest.publicUrl) {
     lines.push(`---`)
-    lines.push(`[Open Ideas Pool](${digest.publicUrl}/dashboard)  ·  CLI: \`gtm-idea pop --project <slug>\``)
+    const ledgerLinks = digest.projects
+      .map(p => `[${p.slug} ledger](${digest.publicUrl}/dashboard/${p.slug})`)
+      .join('  ·  ')
+    lines.push(`📒 Ledger: ${ledgerLinks}`)
+    lines.push(`💡 Ideas Pool: [open](${digest.publicUrl}/dashboard)  ·  CLI: \`gtm-idea pop --project <slug>\``)
   }
   return lines.join('\n')
 }

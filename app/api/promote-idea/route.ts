@@ -8,8 +8,11 @@ import { runAgent } from '@/server/runner.js'
 import { hasMultica } from '@/server/multica-db.js'
 import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
 
-function agentBrief(channel: string, topic: string, angle: string, hook: string): string {
-  return `## Task Brief — ${channel}
+function agentBrief(channel: string, topic: string, angle: string, hook: string, agentId: string, agentName: string): string {
+  const mention = `[@${agentName}](mention://agent/${agentId})`
+  return `${mention} 请执行
+
+## Task Brief — ${channel}
 
 **Topic:** ${topic}${angle ? `\n**Angle:** ${angle}` : ''}${hook ? `\n**Hook:** ${hook}` : ''}
 
@@ -68,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     const notified: { agent: string; channel: string; issue_id: string }[] = []
     for (const agent of agents) {
-      const description = agentBrief(agent.channel, topic, angle, hook)
+      const description = agentBrief(agent.channel, topic, angle, hook, agent.id, agent.name)
       const issueId = await createIssue(ws.id, {
         title: `[${agent.channel}] ${topic}`,
         description,

@@ -28,6 +28,7 @@ jobs:
 
             # Clone repo if first deploy, otherwise pull
             if [ ! -d "${DEPLOY_DIR}/.git" ]; then
+              ssh-keyscan github.com >> ~/.ssh/known_hosts
               git clone git@github.com:SolveaCX/gtm-swarm.git "${DEPLOY_DIR}"
             fi
 

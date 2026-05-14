@@ -9,12 +9,12 @@ export type ProjectMetaPayload = {
   briefs: BriefInfo[]
 }
 
-export function useProjectMeta(slug: string | undefined) {
+export function useProjectMeta(slug: string | undefined, refreshKey = 0) {
   const [data, setData] = useState<ProjectMetaPayload | null>(null)
   useEffect(() => {
     if (!slug) return
     fetch(`/api/project-meta?project=${slug}`).then(r => r.json()).then(setData)
-  }, [slug])
+  }, [slug, refreshKey])
   return data
 }
 

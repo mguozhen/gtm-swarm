@@ -25,6 +25,7 @@ const TAB_TO_STATE: Record<Exclude<TabKey, 'overview' | 'ledger' | 'north-star' 
 
 type AgentRow = {
   id: string
+  name: string
   channel: string
   status: string
   config: Record<string, unknown>
@@ -57,7 +58,7 @@ function AgentChannelCard({ agent }: { agent: AgentRow }) {
           width: 7, height: 7, borderRadius: '50%',
           background: agent.status === 'active' ? 'var(--green)' : 'var(--text-faint)',
         }} />
-        <span style={{ fontWeight: 600, fontSize: 13, color: accent }}>{agent.channel}</span>
+        <span style={{ fontWeight: 600, fontSize: 13, color: accent }}>{agent.name || agent.channel}</span>
         <span style={{ fontSize: 11, color: 'var(--text-faint)', marginLeft: 'auto' }}>{agent.status}</span>
       </div>
       {agent.kpi_defaults?.weekly_target && (

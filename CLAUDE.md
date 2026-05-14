@@ -24,6 +24,7 @@ Agents data comes **exclusively from Multica**. No GTM DB fallback for agents �
 - `/api/projects` — lists workspaces from DB only, no filesystem fallback
 - `/api/agents` — **multica only**, no GTM DB fallback; queries by project slug first, then falls back to `'gtm'` workspace; returns 503 if multica not configured
 - `/api/workspaces/[slug]` — agents always fetched from multica `'gtm'` workspace when multica is available
+- `/api/content` — **multica only** when `MULTICA_DATABASE_URL` is set; reads Issues from Multica DB exclusively; no GTM DB content_items, no filesystem fallback
 
 ## Agent Config — Multica is Source of Truth
 
@@ -33,7 +34,7 @@ Agents data comes **exclusively from Multica**. No GTM DB fallback for agents �
 - Do NOT read `agent.yaml` in any code path when Multica is configured (`hasMultica()`)
 - Do NOT create engine symlinks or local filesystem stubs to work around missing agent config
 - When `hasMultica()` is true, all agent metadata must be fetched from Multica and passed directly to runner/LLM logic
-- Content output (drafts, bank, published) is stored in the GTM database (`GTM_DATABASE`), not the filesystem
+- **All content lists (Ideas / Drafts / Review / Bank / Published) read exclusively from Multica Issues** — never from GTM DB `content_items` or filesystem; GTM DB is not used for content reads
 
 ## Idea → GTM 落地流程
 

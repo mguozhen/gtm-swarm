@@ -215,8 +215,8 @@ export async function getIssuesAsContent(workspaceSlug, statusFilter) {
     cancelled: 'draft',
   }
 
-  // Ideas = top-level issues (no parent), Drafts/Bank/Published = child issues (assigned to agents)
-  const isIdea = !statusFilter || statusFilter === 'new-idea'
+  // Ideas = top-level issues (no parent), everything else = child issues (assigned to agents)
+  const isIdea = statusFilter === 'new-idea'
 
   let sql = `
     SELECT i.id, i.title, i.description, i.status, i.created_at, i.updated_at,

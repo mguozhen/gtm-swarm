@@ -32,6 +32,10 @@ async function q1(sql, params = []) {
   return (await q(sql, params))[0] || null
 }
 
+export async function getWorkspaceBySlug(slug) {
+  return q1('SELECT id, slug, name FROM workspace WHERE slug = $1', [slug])
+}
+
 export async function getOrCreateWorkspace(slug, name) {
   const row = await q1(
     `INSERT INTO workspace (name, slug) VALUES ($1, $2)
@@ -150,6 +154,30 @@ export async function getWorkspaceAgents(workspaceSlug) {
      FROM agent a WHERE a.workspace_id = $1 ORDER BY a.name`,
     [ws.id]
   )
+
+  // Get issue counts per agent from last 30 days
+  const counts = await q(
+    `SELECT assignee_id,
+       COUNT(*) FILTER (WHERE status IN ('in_progress','in_review')) AS drafted,
+       COUNT(*) FILTER (WHERE status = 'done') AS approved,
+       COUNT(*) FILTER (WHERE status = 'cancelled') AS rejected,
+       COUNT(*) FILTER (WHERE status = 'done') AS published
+     FROM issue
+     WHERE workspace_id = $1
+       AND created_at > now() - interval '30 days'
+       AND assignee_id IS NOT NULL
+     GROUP BY assignee_id`,
+    [ws.id]
+  )
+  const metricsMap = Object.fromEntries(counts.map(c => [c.assignee_id, {
+    rolling_30d: {
+      drafted: Number(c.drafted),
+      approved: Number(c.approved),
+      rejected: Number(c.rejected),
+      published: Number(c.published),
+    }
+  }]))
+
   return agents.map(a => {
     let cfg = {}
     try { cfg = typeof a.runtime_config === 'string' ? JSON.parse(a.runtime_config) : (a.runtime_config || {}) } catch {}
@@ -158,7 +186,7 @@ export async function getWorkspaceAgents(workspaceSlug) {
       channel: cfg.gtm_channel || a.name.replace(/^GTM-/i, '').toLowerCase(),
       status: a.status || 'active',
       config: cfg,
-      metrics: {},
+      metrics: metricsMap[a.id] || { rolling_30d: { drafted: 0, approved: 0, rejected: 0, published: 0 } },
       review_checklist: [],
       dashboard_widgets: [],
       kpi_defaults: {},

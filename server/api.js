@@ -172,15 +172,30 @@ export function mountApi(app) {
     res.json({ project, agents: out })
   })
 
-  r.get('/project-meta', (req, res) => {
+  r.get('/project-meta', async (req, res) => {
     const project = req.query.project
-    const projectDir = path.join(PROJECTS_DIR, project || '')
-    if (!project || !existsSync(projectDir)) return res.status(404).json({ error: 'project not found' })
-    const projectYaml = readYaml(path.join(projectDir, 'project.yaml'))
+    if (!project) return res.status(400).json({ error: 'project required' })
+
+    // Base: try filesystem project.yaml, fall back to Multica workspace data
+    let projectYaml = {}
+    const projectDir = path.join(PROJECTS_DIR, project)
+    if (existsSync(path.join(projectDir, 'project.yaml'))) {
+      projectYaml = readYaml(path.join(projectDir, 'project.yaml'))
+    } else if (hasMultica()) {
+      const { getWorkspaceBySlug } = await import('./multica-db.js')
+      const ws = await getWorkspaceBySlug(project)
+      if (ws) projectYaml = { slug: ws.slug, name: ws.name, status: 'active' }
+      else projectYaml = { slug: project, name: project, status: 'active' }
+    }
+
+    // Contentos state: filesystem first, then default
     const stateFile = path.join(projectDir, '.contentos-state.json')
-    const strategyDir = path.join(projectDir, 'strategy')
-    const state = existsSync(stateFile) ? JSON.parse(readFileSync(stateFile, 'utf-8'))
+    const state = existsSync(stateFile)
+      ? JSON.parse(readFileSync(stateFile, 'utf-8'))
       : { current_step: 0, steps: {} }
+
+    // Strategy briefs: check filesystem
+    const strategyDir = path.join(projectDir, 'strategy')
     const briefMap = [
       [1, '01-market-insight'], [2, '02-user-insight'],
       [3, '03-competitor-analysis'], [4, '04-content-strategy'],
@@ -190,6 +205,7 @@ export function mountApi(app) {
       const exists = existsSync(f)
       return { step, key, exists, size: exists ? statSync(f).size : 0 }
     })
+
     res.json({ project, project_yaml: projectYaml, state, briefs })
   })
 

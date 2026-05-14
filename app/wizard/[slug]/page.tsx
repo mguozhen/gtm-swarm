@@ -33,8 +33,6 @@ function stepDurationMs(info?: StepInfo) {
   return new Date(info.completed_at).getTime() - new Date(info.started_at).getTime()
 }
 
-type CIAStatus = { phase: string; done: boolean; log: string[]; error?: string }
-
 export default function Wizard() {
   const params = useParams()
   const slug = params?.slug as string
@@ -47,51 +45,6 @@ export default function Wizard() {
   const [elapsedMs, setElapsedMs] = useState(0)
   const runStartedAtRef = useRef<number | null>(null)
   const [token] = useToken()
-  const [cia, setCia] = useState<CIAStatus | null>(null)
-  const [ciaSkipped, setCiaSkipped] = useState(false)
-  const ciaPollerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  const pollCIA = useCallback(() => {
-    if (!slug) return
-    fetch(`/api/cia/status/${slug}`).then(r => r.json()).then(d => {
-      setCia(d)
-      if (d.done && ciaPollerRef.current) {
-        clearInterval(ciaPollerRef.current)
-        ciaPollerRef.current = null
-      }
-    }).catch(() => {})
-  }, [slug])
-
-  useEffect(() => {
-    pollCIA()
-  }, [pollCIA])
-
-  const triggerCIA = async () => {
-    if (!slug) return
-    // Get product name from slug (best effort)
-    const name = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-    await fetch('/api/cia/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, slug }),
-    })
-    pollCIA()
-    // Start polling
-    if (ciaPollerRef.current) clearInterval(ciaPollerRef.current)
-    ciaPollerRef.current = setInterval(pollCIA, 3000)
-  }
-
-  // Auto-poll if CIA is running
-  useEffect(() => {
-    if (cia && !cia.done && cia.phase !== 'idle') {
-      if (!ciaPollerRef.current) {
-        ciaPollerRef.current = setInterval(pollCIA, 3000)
-      }
-    }
-    return () => {
-      if (ciaPollerRef.current) clearInterval(ciaPollerRef.current)
-    }
-  }, [cia?.phase, cia?.done])
 
   const refreshState = useCallback(async () => {
     if (!slug) return
@@ -242,43 +195,6 @@ export default function Wizard() {
               {loading === 'building' ? '⟳ Building…' : '⚡ Build 11 Agents'}
             </button>
           )}
-
-          {/* CIA Analysis panel */}
-          {!ciaSkipped && <div style={{ marginTop: 16, padding: '12px', background: '#0f172a', borderRadius: 8, border: '1px solid #1e293b' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-              <div style={{ fontSize: 11, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '.08em' }}>CIA 市场分析</div>
-              <button onClick={() => setCiaSkipped(true)} style={{ fontSize: 11, color: '#4b5563', background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px' }}>跳过</button>
-            </div>
-            {(!cia || cia.phase === 'idle') && (
-              <button className="btn btn-ghost" style={{ width: '100%', fontSize: 12 }} onClick={triggerCIA}>
-                🔍 触发 CIA 分析
-              </button>
-            )}
-            {cia && !cia.done && cia.phase !== 'idle' && (
-              <div>
-                <div style={{ fontSize: 12, color: '#f59e0b', marginBottom: 6 }}>⟳ {cia.phase}…</div>
-                <div style={{ fontSize: 10, color: '#4b5563', maxHeight: 80, overflow: 'hidden', fontFamily: 'monospace', lineHeight: 1.4 }}>
-                  {cia.log.slice(-4).join('\n')}
-                </div>
-              </div>
-            )}
-            {cia?.done && !cia.error && (
-              <div style={{ fontSize: 12, color: '#10b981' }}>
-                ✓ 分析完成 · project.yaml 已更新
-                <button className="btn btn-ghost" style={{ display: 'block', width: '100%', fontSize: 11, marginTop: 6 }} onClick={triggerCIA}>
-                  重新分析
-                </button>
-              </div>
-            )}
-            {cia?.error && (
-              <div>
-                <div style={{ fontSize: 11, color: '#ef4444', marginBottom: 4 }}>✗ {cia.error.slice(0, 60)}</div>
-                <button className="btn btn-ghost" style={{ width: '100%', fontSize: 11 }} onClick={triggerCIA}>
-                  重试
-                </button>
-              </div>
-            )}
-          </div>}
         </aside>
 
         <main className="wizard-main">

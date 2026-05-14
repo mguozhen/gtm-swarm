@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { listProjects, readRegistry } from '@/lib/fs-api'
 import { hasDB } from '@/server/db.js'
 import * as store from '@/server/store.js'
 import { hasMultica } from '@/server/multica-db.js'
@@ -20,5 +19,5 @@ export async function GET() {
     ]))
     return NextResponse.json({ registry: { projects, default: rows[0]?.slug }, discovered: rows.map((ws: { slug: string }) => ws.slug) })
   }
-  return NextResponse.json({ registry: readRegistry(), discovered: listProjects() })
+  return NextResponse.json({ registry: { projects: {}, default: null }, discovered: [] })
 }

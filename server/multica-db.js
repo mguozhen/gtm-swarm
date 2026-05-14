@@ -219,7 +219,8 @@ export async function getIssuesAsContent(workspaceSlug, statusFilter) {
            a.name AS agent_name
     FROM issue i
     LEFT JOIN agent a ON a.id = i.assignee_id
-    WHERE i.workspace_id = $1`
+    WHERE i.workspace_id = $1
+      AND i.parent_issue_id IS NULL`
   const params = [ws.id]
 
   if (statusFilter) {

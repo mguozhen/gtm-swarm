@@ -24,3 +24,12 @@ Agents data comes **exclusively from Multica**. No GTM DB fallback for agents �
 - `/api/projects` — lists workspaces from DB only, no filesystem fallback
 - `/api/agents` — **multica only**, no GTM DB fallback; queries by project slug first, then falls back to `'gtm'` workspace; returns 503 if multica not configured
 - `/api/workspaces/[slug]` — agents always fetched from multica `'gtm'` workspace when multica is available
+
+## Agent Config — Multica is Source of Truth
+
+**Never create or rely on local `agent.yaml` files.** Agent configuration (name, platform, reviewer, builder, goal, status) lives exclusively in the Multica database.
+
+- Do NOT add `agent.yaml` to any `projects/*/agents/*/` directory
+- Do NOT read `agent.yaml` in any code path when Multica is configured (`hasMultica()`)
+- Do NOT create engine symlinks or local filesystem stubs to work around missing agent config
+- When `hasMultica()` is true, all agent metadata must be fetched from Multica and passed directly to runner/LLM logic — the filesystem agent directory is only used for content output (drafts, bank, published files)

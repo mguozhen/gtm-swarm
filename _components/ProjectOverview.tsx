@@ -13,10 +13,23 @@ const STEP_LABELS: Record<number, string> = {
 }
 
 export function ProjectOverview({ slug }: { slug: string }) {
-  const meta = useProjectMeta(slug)
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [regenerating, setRegenerating] = useState<number | null>(null)
+  const meta = useProjectMeta(slug, refreshKey)
   const agents = useAgents(slug)
   const [expandedStep, setExpandedStep] = useState<number | null>(null)
   const brief = useStrategyBrief(slug, expandedStep)
+
+  const regenerateBrief = async (step: number) => {
+    setRegenerating(step)
+    try {
+      const r = await fetch(`/api/contentos/${slug}/run-with-cia?step=${step}`, { method: 'POST' }).then(r => r.json())
+      if (r.error) alert('Regeneration failed: ' + r.error)
+    } finally {
+      setRegenerating(null)
+      setRefreshKey(k => k + 1)
+    }
+  }
 
   if (!meta) return <div className="overview-loading">loading project…</div>
 
@@ -85,6 +98,20 @@ export function ProjectOverview({ slug }: { slug: string }) {
                     </span>
                   </span>
                   <span className="brief-chevron">{isOpen ? '▴' : '▾'}</span>
+                  {b.exists && (
+                    <span
+                      onClick={e => { e.stopPropagation(); regenerateBrief(b.step) }}
+                      style={{
+                        fontSize: 11, padding: '2px 6px', marginLeft: 4,
+                        color: 'var(--text-faint)', cursor: 'pointer',
+                        borderRadius: 4, border: '1px solid var(--border)',
+                        background: 'transparent', userSelect: 'none',
+                      }}
+                      title="基于 CIA 数据重新生成"
+                    >
+                      {regenerating === b.step ? '⟳' : '🔄'}
+                    </span>
+                  )}
                 </button>
                 {isOpen && brief?.step === b.step && (
                   <div className="brief-body">

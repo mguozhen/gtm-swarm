@@ -7,53 +7,64 @@ import { hasAnthropic } from '@/server/llm.js'
 import { runAgent } from '@/server/runner.js'
 import { hasMultica } from '@/server/multica-db.js'
 
+function agentBrief(channel: string, topic: string, angle: string, hook: string): string {
+  const lines = [`Topic: ${topic}`]
+  if (angle) lines.push(`Angle: ${angle}`)
+  if (hook) lines.push(`Hook: ${hook}`)
+  lines.push(`\nYour task: plan and execute ${channel} content for this topic. Break it down your own way.`)
+  return lines.join('\n')
+}
+
 export async function POST(request: NextRequest) {
-  const { project, agent, idea_id } = await request.json()
+  const body = await request.json()
+  const { project, idea_id, agent } = body
   if (!project || !idea_id) {
     return NextResponse.json({ error: 'project and idea_id are required' }, { status: 400 })
   }
 
   if (hasMultica()) {
-    if (!hasAnthropic()) return NextResponse.json({ error: 'ANTHROPIC_API_KEY not configured' }, { status: 503 })
-    const { getIssue, updateIssueStatus, getWorkspaceBySlug, getWorkspaceAgents } = await import('@/server/multica-db.js')
+    const {
+      getIssue, updateIssueStatus, getWorkspaceBySlug,
+      getWorkspaceAgents, createIssue, getOrCreateGTMUser,
+    } = await import('@/server/multica-db.js')
 
     const issue = await getIssue(idea_id)
     if (!issue) return NextResponse.json({ error: 'idea not found' }, { status: 404 })
+
     const topic = issue.title || ''
     if (!topic) return NextResponse.json({ error: 'no topic in idea' }, { status: 400 })
 
-    // Get agent config from Multica — use assignee or first agent in workspace
+    // Parse angle/hook from description if present
+    const descLines: string[] = (issue.description || '').split('\n')
+    const angle = descLines.find((l: string) => l.startsWith('**Angle**:'))?.replace('**Angle**:', '').trim() || ''
+    const hook = descLines.find((l: string) => l.startsWith('**Hook seed**:'))?.replace('**Hook seed**:', '').trim() || ''
+
     const ws = await getWorkspaceBySlug(project)
     if (!ws) return NextResponse.json({ error: `workspace "${project}" not found` }, { status: 404 })
 
     const agents = await getWorkspaceAgents(project)
-    const multicaAgent = agents.find((a: { id: string }) => a.id === issue.assignee_id) || agents[0]
-    if (!multicaAgent) return NextResponse.json({ error: 'no agents configured in workspace' }, { status: 503 })
+    if (!agents.length) return NextResponse.json({ error: 'no agents in workspace' }, { status: 503 })
 
-    const agentConfig = {
-      id: multicaAgent.id,
-      name: multicaAgent.name,
-      platform: multicaAgent.channel || 'blog',
-      reviewer: '',
-      builder: '',
-      default_product: project,
-    }
-
+    const creatorId = await getOrCreateGTMUser()
     await updateIssueStatus(idea_id, 'in_progress')
-    try {
-      const out = await runAgent(multicaAgent.id, {
-        project,
-        topic,
-        multica_issue_id: idea_id,
-        agentConfig,
-      } as Parameters<typeof runAgent>[1])
-      return NextResponse.json({ ok: true, topic, ...out })
-    } catch (e: unknown) {
-      return NextResponse.json({ error: String((e as Error)?.message || e), topic }, { status: 500 })
+
+    const notified: { agent: string; channel: string; issue_id: string }[] = []
+    for (const agent of agents) {
+      const description = agentBrief(agent.channel, topic, angle, hook)
+      const issueId = await createIssue(ws.id, {
+        title: `[${agent.channel}] ${topic}`,
+        description,
+        status: 'backlog',
+        creatorId,
+        parentId: idea_id,
+      })
+      notified.push({ agent: agent.name, channel: agent.channel, issue_id: issueId })
     }
+
+    return NextResponse.json({ ok: true, topic, agents_notified: notified })
   }
 
-  // Filesystem mode (no Multica)
+  // Filesystem mode (no Multica) — unchanged
   if (!agent) return NextResponse.json({ error: 'project + agent + idea_id required' }, { status: 400 })
   if (!hasAnthropic()) return NextResponse.json({ error: 'ANTHROPIC_API_KEY not configured' }, { status: 503 })
   const ideaFile = path.join(PROJECTS_DIR, project, 'agents', agent, 'content-bank', 'new-idea', `${idea_id}.md`)

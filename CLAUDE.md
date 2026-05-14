@@ -14,7 +14,8 @@ Two separate databases. Never mix them up.
 - External Multica project management database
 - Used **only** by `server/multica-db.js` (`hasMultica()` checks `MULTICA_DATABASE_URL`)
 - Contains workspaces, agents, issues from Multica's schema
-- Multica workspace slug is **`'gtm'`** (lowercase), workspace_id `95c76175-b7d0-4031-ae1e-51a1f2c895e9`
+- **Only workspace `slug = 'gtm'` is used. Ignore all other workspaces.** workspace_id `95c76175-b7d0-4031-ae1e-51a1f2c895e9`
+- Never query by any other workspace slug (voc-ai, solvea, flatkey, etc.) — always hardcode or resolve to `'gtm'`
 
 ### Priority in API routes
 Agents data comes **exclusively from Multica**. No GTM DB fallback for agents — if `MULTICA_DATABASE_URL` is not set, return 503.

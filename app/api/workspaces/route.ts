@@ -5,7 +5,6 @@ import yaml from 'js-yaml'
 import { PROJECTS_DIR } from '@/lib/fs-api'
 import { hasDB } from '@/server/db.js'
 import * as store from '@/server/store.js'
-import { runCIAAnalysis } from '@/server/cia.js'
 
 export async function GET() {
   if (!hasDB()) return NextResponse.json({ error: 'no database' })
@@ -56,9 +55,6 @@ export async function POST(request: NextRequest) {
     (reg.projects as Record<string, unknown>)[slug] = { slug, name, url: projData.url, status: 'active' }
     writeFileSync(regPath, JSON.stringify(reg, null, 2))
 
-    if (process.env.CIA_HUB_TOKEN && process.env.CIA_AUTO === '1') {
-      runCIAAnalysis(name, slug).catch((e: Error) => console.warn('[cia] auto-analyze failed:', e.message))
-    }
     return NextResponse.json({ slug, name, lifecycle_state: 'onboarding', ...projData })
   } catch (e: unknown) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 })

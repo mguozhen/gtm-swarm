@@ -26,6 +26,11 @@ jobs:
             set -e
             DEPLOY_DIR="${PROJECT_DIR}/dashboard"
 
+            # Clone repo if first deploy, otherwise pull
+            if [ ! -d "${DEPLOY_DIR}/.git" ]; then
+              git clone git@github.com:SolveaCX/gtm-swarm.git "${DEPLOY_DIR}"
+            fi
+
             # Write secrets to .env
             {
               echo "NODE_ENV=production"

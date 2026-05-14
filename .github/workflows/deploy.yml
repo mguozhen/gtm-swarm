@@ -17,8 +17,8 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ vars.SERVER_HOST }}
-          username: ${{ vars.SERVER_USER }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: DB_PASSWORD,GTM_DATABASE,MULTICA_DATABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,NEXT_PUBLIC_SUPABASE_URL
           script: |
@@ -26,6 +26,7 @@ jobs:
 
             # Write secrets to .env
             {
+              echo "NODE_ENV=production"
               echo "DB_PASSWORD=${DB_PASSWORD}"
               echo "GTM_DATABASE=${GTM_DATABASE}"
               echo "MULTICA_DATABASE_URL=${MULTICA_DATABASE_URL}"

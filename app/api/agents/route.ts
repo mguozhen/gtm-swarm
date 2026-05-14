@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
   if (hasMultica()) {
     const { getWorkspaceAgents } = await import('@/server/multica-db.js')
-    const agents = await getWorkspaceAgents('GTM')
+    const agents = await getWorkspaceAgents('gtm')
     return NextResponse.json({ project, agents })
   }
 

@@ -15,7 +15,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     }
     if (hasMultica()) {
       const { getWorkspaceAgents } = await import('@/server/multica-db.js')
-      const agents = await getWorkspaceAgents('GTM')
+      const agents = await getWorkspaceAgents('gtm')
       return NextResponse.json({ slug, name: slug, lifecycle_state: 'active', agents })
     }
     return NextResponse.json({ error: 'no database configured' }, { status: 503 })

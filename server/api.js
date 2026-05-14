@@ -11,6 +11,7 @@ import { runAgent } from './runner.js'
 import { sourceIdeas } from './source-ideas.js'
 import { buildLedger } from './ledger.js'
 import { buildNorthStar, appendActual } from './north-star.js'
+import { appendBuilderLog, readBuilderLog, readAllBuilderLogs } from './builder-log.js'
 import { hasAnthropic } from './llm.js'
 import { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 export { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
@@ -348,6 +349,31 @@ export function mountApi(app) {
     try {
       const out = appendActual(String(project), { date, traffic, registrations, payments, revenue_usd, note, entered_by: 'dashboard' })
       res.json({ ok: true, entry: out })
+    } catch (e) {
+      res.status(400).json({ error: e?.message || String(e) })
+    }
+  })
+
+  r.post('/builder-log', (req, res) => {
+    const { project, agent, builder, value_point, product_update, target_update, note, date } = req.body || {}
+    if (!project || !agent) return res.status(400).json({ error: 'project + agent required' })
+    try {
+      const row = appendBuilderLog(String(project), String(agent), { builder, value_point, product_update, target_update, note, date })
+      res.json({ ok: true, entry: row })
+    } catch (e) {
+      res.status(400).json({ error: e?.message || String(e) })
+    }
+  })
+
+  r.get('/builder-log', (req, res) => {
+    const project = req.query.project
+    const agent = req.query.agent
+    const sinceHours = parseInt(req.query.since_hours || '720', 10) // 30d
+    const limit = parseInt(req.query.limit || '50', 10)
+    if (!project) return res.status(400).json({ error: 'project required' })
+    try {
+      if (agent) res.json({ project, agent, entries: readBuilderLog(String(project), String(agent), { sinceHours, limit }) })
+      else res.json({ project, entries_by_agent: readAllBuilderLogs(String(project), { sinceHours, limitPerAgent: limit }) })
     } catch (e) {
       res.status(400).json({ error: e?.message || String(e) })
     }

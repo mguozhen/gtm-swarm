@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   if (hasMultica()) {
     const {
       getIssue, updateIssueStatus, getWorkspaceBySlug,
-      getWorkspaceAgents, createIssue, getOrCreateGTMUser, postComment,
+      getWorkspaceAgents, createIssue, getOrCreateGTMUser, postComment, dispatchAgentTask,
     } = await import('@/server/multica-db.js')
 
     const issue = await getIssue(idea_id)
@@ -80,9 +80,13 @@ export async function POST(request: NextRequest) {
         parentId: idea_id,
         assigneeId: agent.id,
       })
-      // Post a trigger comment so Multica picks up the mention and dispatches the agent
+      // Post trigger comment then dispatch task directly to agent_task_queue
       const triggerComment = `[@${agent.name}](mention://agent/${agent.id}) 请执行`
-      await postComment(issueId, { body: triggerComment, authorId: creatorId, authorType: 'member', workspaceId: ws.id })
+      const commentId = await postComment(issueId, { body: triggerComment, authorId: creatorId, authorType: 'member', workspaceId: ws.id })
+      await dispatchAgentTask(agent.id, agent.runtime_id, issueId, {
+        triggerCommentId: commentId,
+        triggerSummary: triggerComment,
+      })
       notified.push({ agent: agent.name, channel: agent.channel, issue_id: issueId })
     }
 

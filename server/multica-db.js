@@ -140,6 +140,17 @@ export async function postComment(issueId, { body, authorId, authorType = 'agent
   return row.id
 }
 
+export async function dispatchAgentTask(agentId, runtimeId, issueId, { triggerCommentId = null, triggerSummary = '', priority = 2 } = {}) {
+  const row = await q1(
+    `INSERT INTO agent_task_queue
+       (agent_id, runtime_id, issue_id, status, priority, trigger_comment_id, trigger_summary)
+     VALUES ($1, $2, $3, 'queued', $4, $5, $6)
+     RETURNING id`,
+    [agentId, runtimeId, issueId, priority, triggerCommentId, triggerSummary]
+  )
+  return row.id
+}
+
 export async function updateIssueStatus(issueId, status) {
   await q(
     'UPDATE issue SET status = $1, updated_at = now() WHERE id = $2',
@@ -162,7 +173,7 @@ export async function getWorkspaceAgents(workspaceSlug) {
   const ws = await q1('SELECT id FROM workspace WHERE slug = $1', [workspaceSlug])
   if (!ws) return []
   const agents = await q(
-    `SELECT a.id, a.name, a.status, a.runtime_config, a.runtime_mode
+    `SELECT a.id, a.name, a.status, a.runtime_config, a.runtime_mode, a.runtime_id
      FROM agent a WHERE a.workspace_id = $1 ORDER BY a.name`,
     [ws.id]
   )
@@ -196,6 +207,7 @@ export async function getWorkspaceAgents(workspaceSlug) {
     return {
       id: a.id,
       name: a.name,
+      runtime_id: a.runtime_id,
       channel: cfg.gtm_channel || a.name.replace(/^GTM-/i, '').toLowerCase(),
       status: a.status || 'active',
       config: cfg,

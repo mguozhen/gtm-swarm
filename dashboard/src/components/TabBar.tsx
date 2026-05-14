@@ -1,9 +1,10 @@
 import './TabBar.css'
 
-export type TabKey = 'overview' | 'ledger' | 'ideas' | 'drafts' | 'review' | 'bank' | 'published'
+export type TabKey = 'overview' | 'north-star' | 'ledger' | 'ideas' | 'drafts' | 'review' | 'bank' | 'published'
 
 type Counts = {
   overview: number | null
+  'north-star': number | null
   ledger: number | null
   ideas: number | null
   drafts: number | null
@@ -13,13 +14,14 @@ type Counts = {
 }
 
 const TABS: { key: TabKey; label: string; icon: string }[] = [
-  { key: 'overview',  icon: '📍', label: 'Overview' },
-  { key: 'ledger',    icon: '📒', label: 'Ledger' },
-  { key: 'ideas',     icon: '💡', label: 'Ideas' },
-  { key: 'drafts',    icon: '📝', label: 'Drafts' },
-  { key: 'review',    icon: '👁',  label: 'Review' },
-  { key: 'bank',      icon: '🏦', label: 'Bank' },
-  { key: 'published', icon: '📰', label: 'Published' },
+  { key: 'overview',   icon: '📍', label: 'Overview' },
+  { key: 'north-star', icon: '📊', label: 'North Star' },
+  { key: 'ledger',     icon: '📒', label: 'Ledger' },
+  { key: 'ideas',      icon: '💡', label: 'Ideas' },
+  { key: 'drafts',     icon: '📝', label: 'Drafts' },
+  { key: 'review',     icon: '👁',  label: 'Review' },
+  { key: 'bank',       icon: '🏦', label: 'Bank' },
+  { key: 'published',  icon: '📰', label: 'Published' },
 ]
 
 export function TabBar({

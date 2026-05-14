@@ -10,6 +10,7 @@ import { runContentOSStep, hydrateAgents } from './contentos.js'
 import { runAgent } from './runner.js'
 import { sourceIdeas } from './source-ideas.js'
 import { buildLedger } from './ledger.js'
+import { buildNorthStar, appendActual } from './north-star.js'
 import { hasAnthropic } from './llm.js'
 import { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 export { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
@@ -332,6 +333,23 @@ export function mountApi(app) {
       res.json(buildLedger(String(project), { windowHours }))
     } catch (e) {
       res.status(404).json({ error: e?.message || String(e) })
+    }
+  })
+
+  r.get('/north-star', (req, res) => {
+    const project = req.query.project || 'voc-ai'
+    try { res.json(buildNorthStar(String(project))) }
+    catch (e) { res.status(404).json({ error: e?.message || String(e) }) }
+  })
+
+  r.post('/north-star/actual', (req, res) => {
+    const { project, date, traffic, registrations, payments, revenue_usd, note } = req.body || {}
+    if (!project) return res.status(400).json({ error: 'project required' })
+    try {
+      const out = appendActual(String(project), { date, traffic, registrations, payments, revenue_usd, note, entered_by: 'dashboard' })
+      res.json({ ok: true, entry: out })
+    } catch (e) {
+      res.status(400).json({ error: e?.message || String(e) })
     }
   })
 

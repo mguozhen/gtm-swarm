@@ -5,6 +5,7 @@ import { TabBar, type TabKey } from './components/TabBar'
 import { ContentTable } from './components/ContentTable'
 import { PreviewPane } from './components/PreviewPane'
 import { ProjectOverview } from './components/ProjectOverview'
+import { NorthStar } from './components/NorthStar'
 import { Ledger } from './components/Ledger'
 import { IdeasPool } from './components/IdeasPool'
 import { useContent } from './hooks/useContent'
@@ -14,7 +15,7 @@ import { useToken, postJson } from './hooks/useToken'
 import { TokenGate } from './components/TokenGate'
 import './App.css'
 
-const TAB_TO_STATE: Record<Exclude<TabKey, 'overview' | 'ledger' | 'review'>, 'new-idea' | 'draft' | 'bank' | 'published'> = {
+const TAB_TO_STATE: Record<Exclude<TabKey, 'overview' | 'ledger' | 'north-star' | 'review'>, 'new-idea' | 'draft' | 'bank' | 'published'> = {
   ideas: 'new-idea',
   drafts: 'draft',
   bank: 'bank',
@@ -31,7 +32,7 @@ function App() {
 
   const [tab, setTab] = useState<TabKey>('overview')
 
-  const requestedState = tab === 'overview' || tab === 'ledger' || tab === 'review'
+  const requestedState = tab === 'overview' || tab === 'ledger' || tab === 'north-star' || tab === 'review'
     ? undefined
     : TAB_TO_STATE[tab]
 
@@ -54,6 +55,7 @@ function App() {
 
   const tabCounts = {
     overview: null,
+    'north-star': null,
     ledger: null,
     ideas: counts['new-idea'],
     drafts: counts.draft,
@@ -118,6 +120,8 @@ function App() {
 
       {tab === 'overview' ? (
         <ProjectOverview slug={slug} />
+      ) : tab === 'north-star' ? (
+        <NorthStar slug={slug} token={token} />
       ) : tab === 'ledger' ? (
         <Ledger slug={slug} />
       ) : tab === 'ideas' ? (

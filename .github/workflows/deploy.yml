@@ -7,6 +7,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      GTM_DATABASE: ${{ secrets.GTM_DATABASE }}
+      MULTICA_DATABASE_URL: ${{ secrets.MULTICA_DATABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
     steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
@@ -14,10 +20,21 @@ jobs:
           host: ${{ vars.SERVER_HOST }}
           username: ${{ vars.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DB_PASSWORD,GTM_DATABASE,MULTICA_DATABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,NEXT_PUBLIC_SUPABASE_URL
           script: |
             set -e
-            cd /app/gtm-swarm
+
+            # Write secrets to .env
+            {
+              echo "DB_PASSWORD=${DB_PASSWORD}"
+              echo "GTM_DATABASE=${GTM_DATABASE}"
+              echo "MULTICA_DATABASE_URL=${MULTICA_DATABASE_URL}"
+              echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY}"
+              echo "NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}"
+            } > /dashboard/.env
+
+            cd /dashboard
             git pull origin main
-            npm install --production=false
+            npm ci
             npm run build
-            pm2 restart gtm-swarm || pm2 start npm --name gtm-swarm -- start
+            pm2 startOrReload ecosystem.config.js --update-env

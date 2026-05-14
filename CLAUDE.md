@@ -32,4 +32,5 @@ Agents data comes **exclusively from Multica**. No GTM DB fallback for agents â€
 - Do NOT add `agent.yaml` to any `projects/*/agents/*/` directory
 - Do NOT read `agent.yaml` in any code path when Multica is configured (`hasMultica()`)
 - Do NOT create engine symlinks or local filesystem stubs to work around missing agent config
-- When `hasMultica()` is true, all agent metadata must be fetched from Multica and passed directly to runner/LLM logic â€” the filesystem agent directory is only used for content output (drafts, bank, published files)
+- When `hasMultica()` is true, all agent metadata must be fetched from Multica and passed directly to runner/LLM logic
+- Content output (drafts, bank, published) is stored in the GTM database (`GTM_DATABASE`), not the filesystem

@@ -8,6 +8,7 @@ module.exports = {
       NODE_ENV: 'production',
       PORT: '4000',
       NODE_EXTRA_CA_CERTS: '/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem',
+      NODE_TLS_REJECT_UNAUTHORIZED: '0',
     },
   }],
 }

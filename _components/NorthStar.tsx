@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { postJson } from '../hooks/useToken'
+import { postJson } from '@/_hooks/useToken'
 import './NorthStar.css'
 
 type Stage = 'traffic' | 'registrations' | 'payments' | 'revenue_usd'

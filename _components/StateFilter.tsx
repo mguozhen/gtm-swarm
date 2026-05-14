@@ -1,6 +1,7 @@
 'use client'
 import './StateFilter.css'
-import type { PipelineState } from '../mockData'
+
+type PipelineState = 'new-idea' | 'draft' | 'bank' | 'published'
 
 type Counts = Record<PipelineState, number>
 

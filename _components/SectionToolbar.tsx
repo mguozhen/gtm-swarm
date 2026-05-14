@@ -1,6 +1,13 @@
 'use client'
 import './SectionToolbar.css'
-import { CATEGORIES } from '../mockData'
+
+const CATEGORIES: Record<string, { emoji: string; label: string }> = {
+  marketing:  { emoji: '📣', label: 'Marketing' },
+  product:    { emoji: '🛠️', label: 'Product' },
+  growth:     { emoji: '📈', label: 'Growth' },
+  community:  { emoji: '👥', label: 'Community' },
+  education:  { emoji: '🎓', label: 'Education' },
+}
 
 export function SectionToolbar({
   filterType,

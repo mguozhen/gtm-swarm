@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import type { ContentItem } from '../hooks/useContent'
+import type { ContentItem } from '@/_hooks/useContent'
 import './IdeasPool.css'
 
 export function IdeasPool({

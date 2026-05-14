@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import './ContentTable.css'
-import type { ContentItem } from '../hooks/useContent'
+import type { ContentItem } from '@/_hooks/useContent'
 
 export type ReviewAction = 'approve' | 'reject'
 

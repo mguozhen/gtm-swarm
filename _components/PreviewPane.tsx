@@ -1,6 +1,6 @@
 'use client'
 import './PreviewPane.css'
-import type { ContentItem } from '../hooks/useContent'
+import type { ContentItem } from '@/_hooks/useContent'
 
 export function PreviewPane({ item }: { item?: ContentItem }) {
   if (!item) {

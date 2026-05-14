@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     if (!topic) return NextResponse.json({ error: 'no topic in idea' }, { status: 400 })
     await updateIssueStatus(idea_id, 'in_progress')
     try {
-      const out = await runAgent(agent, { project, topic })
+      const out = await runAgent(agent, { project, topic } as Parameters<typeof runAgent>[1])
       return NextResponse.json({ ok: true, topic, ...out })
     } catch (e: unknown) {
       return NextResponse.json({ error: String((e as Error)?.message || e), topic }, { status: 500 })
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   mkdirSync(promotedDir, { recursive: true })
   renameSync(ideaFile, path.join(promotedDir, `${idea_id}.md`))
   try {
-    const out = await runAgent(agent, { project, topic })
+    const out = await runAgent(agent, { project, topic } as Parameters<typeof runAgent>[1])
     return NextResponse.json({ ok: true, topic, ...out })
   } catch (e: unknown) {
     return NextResponse.json({ error: String((e as Error)?.message || e), topic }, { status: 500 })

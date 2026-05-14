@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
 import MDEditor from '@uiw/react-md-editor'
-import { Link } from 'react-router-dom'
-import { useProjectMeta, useStrategyBrief, useAgents, type AgentEntry } from '../hooks/useStrategy'
+import Link from 'next/link'
+import { useProjectMeta, useStrategyBrief, useAgents, type AgentEntry } from '@/_hooks/useStrategy'
 import './ProjectOverview.css'
 
 const STEP_LABELS: Record<number, string> = {
@@ -48,7 +48,7 @@ export function ProjectOverview({ slug }: { slug: string }) {
         </div>
         <div className="ov-hero-right">
           {!isBuilt && (
-            <Link className="ov-cta" to={`/wizard/${slug}`}>
+            <Link className="ov-cta" href={`/wizard/${slug}`}>
               {stepsDone === 0 ? 'Start Discovery →' : `Resume Wizard (Step ${stepsDone + 1}/4)`}
             </Link>
           )}

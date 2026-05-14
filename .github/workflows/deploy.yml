@@ -20,9 +20,10 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DB_PASSWORD,GTM_DATABASE,MULTICA_DATABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,NEXT_PUBLIC_SUPABASE_URL
+          envs: DB_PASSWORD,GTM_DATABASE,MULTICA_DATABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,NEXT_PUBLIC_SUPABASE_URL,PROJECT_DIR
           script: |
             set -e
+            DEPLOY_DIR="${PROJECT_DIR}/dashboard"
 
             # Write secrets to .env
             {
@@ -32,9 +33,9 @@ jobs:
               echo "MULTICA_DATABASE_URL=${MULTICA_DATABASE_URL}"
               echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY}"
               echo "NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}"
-            } > /dashboard/.env
+            } > "${DEPLOY_DIR}/.env"
 
-            cd /dashboard
+            cd "${DEPLOY_DIR}"
             git pull origin main
             npm ci
             npm run build

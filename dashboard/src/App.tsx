@@ -202,17 +202,7 @@ function App() {
 
       {tab === 'overview' ? (
         <div>
-          {wsData?.lifecycle_state && (
-            <div style={{ padding: '16px 24px 0', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-              <div style={{ width: 160, flexShrink: 0 }}>
-                <LifecycleBar state={wsData.lifecycle_state} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <ProjectOverview slug={slug} />
-              </div>
-            </div>
-          )}
-          {!wsData?.lifecycle_state && <ProjectOverview slug={slug} />}
+          <ProjectOverview slug={slug} />
           {wsData?.agents && wsData.agents.length > 0 && (
             <div style={{ padding: '0 24px 24px' }}>
               <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>

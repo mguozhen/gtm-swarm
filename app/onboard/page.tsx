@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useToken, authHeaders } from '@/_hooks/useToken'
 import { RefreshCw } from 'lucide-react'
-import '../../Wizard.css'
+import '../Wizard.css'
 
 type Phase = 'input' | 'analyzing' | 'confirm' | 'creating' | 'done'
 

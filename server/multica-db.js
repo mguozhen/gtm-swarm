@@ -103,8 +103,9 @@ export async function createIssue(workspaceId, {
 }) {
   const row = await q1(
     `INSERT INTO issue
-       (workspace_id, title, description, status, priority, parent_issue_id, creator_type, creator_id)
-     VALUES ($1, $2, $3, $4, $5, $6, 'agent', $7)
+       (workspace_id, title, description, status, priority, parent_issue_id, creator_type, creator_id, number)
+     VALUES ($1, $2, $3, $4, $5, $6, 'agent', $7,
+       (SELECT COALESCE(MAX(number), 0) + 1 FROM issue WHERE workspace_id = $1))
      RETURNING id`,
     [workspaceId, title, description, status, priority, parentId || null, creatorId]
   )

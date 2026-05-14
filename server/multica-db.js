@@ -228,19 +228,40 @@ export async function listAllWorkspaces() {
   return q('SELECT id, slug, name FROM workspace ORDER BY name')
 }
 
+const STATUS_MAP = {
+  backlog: 'new-idea',
+  todo: 'new-idea',
+  in_progress: 'draft',
+  in_review: 'draft',
+  done: 'bank',
+  cancelled: 'draft',
+}
+
+export async function getContentCounts(workspaceSlug) {
+  const ws = await q1('SELECT id FROM workspace WHERE slug = $1', [workspaceSlug])
+  if (!ws) return { 'new-idea': 0, draft: 0, bank: 0, published: 0 }
+  const rows = await q(
+    `SELECT status, parent_issue_id IS NULL AS is_top_level
+     FROM issue WHERE workspace_id = $1`,
+    [ws.id]
+  )
+  const counts = { 'new-idea': 0, draft: 0, bank: 0, published: 0 }
+  for (const r of rows) {
+    const state = STATUS_MAP[r.status] || 'draft'
+    if (r.is_top_level && state === 'new-idea') counts['new-idea']++
+    else if (!r.is_top_level) {
+      if (state === 'new-idea') counts.draft++  // child with backlog = not yet started, still show as draft
+      else if (state === 'draft') counts.draft++
+      else if (state === 'bank') counts.bank++
+      else if (state === 'published') counts.published++
+    }
+  }
+  return counts
+}
+
 export async function getIssuesAsContent(workspaceSlug, statusFilter) {
   const ws = await q1('SELECT id FROM workspace WHERE slug = $1', [workspaceSlug])
   if (!ws) return []
-
-  // Map Multica statuses to gtm-swarm content states
-  const STATUS_MAP = {
-    backlog: 'new-idea',
-    todo: 'new-idea',
-    in_progress: 'draft',
-    in_review: 'draft',
-    done: 'bank',
-    cancelled: 'draft',
-  }
 
   // Ideas = top-level issues (no parent), everything else = child issues (assigned to agents)
   const isIdea = statusFilter === 'new-idea'

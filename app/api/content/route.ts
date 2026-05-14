@@ -10,16 +10,14 @@ export async function GET(request: NextRequest) {
   const agent = p.get('agent') || undefined
 
   if (hasMultica()) {
-    const { getIssuesAsContent } = await import('@/server/multica-db.js')
-    const items = await getIssuesAsContent(MULTICA_WORKSPACE_SLUG, state)
+    const { getIssuesAsContent, getContentCounts } = await import('@/server/multica-db.js')
+    const [items, counts] = await Promise.all([
+      getIssuesAsContent(MULTICA_WORKSPACE_SLUG, state),
+      getContentCounts(MULTICA_WORKSPACE_SLUG),
+    ])
     return NextResponse.json({
       items,
-      counts: {
-        'new-idea': items.filter((i: { state: string }) => i.state === 'new-idea').length,
-        'draft': items.filter((i: { state: string }) => i.state === 'draft').length,
-        'bank': items.filter((i: { state: string }) => i.state === 'bank').length,
-        'published': items.filter((i: { state: string }) => i.state === 'published').length,
-      },
+      counts,
       reviewers: reviewerQueueCount(),
       project: project || null,
     })

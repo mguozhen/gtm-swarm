@@ -99,3 +99,5 @@ CREATE INDEX IF NOT EXISTS idx_agents_workspace ON agents(workspace_id);
 CREATE INDEX IF NOT EXISTS idx_engines_lookup ON engines(workspace_id, file_path);
 CREATE INDEX IF NOT EXISTS idx_audit_log_workspace ON audit_log(workspace_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_strategy_docs_workspace ON strategy_docs(workspace_id, step_key);
+
+ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS cia_result JSONB;

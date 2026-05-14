@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { hasMultica } from '@/server/multica-db.js'
+import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
 
 export async function POST(request: NextRequest) {
   const { project, topic, angle, hook } = await request.json()
@@ -9,7 +10,7 @@ export async function POST(request: NextRequest) {
   if (!hasMultica()) return NextResponse.json({ error: 'No database configured' }, { status: 503 })
   try {
     const { getWorkspaceBySlug, getOrCreateGTMUser, createIssue } = await import('@/server/multica-db.js')
-    const ws = await getWorkspaceBySlug(project)
+    const ws = await getWorkspaceBySlug(MULTICA_WORKSPACE_SLUG)
     if (!ws) return NextResponse.json({ error: `workspace "${project}" not found` }, { status: 404 })
     const creatorId = await getOrCreateGTMUser()
     const parts: string[] = []

@@ -6,6 +6,7 @@ import { PROJECTS_DIR } from '@/lib/fs-api'
 import { hasAnthropic } from '@/server/llm.js'
 import { runAgent } from '@/server/runner.js'
 import { hasMultica } from '@/server/multica-db.js'
+import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
 
 function agentBrief(channel: string, topic: string, angle: string, hook: string): string {
   const lines = [`Topic: ${topic}`]
@@ -39,10 +40,10 @@ export async function POST(request: NextRequest) {
     const angle = descLines.find((l: string) => l.startsWith('**Angle**:'))?.replace('**Angle**:', '').trim() || ''
     const hook = descLines.find((l: string) => l.startsWith('**Hook seed**:'))?.replace('**Hook seed**:', '').trim() || ''
 
-    const ws = await getWorkspaceBySlug(project)
-    if (!ws) return NextResponse.json({ error: `workspace "${project}" not found` }, { status: 404 })
+    const ws = await getWorkspaceBySlug(MULTICA_WORKSPACE_SLUG)
+    if (!ws) return NextResponse.json({ error: 'gtm workspace not found in Multica' }, { status: 404 })
 
-    const agents = await getWorkspaceAgents(project)
+    const agents = await getWorkspaceAgents(MULTICA_WORKSPACE_SLUG)
     if (!agents.length) return NextResponse.json({ error: 'no agents in workspace' }, { status: 503 })
 
     const creatorId = await getOrCreateGTMUser()

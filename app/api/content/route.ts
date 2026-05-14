@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { collect, countsFor, reviewerQueueCount, type State } from '@/lib/fs-api'
 import { hasMultica } from '@/server/multica-db.js'
+import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
 
 export async function GET(request: NextRequest) {
   const p = request.nextUrl.searchParams
@@ -10,7 +11,7 @@ export async function GET(request: NextRequest) {
 
   if (hasMultica()) {
     const { getIssuesAsContent } = await import('@/server/multica-db.js')
-    const items = await getIssuesAsContent(project!, state)
+    const items = await getIssuesAsContent(MULTICA_WORKSPACE_SLUG, state)
     return NextResponse.json({
       items,
       counts: {

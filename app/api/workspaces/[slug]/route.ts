@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { hasDB } from '@/server/db.js'
 import * as store from '@/server/store.js'
 import { hasMultica } from '@/server/multica-db.js'
+import { MULTICA_WORKSPACE_SLUG } from '@/lib/constants'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -16,8 +17,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     let agents
     if (hasMultica()) {
       const { getWorkspaceAgents } = await import('@/server/multica-db.js')
-      agents = await getWorkspaceAgents(slug)
-      if (agents.length === 0) agents = await getWorkspaceAgents('gtm')
+      agents = await getWorkspaceAgents(MULTICA_WORKSPACE_SLUG)
     } else {
       agents = await store.listAgentsForWorkspace(ws.id)
     }

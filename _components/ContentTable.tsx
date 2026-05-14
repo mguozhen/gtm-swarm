@@ -65,7 +65,7 @@ export function ContentTable({
                   </div>
                 </td>
                 <td className="dj-td-core">{hookType}</td>
-                <td><StatePill state={it.state} /></td>
+                <td><StatePill state={it.state} multicaStatus={it.multica_status} /></td>
                 {onReview && (
                   <td>
                     {rejectingId === it.id ? (
@@ -120,7 +120,19 @@ function shorten(id: string) {
   return id.slice(0, 8) + '…' + id.slice(-10)
 }
 
-function StatePill({ state }: { state: ContentItem['state'] }) {
+function StatePill({ state, multicaStatus }: { state: ContentItem['state']; multicaStatus?: string }) {
+  if (multicaStatus) {
+    const multicaMap: Record<string, { label: string; cls: string }> = {
+      backlog:     { label: 'backlog',     cls: 'dj-pill-stocked' },
+      todo:        { label: 'todo',        cls: 'dj-pill-stocked' },
+      in_progress: { label: 'in progress', cls: 'dj-pill-active' },
+      in_review:   { label: 'in review',   cls: 'dj-pill-review' },
+      done:        { label: 'done',        cls: 'dj-pill-approved' },
+      cancelled:   { label: 'cancelled',   cls: 'dj-pill-cancelled' },
+    }
+    const m = multicaMap[multicaStatus] || { label: multicaStatus, cls: 'dj-pill-stocked' }
+    return <span className={`dj-pill ${m.cls}`}>{m.label}</span>
+  }
   const map: Record<ContentItem['state'], { label: string; cls: string }> = {
     'new-idea':  { label: 'NEW IDEA',  cls: 'dj-pill-stocked' },
     'draft':     { label: 'DRAFT',     cls: 'dj-pill-stocked' },

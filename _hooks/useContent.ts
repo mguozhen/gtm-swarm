@@ -6,6 +6,7 @@ export type ContentItem = {
   project: string
   agent: string
   state: 'new-idea' | 'draft' | 'bank' | 'published'
+  multica_status?: string
   file: string
   size: number
   mtime: number

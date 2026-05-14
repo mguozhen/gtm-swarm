@@ -97,6 +97,24 @@
   background: var(--red);
 }
 
+.dj-pill-active {
+  color: #1d4ed8;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+}
+
+.dj-pill-review {
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+}
+
+.dj-pill-cancelled {
+  color: #6b7280;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+}
+
 .dj-table-empty {
   padding: 80px 24px;
   text-align: center;

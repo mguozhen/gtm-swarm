@@ -292,6 +292,7 @@ export async function getIssuesAsContent(workspaceSlug, statusFilter) {
     project: workspaceSlug,
     agent: r.agent_name || 'unknown',
     state: STATUS_MAP[r.status] || 'draft',
+    multica_status: r.status,
     file: `multica://${r.id}`,
     size: (r.description || '').length,
     mtime: new Date(r.updated_at || r.created_at).getTime(),

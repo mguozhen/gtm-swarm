@@ -146,6 +146,9 @@ export default function App() {
     if (tab === 'review') {
       return items.filter(it => it.state === 'draft' && it.multica_status !== 'cancelled')
     }
+    if (tab === 'bank') {
+      return items.filter(it => it.multica_status !== 'cancelled')
+    }
     return items
   }, [items, tab])
 

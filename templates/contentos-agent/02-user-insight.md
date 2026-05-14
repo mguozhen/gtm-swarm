@@ -11,14 +11,11 @@ Continuing from Step 1 (Market Insight). This step adopts CIA's user-signal extr
 1. `project.yaml`
 2. `01-market-insight.md` (Step 1 output, possibly Founder-edited)
 
-## Data Limitations
+## Data Source Priority
 
-Without CIA Python implementation running, we cannot:
-- Pull 200-deep App reviews per competitor → real 痛点 distribution
-- Pull r/<subreddit> top posts → real community vocab + complaints
-- Pull TikTok high-share videos → real hook patterns
+**If `## 🕵️ CIA REAL DATA` is in the prompt above**: that's real App reviews / Reddit threads / TikTok high-share videos / YouTube search results from the CIA pipeline. **Cite痛点 distribution, community vocab, and hook patterns directly from CIA — these are sample-sized, ranked, and timestamped.**
 
-Mark these sections `[需 CIA Step 7/9 真实数据]` and reason from LLM context where possible.
+**If no CIA section**: mark sections `[需 CIA Step 7/9 真实数据]` and reason from LLM context. Founder can run `scripts/cia-for-project.sh <slug> "<topic>"` to enrich.
 
 ## Output Structure
 

@@ -53,6 +53,18 @@ async function completeAnthropic(prompt, opts = {}) {
   return { text, usage: msg.usage, stopReason: msg.stop_reason }
 }
 
+async function streamOnce(c, payload) {
+  const stream = c.messages.stream(payload)
+  let text = ''
+  for await (const event of stream) {
+    if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+      text += event.delta.text
+    }
+  }
+  const final = await stream.finalMessage()
+  return { text, usage: final.usage, stopReason: final.stop_reason }
+}
+
 export async function complete(prompt, opts = {}) {
   if (process.env.DEEPSEEK_API_KEY) return completeDeepSeek(prompt, opts)
   if (process.env.ANTHROPIC_API_KEY) return completeAnthropic(prompt, opts)

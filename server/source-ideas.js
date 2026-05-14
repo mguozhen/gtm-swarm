@@ -45,7 +45,7 @@ function loadAntiPatterns(agentDir) {
   return text.slice(-2000)
 }
 
-function buildPrompt(projectYaml, briefs, hooks, agentYaml, recent, anti, n, now) {
+function buildPrompt(projectYaml, briefs, hooks, agentYaml, recent, anti, n, now, aihotMd = '') {
   const audience = projectYaml.audience || {}
   const audienceStr = `primary=${audience.primary || ''}; secondary=${audience.secondary || ''}`
   const parts = [
@@ -64,6 +64,7 @@ function buildPrompt(projectYaml, briefs, hooks, agentYaml, recent, anti, n, now
     briefs.forEach((b, i) => parts.push(`\n### Brief ${i + 1} (first 2000 chars):\n${b.slice(0, 2000)}`))
   }
   if (hooks) parts.push(`\n## HOOK FORMULAS (first 1500 chars):\n${hooks.slice(0, 1500)}`)
+  if (aihotMd) parts.push(`\n${aihotMd}`)
   if (agentYaml.topics?.length) {
     parts.push('\n## AGENT TOPIC TERRITORIES (must align):')
     for (const t of agentYaml.topics) parts.push(`  · ${t}`)
@@ -124,6 +125,9 @@ export async function sourceIdeas({ project, agent, n = 5 }) {
   const hooksPath = path.join(projectDir, 'engine', 'engine', 'hooks.md')
   const hooks = existsSync(hooksPath) ? readFileSync(hooksPath, 'utf-8') : ''
 
+  // AI HOT signals — fetched once per project run, shared across all agents
+  const aihotMd = await aiHotMarkdownFor(projectYaml)
+
   const agentsDir = path.join(projectDir, 'agents')
   const agentIds = agent ? [agent] : readdirSync(agentsDir).filter(d => existsSync(path.join(agentsDir, d, 'agent.yaml'))).sort()
 
@@ -138,7 +142,14 @@ export async function sourceIdeas({ project, agent, n = 5 }) {
 
     const recent = loadRecent(agentDir)
     const anti = loadAntiPatterns(agentDir)
-    const prompt = buildPrompt(projectYaml, briefs, hooks, agentYaml, recent, anti, n, new Date().toISOString())
+    // AI HOT signals only meaningful for content-style agents
+    // (blog/video/social/reddit/kol). For ads/edm/yelp/poster/foundation
+    // it would just be noise, so we gate by agent.aihot field (default true
+    // for the content-style agents below).
+    const AIHOT_RELEVANT = ['02-kol-koc', '03-blog', '05-video', '06-reddit', '07-social-media']
+    const agentAiHot = agentYaml.aihot ?? AIHOT_RELEVANT.includes(aid)
+    const aihotForAgent = agentAiHot ? aihotMd : ''
+    const prompt = buildPrompt(projectYaml, briefs, hooks, agentYaml, recent, anti, n, new Date().toISOString(), aihotForAgent)
     const { text } = await complete(prompt, { maxTokens: 16000 })
 
     const blocks = text.split(IDEA_SEPARATOR).map(s => s.trim()).filter(Boolean)

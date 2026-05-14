@@ -36,6 +36,13 @@ export async function updateWorkspace(slug, patch) {
   return queryOne(`UPDATE workspaces SET ${fields.join(', ')} WHERE slug = $${i} RETURNING *`, vals)
 }
 
+export async function saveWorkspaceCIAResult(slug, synthesis) {
+  return queryOne(
+    `UPDATE workspaces SET cia_result = $1, updated_at = now() WHERE slug = $2 RETURNING *`,
+    [JSON.stringify(synthesis), slug]
+  )
+}
+
 // ── People ───────────────────────────────────────────────────────────────────
 
 export async function listPeople() {

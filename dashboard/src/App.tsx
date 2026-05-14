@@ -5,6 +5,7 @@ import { TabBar, type TabKey } from './components/TabBar'
 import { ContentTable } from './components/ContentTable'
 import { PreviewPane } from './components/PreviewPane'
 import { ProjectOverview } from './components/ProjectOverview'
+import { Ledger } from './components/Ledger'
 import { IdeasPool } from './components/IdeasPool'
 import { useContent } from './hooks/useContent'
 import { useProjects } from './hooks/useProjects'
@@ -13,7 +14,7 @@ import { useToken, postJson } from './hooks/useToken'
 import { TokenGate } from './components/TokenGate'
 import './App.css'
 
-const TAB_TO_STATE: Record<Exclude<TabKey, 'overview' | 'review'>, 'new-idea' | 'draft' | 'bank' | 'published'> = {
+const TAB_TO_STATE: Record<Exclude<TabKey, 'overview' | 'ledger' | 'review'>, 'new-idea' | 'draft' | 'bank' | 'published'> = {
   ideas: 'new-idea',
   drafts: 'draft',
   bank: 'bank',
@@ -30,8 +31,8 @@ function App() {
 
   const [tab, setTab] = useState<TabKey>('overview')
 
-  const requestedState = tab === 'overview' ? undefined
-    : tab === 'review' ? undefined
+  const requestedState = tab === 'overview' || tab === 'ledger' || tab === 'review'
+    ? undefined
     : TAB_TO_STATE[tab]
 
   const { data, refresh } = useContent({ project: slug, state: requestedState })
@@ -53,6 +54,7 @@ function App() {
 
   const tabCounts = {
     overview: null,
+    ledger: null,
     ideas: counts['new-idea'],
     drafts: counts.draft,
     review: reviewerQueueTotal,
@@ -116,6 +118,8 @@ function App() {
 
       {tab === 'overview' ? (
         <ProjectOverview slug={slug} />
+      ) : tab === 'ledger' ? (
+        <Ledger slug={slug} />
       ) : tab === 'ideas' ? (
         <IdeasPool
           items={items.filter(i => i.state === 'new-idea')}

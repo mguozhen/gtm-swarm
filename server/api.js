@@ -9,6 +9,7 @@ import yaml from 'js-yaml'
 import { runContentOSStep, hydrateAgents } from './contentos.js'
 import { runAgent } from './runner.js'
 import { sourceIdeas } from './source-ideas.js'
+import { buildLedger } from './ledger.js'
 import { hasAnthropic } from './llm.js'
 import { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
 export { REPO_ROOT, PROJECTS_DIR, REVIEWS_DIR } from './paths.js'
@@ -321,6 +322,16 @@ export function mountApi(app) {
       res.json({ ok: true, ...out })
     } catch (e) {
       res.status(500).json({ error: String(e?.message || e) })
+    }
+  })
+
+  r.get('/ledger', (req, res) => {
+    const project = req.query.project || 'voc-ai'
+    const windowHours = parseInt(req.query.window_hours || '168', 10)
+    try {
+      res.json(buildLedger(String(project), { windowHours }))
+    } catch (e) {
+      res.status(404).json({ error: e?.message || String(e) })
     }
   })
 

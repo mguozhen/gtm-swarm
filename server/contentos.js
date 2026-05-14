@@ -26,6 +26,23 @@ function saveState(projectDir, state) {
   writeFileSync(path.join(projectDir, '.contentos-state.json'), JSON.stringify(state, null, 2))
 }
 
+function formatCiaForPrompt(ciaResult) {
+  if (!ciaResult) return null
+  if (ciaResult.synthesis_md) return ciaResult.synthesis_md
+  // Fallback: lightweight structured fields only
+  const lines = []
+  if (ciaResult.tagline) lines.push(`**定位：** ${ciaResult.tagline}`)
+  if (ciaResult.category) lines.push(`**品类：** ${ciaResult.category}`)
+  if (ciaResult.audience?.primary) {
+    const sec = ciaResult.audience.secondary ? ` · ${ciaResult.audience.secondary}` : ''
+    lines.push(`**核心受众：** ${ciaResult.audience.primary}${sec}`)
+  }
+  if (ciaResult.positioning) lines.push(`**差异化：** ${ciaResult.positioning}`)
+  if (ciaResult.competitors?.length) lines.push(`**主要竞品：** ${ciaResult.competitors.join(' · ')}`)
+  if (ciaResult.suggested_channels?.length) lines.push(`**建议渠道：** ${ciaResult.suggested_channels.join(' · ')}`)
+  return lines.length ? lines.join('\n') : null
+}
+
 function readCiaData(projectDir) {
   // CIA integration: if `projects/<slug>/cia/synthesis.md` exists (produced
   // by running `cia init/fetch-*/export` locally), include it as primary
@@ -45,22 +62,20 @@ function readCiaData(projectDir) {
   return out.length ? out.join('\n\n') : null
 }
 
-export function buildPrompt(stepIdx, projectDir, projectYaml) {
+export function buildPrompt(stepIdx, projectDir, projectYaml, ciaResult = null) {
   const step = STEPS[stepIdx]
   const template = readFileSync(path.join(TEMPLATES_DIR, `${step.slug}.md`), 'utf-8')
   const parts = [`## ContentOS Agent — Running Step ${step.n}: ${step.label}\n`]
   parts.push('## PROJECT YAML\n')
   parts.push('```yaml\n' + yaml.dump(projectYaml, { sortKeys: false }) + '```\n')
 
-  // CIA real-data injection (Steps 1 + 2 benefit most; 3+4 inherit via prior outputs)
-  if (step.n <= 2) {
-    const cia = readCiaData(projectDir)
-    if (cia) {
-      parts.push('## 🕵️ CIA REAL DATA (Chief Intelligence Officer pipeline)\n')
-      parts.push('Below is real market data from Ahrefs / DataForSEO / Apify (TikTok+Reddit) / iTunes / YouTube via the CIA skill. **Treat this as primary source for TAM/SAM math, competitor counts, keyword volumes, and pain-point quantification.** Do not invent numbers — cite from CIA tables where possible.\n')
-      parts.push(cia)
-      parts.push('\n')
-    }
+  // CIA data injection — all 4 steps, DB source takes priority over filesystem
+  const ciaText = formatCiaForPrompt(ciaResult) || readCiaData(projectDir)
+  if (ciaText) {
+    parts.push('## 🕵️ CIA 市场情报（真实数据 — Ahrefs/DataForSEO/TikTok/Reddit/iTunes）\n')
+    parts.push('**核心原则：禁止编造数字。以下是 CIA pipeline 实测数据。**\n**Step 1-4 的 TAM/竞品格局/渠道判断必须从此数据引用，不得凭感觉估算。**\n\n')
+    parts.push(ciaText)
+    parts.push('\n')
   }
 
   for (const depSlug of step.deps) {
@@ -90,12 +105,25 @@ export async function runContentOSStep(slug, n) {
   const projectYamlPath = path.join(projectDir, 'project.yaml')
   const projectYaml = yaml.load(readFileSync(projectYamlPath, 'utf-8')) || {}
 
+  // Fetch cia_result from DB for prompt injection
+  let ciaResult = null
+  if (hasDB()) {
+    try {
+      const ws = await store.getWorkspace(slug)
+      if (ws?.cia_result) {
+        ciaResult = typeof ws.cia_result === 'string' ? JSON.parse(ws.cia_result) : ws.cia_result
+      }
+    } catch (e) {
+      console.warn('[contentos] cia_result fetch failed (non-fatal):', e.message)
+    }
+  }
+
   const step = STEPS[n - 1]
   const state = loadState(projectDir)
   state.steps[step.slug] = { status: 'running', started_at: new Date().toISOString() }
   saveState(projectDir, state)
 
-  const prompt = buildPrompt(n - 1, projectDir, projectYaml)
+  const prompt = buildPrompt(n - 1, projectDir, projectYaml, ciaResult)
   const { text, usage } = await complete(prompt, { maxTokens: 20000 })
 
   const strategyDir = path.join(projectDir, 'strategy')
@@ -171,4 +199,25 @@ export function hydrateAgents(slug) {
   py.contentos_agent = { ...(py.contentos_agent || {}), state: 'built', built_at: new Date().toISOString(), agents_hydrated: updated.length }
   writeFileSync(path.join(projectDir, 'project.yaml'), yaml.dump(py, { lineWidth: 0, sortKeys: false }))
   return { updated, skipped }
+}
+
+export async function runMissingContentOSSteps(slug) {
+  if (!hasDB()) return
+  try {
+    const ws = await store.getWorkspace(slug)
+    if (!ws) return
+    for (const step of STEPS) {
+      try {
+        const existing = await store.getStrategyDoc(ws.id, step.slug)
+        if (!existing) {
+          await runContentOSStep(slug, step.n)
+        }
+      } catch (e) {
+        console.warn(`[contentos] auto-gen step ${step.n} for ${slug} failed:`, e.message)
+      }
+    }
+    console.log(`[contentos] runMissingContentOSSteps done for ${slug}`)
+  } catch (e) {
+    console.warn('[contentos] runMissingContentOSSteps outer error:', e.message)
+  }
 }

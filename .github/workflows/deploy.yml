@@ -46,4 +46,5 @@ jobs:
             git pull origin main
             npm ci
             npm run build
-            pm2 startOrReload ecosystem.config.js --update-env
+            pm2 delete gtm-swarm 2>/dev/null || true
+            pm2 start ecosystem.config.js

@@ -6,19 +6,22 @@ import { hasMultica } from '@/server/multica-db.js'
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   try {
-    if (hasDB()) {
-      const ws = await store.getWorkspace(slug)
-      if (!ws) return NextResponse.json({ error: 'not found' }, { status: 404 })
-      const cosState = await store.getContentOSState(ws.id)
-      const agents = await store.listAgentsForWorkspace(ws.id)
-      return NextResponse.json({ ...ws, contentos_state: cosState, agents })
-    }
+    // Project data always comes from GTM DB.
+    if (!hasDB()) return NextResponse.json({ error: 'GTM_DATABASE required' }, { status: 503 })
+    const ws = await store.getWorkspace(slug)
+    if (!ws) return NextResponse.json({ error: 'not found' }, { status: 404 })
+    const cosState = await store.getContentOSState(ws.id)
+
+    // Agents come from multica; fall back to GTM DB if multica not configured.
+    let agents
     if (hasMultica()) {
       const { getWorkspaceAgents } = await import('@/server/multica-db.js')
-      const agents = await getWorkspaceAgents('gtm')
-      return NextResponse.json({ slug, name: slug, lifecycle_state: 'active', agents })
+      agents = await getWorkspaceAgents(slug)
+      if (agents.length === 0) agents = await getWorkspaceAgents('gtm')
+    } else {
+      agents = await store.listAgentsForWorkspace(ws.id)
     }
-    return NextResponse.json({ error: 'no database configured' }, { status: 503 })
+    return NextResponse.json({ ...ws, contentos_state: cosState, agents })
   } catch (e: unknown) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 })
   }

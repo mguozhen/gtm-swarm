@@ -184,6 +184,7 @@ export async function getWorkspaceAgents(workspaceSlug) {
     try { cfg = typeof a.runtime_config === 'string' ? JSON.parse(a.runtime_config) : (a.runtime_config || {}) } catch {}
     return {
       id: a.id,
+      name: a.name,
       channel: cfg.gtm_channel || a.name.replace(/^GTM-/i, '').toLowerCase(),
       status: a.status || 'active',
       config: cfg,

@@ -9,26 +9,52 @@ import { hasMultica } from '@/server/multica-db.js'
 
 export async function POST(request: NextRequest) {
   const { project, agent, idea_id } = await request.json()
-  if (!project || !agent || !idea_id) {
-    return NextResponse.json({ error: 'project + agent + idea_id required' }, { status: 400 })
+  if (!project || !idea_id) {
+    return NextResponse.json({ error: 'project and idea_id are required' }, { status: 400 })
   }
 
   if (hasMultica()) {
     if (!hasAnthropic()) return NextResponse.json({ error: 'ANTHROPIC_API_KEY not configured' }, { status: 503 })
-    const { getIssue, updateIssueStatus } = await import('@/server/multica-db.js')
+    const { getIssue, updateIssueStatus, getWorkspaceBySlug, getWorkspaceAgents } = await import('@/server/multica-db.js')
+
     const issue = await getIssue(idea_id)
     if (!issue) return NextResponse.json({ error: 'idea not found' }, { status: 404 })
     const topic = issue.title || ''
     if (!topic) return NextResponse.json({ error: 'no topic in idea' }, { status: 400 })
+
+    // Get agent config from Multica — use assignee or first agent in workspace
+    const ws = await getWorkspaceBySlug(project)
+    if (!ws) return NextResponse.json({ error: `workspace "${project}" not found` }, { status: 404 })
+
+    const agents = await getWorkspaceAgents(project)
+    const multicaAgent = agents.find((a: { id: string }) => a.id === issue.assignee_id) || agents[0]
+    if (!multicaAgent) return NextResponse.json({ error: 'no agents configured in workspace' }, { status: 503 })
+
+    const agentConfig = {
+      id: multicaAgent.id,
+      name: multicaAgent.name,
+      platform: multicaAgent.channel || 'blog',
+      reviewer: '',
+      builder: '',
+      default_product: project,
+    }
+
     await updateIssueStatus(idea_id, 'in_progress')
     try {
-      const out = await runAgent(agent, { project, topic } as Parameters<typeof runAgent>[1])
+      const out = await runAgent(multicaAgent.id, {
+        project,
+        topic,
+        multica_issue_id: idea_id,
+        agentConfig,
+      } as Parameters<typeof runAgent>[1])
       return NextResponse.json({ ok: true, topic, ...out })
     } catch (e: unknown) {
       return NextResponse.json({ error: String((e as Error)?.message || e), topic }, { status: 500 })
     }
   }
 
+  // Filesystem mode (no Multica)
+  if (!agent) return NextResponse.json({ error: 'project + agent + idea_id required' }, { status: 400 })
   if (!hasAnthropic()) return NextResponse.json({ error: 'ANTHROPIC_API_KEY not configured' }, { status: 503 })
   const ideaFile = path.join(PROJECTS_DIR, project, 'agents', agent, 'content-bank', 'new-idea', `${idea_id}.md`)
   if (!existsSync(ideaFile)) return NextResponse.json({ error: 'idea not found' }, { status: 404 })

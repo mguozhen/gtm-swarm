@@ -21,7 +21,7 @@ export function authHeaders(token: string): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
-export async function postJson<T = unknown>(url: string, body: unknown, token: string): Promise<T> {
+export async function postJson<T = unknown>(url: string, body: unknown, token = ''): Promise<T> {
   const r = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders(token) },

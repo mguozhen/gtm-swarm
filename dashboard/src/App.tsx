@@ -5,8 +5,6 @@ import { TabBar, type TabKey } from './components/TabBar'
 import { ContentTable } from './components/ContentTable'
 import { PreviewPane } from './components/PreviewPane'
 import { ProjectOverview } from './components/ProjectOverview'
-import { NorthStar } from './components/NorthStar'
-import { Ledger } from './components/Ledger'
 import { IdeasPool } from './components/IdeasPool'
 import { useContent } from './hooks/useContent'
 import { useProjects } from './hooks/useProjects'
@@ -95,7 +93,7 @@ function App() {
 
   const requestedState = tab === 'overview' ? undefined
     : tab === 'review' ? undefined
-    : TAB_TO_STATE[tab]
+    : (TAB_TO_STATE as Record<string, 'new-idea' | 'draft' | 'bank' | 'published' | undefined>)[tab]
 
   const { data, refresh } = useContent({ project: slug, state: requestedState })
   const items = data?.items ?? []

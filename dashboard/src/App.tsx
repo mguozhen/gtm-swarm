@@ -20,14 +20,6 @@ const TAB_TO_STATE: Record<Exclude<TabKey, 'overview' | 'review'>, 'new-idea' | 
   published: 'published',
 }
 
-const LIFECYCLE_STEPS = ['onboarding', 'strategy', 'engine_building', 'active']
-const LIFECYCLE_LABELS: Record<string, string> = {
-  onboarding: 'Onboarding',
-  strategy: 'Strategy',
-  engine_building: 'Building Engine',
-  active: 'Active',
-}
-
 type AgentRow = {
   id: string
   channel: string
@@ -39,23 +31,6 @@ type AgentRow = {
   kpi_defaults: Record<string, string>
 }
 
-function LifecycleBar({ state }: { state: string }) {
-  const idx = LIFECYCLE_STEPS.indexOf(state)
-  return (
-    <div style={{ padding: '12px 0', borderBottom: '1px solid #1f2937', marginBottom: 12 }}>
-      <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Lifecycle</div>
-      {LIFECYCLE_STEPS.map((s, i) => (
-        <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-          <div style={{ width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
-            background: i < idx ? '#10b981' : i === idx ? '#3b82f6' : '#374151' }} />
-          <span style={{ fontSize: 11, color: i <= idx ? '#f9fafb' : '#6b7280' }}>
-            {LIFECYCLE_LABELS[s]}
-          </span>
-        </div>
-      ))}
-    </div>
-  )
-}
 
 const CHANNEL_COLORS: Record<string, string> = {
   reddit: '#ff4500', x: '#1d9bf0', blog: '#10b981',

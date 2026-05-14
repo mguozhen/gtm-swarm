@@ -132,7 +132,7 @@ function AgentCard({ agent }: { agent: AgentEntry }) {
           {active ? '● active' : '○ off'}
         </span>
       </header>
-      <h4 className="agent-name">{y.name || agent.id}</h4>
+      <h4 className="agent-name">{agent.name || y.name || agent.id}</h4>
       <div className="agent-meta">
         <span>📡 {y.platform || '—'}</span>
         <span>· 🔧 {y.builder || 'TBD'}</span>

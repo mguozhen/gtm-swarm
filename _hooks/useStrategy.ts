@@ -32,6 +32,7 @@ export function useStrategyBrief(slug: string | undefined, step: number | null) 
 
 export type AgentEntry = {
   id: string
+  name?: string
   yaml: {
     name?: string
     category?: string

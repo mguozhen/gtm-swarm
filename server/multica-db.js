@@ -215,13 +215,16 @@ export async function getIssuesAsContent(workspaceSlug, statusFilter) {
     cancelled: 'draft',
   }
 
+  // Ideas = top-level issues (no parent), Drafts/Bank/Published = child issues (assigned to agents)
+  const isIdea = !statusFilter || statusFilter === 'new-idea'
+
   let sql = `
     SELECT i.id, i.title, i.description, i.status, i.created_at, i.updated_at,
            a.name AS agent_name
     FROM issue i
     LEFT JOIN agent a ON a.id = i.assignee_id
     WHERE i.workspace_id = $1
-      AND i.parent_issue_id IS NULL`
+      AND i.parent_issue_id IS ${isIdea ? 'NULL' : 'NOT NULL'}`
   const params = [ws.id]
 
   if (statusFilter) {

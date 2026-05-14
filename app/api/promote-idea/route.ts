@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       const issueId = await createIssue(ws.id, {
         title: `[${agent.channel}] ${topic}`,
         description,
-        status: 'backlog',
+        status: 'in_progress',
         creatorId,
         parentId: idea_id,
         assigneeId: agent.id,

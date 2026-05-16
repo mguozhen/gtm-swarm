@@ -4,7 +4,9 @@ import yaml from 'js-yaml'
 import matter from 'gray-matter'
 import { complete } from './llm.js'
 import { REPO_ROOT, PROJECTS_DIR } from './paths.js'
-import { aiHotMarkdownFor } from './aihot.js'
+import { hasDB } from './db.js'
+import * as store from './store.js'
+import { hasMultica, getOrCreateWorkspace, getOrCreateGTMUser, getOrCreateLabel, createIssue, addIssueLabel } from './multica-db.js'
 
 const IDEA_SEPARATOR = '---IDEA---'
 
@@ -81,6 +83,7 @@ Produce **${n} fresh content ideas** for ${agentYaml.id}. Each idea must:
 - Address the audience: ${audienceStr}
 - Be DIFFERENT from the recent outputs above (no near-duplicates)
 - NOT match any anti-pattern
+- Use insight_type: "signal" when this idea represents a newly discovered market pattern or user pain point worth escalating to a full campaign. Use "idea" for standard content topics.
 
 For EACH idea output exactly this block, separated by \`${IDEA_SEPARATOR}\`:
 
@@ -95,6 +98,7 @@ target_audience: <builders | casual | mixed>
 freshness_days: 7
 created_at: ${now}
 status: new-idea
+insight_type: <"idea" | "signal">
 ---
 **Rationale**: <1-2 sentences why this idea fits the agent + why now>
 
@@ -160,6 +164,42 @@ export async function sourceIdeas({ project, agent, n = 5 }) {
         const f = path.join(newIdeaDir, `${ts}-${slugify(topic)}.md`)
         writeFileSync(f, matter.stringify(parsed.content, parsed.data))
         written++
+        if (hasDB()) {
+          try {
+            const ws = await store.getWorkspace(project)
+            if (ws) {
+              await store.createContentItem({
+                workspace_id: ws.id,
+                agent_id: null,
+                state: 'new-idea',
+                frontmatter: parsed.data,
+                body: parsed.content,
+              })
+            }
+          } catch (e) {
+            console.warn('[source-ideas] DB write failed (non-fatal):', e.message)
+          }
+        }
+        // Create Multica insight issue for high-value signals
+        if (hasMultica() && parsed.data.insight_type === 'signal') {
+          try {
+            const wsName = (hasDB() ? (await store.getWorkspace(project))?.name : null) || project
+            const multicaWsId = await getOrCreateWorkspace(project, wsName)
+            const botId = await getOrCreateGTMUser()
+            const insightLabel = await getOrCreateLabel(multicaWsId, 'gtm-insight', '#f59e0b')
+            const issueId = await createIssue(multicaWsId, {
+              title: `Insight: ${(parsed.data.topic || 'signal').slice(0, 80)}`,
+              description: `## Insight Signal\n\n${parsed.content.trim()}\n\n**Agent:** ${aid}\n**Platform:** ${agentYaml.platform || ''}\n**Hook:** ${parsed.data.suggested_hook || ''}`,
+              status: 'backlog',
+              priority: 'medium',
+              creatorId: botId,
+            })
+            await addIssueLabel(issueId, insightLabel)
+            console.log(`[source-ideas] insight signal → Multica issue ${issueId}`)
+          } catch (e) {
+            console.warn('[source-ideas] Multica insight write failed (non-fatal):', e.message)
+          }
+        }
       } catch (e) { console.warn('skip malformed:', e?.message) }
     }
     total += written

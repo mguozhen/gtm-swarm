@@ -1,6 +1,6 @@
 .DS_Store
 .env
-.env.local
+.env.*
 *.log
 
 node_modules/
@@ -19,4 +19,9 @@ venv/
 
 reviews/**/decided/
 dashboard/dist/
+.next/
+next-env.d.ts
 .gstack/
+multica/
+!app/api/multica/
+tools/cia-insight/

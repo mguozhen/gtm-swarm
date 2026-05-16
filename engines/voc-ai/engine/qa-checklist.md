@@ -6,6 +6,25 @@ If a draft fails any HARD check, the runner rejects it and writes the reason to 
 
 ## Hard Checks (auto-reject)
 
+### 0. Format Lock (Alinea discipline — added 2026-05-16)
+- [ ] Draft matches a scaffold defined in [[format-templates]] for this agent (not a free-form variation)
+- [ ] If no template fits the topic, reject + ask Builder to PROMOTE a new template before re-running
+- [ ] Hook line is one of the 5 fill-in templates for this agent (or a documented winner in [[winning-hooks]] when that file exists)
+- [ ] All scaffold required sections present — e.g. blog has "Worked example", Reddit ends with a question, X thread is 5-7 tweets, video first-frame == last-frame within 50ms
+
+### 0.1 First-Two-Lines Stand-Alone Test
+- [ ] If you screenshot ONLY the first 2 lines (or first 2 seconds for video) and post them standalone, do they earn the click?
+- [ ] First line contains one specific number, name, or concrete claim — not a generic invitation
+- [ ] No "In today's fast-paced world" / "Have you ever wondered" / "Let me tell you" openings — auto-reject
+- [ ] For video: hook overlay readable in 0.8s on a muted phone screen
+
+### 0.2 Trend Hook Coverage (one of, REQUIRED)
+- [ ] Cites an [[aihot]] signal from the last 24-48h, OR
+- [ ] Hangs on a Reddit /hot topic from this week (for 06-reddit), OR
+- [ ] Uses trending audio approved on this week's list (for 05-video), OR
+- [ ] References a real news / regulatory / category event from the last 14 days (named, dated)
+- If none present → reject. We do not ship evergreen content without a trend carrier.
+
 ### 1. Proof Point Presence
 - [ ] Every claim of the form "X% of Y" or "we found Z" has a source — either a published VOC AI report URL, a public Amazon listing, or a citation
 - [ ] No invented statistics. If the number doesn't trace to real data, kill the draft

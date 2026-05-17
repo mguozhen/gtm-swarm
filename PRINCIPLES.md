@@ -1,6 +1,6 @@
-# GTM Agent Swarm — 5 Principles
+# GTM Agent Swarm — 6 Principles
 
-Verbatim from Solvea Founder Mix Party deck (`~/Downloads/Founder_Mix_Party_—_Solvea_(PDF_Style).pdf`), section "GTM Agent Swarm · Building Principles".
+Principles 01-05 verbatim from Solvea Founder Mix Party deck (`~/Downloads/Founder_Mix_Party_—_Solvea_(PDF_Style).pdf`), section "GTM Agent Swarm · Building Principles". **Principle 06 added 2026-05-18** as a foundational doctrine for the Agent-era pivot.
 
 ## 01 · Execution Model — Agents Execute. Humans Manage Agents.
 
@@ -21,6 +21,29 @@ The GTM Agent Swarm's job is to **build GTM capability at scale** — not to be 
 ## 05 · Content Strategy — Content Is King. Build Content That Spreads & Delivers Value.
 
 Thin AI content is everywhere — **the differentiator is depth.** Build content with real research data, benchmarks, interactive demos, and multi-format distribution (blog → video → social). Virality comes from genuine user value.
+
+## 06 · Agents Are the New Distribution Channel — Build Capability, Not Interface.
+
+**The principle.** External AI Agents are a new distribution channel on the order of the App Store / SEO / 公众号 / TikTok at their respective inflection points. Agents do not call your UI — they call your **capability**. A product with only a UI and no API gets bypassed. An API that is not agent-friendly loses to one that is.
+
+**Why it holds.** End-user behavior is shifting from *"open the app"* to *"ask the agent to do it."* The agent makes the decision, places the call, completes the payment. It does not read your landing page, does not click your buttons, does not respect your funnel. It reads your **OpenAPI / MCP / tool schema**. Whoever becomes the agent's default capability source wins this wave of distribution.
+
+**What it changes in our decisions.**
+
+1. **Every core capability ships API-first, UI second.** A feature without an API is a feature that does not exist in the agent era.
+2. **The API's design audience is the Agent, not the frontend engineer.** Descriptions self-explanatory, errors semantic, parameters minimal, side-effects predictable.
+3. **Payment / billing / subscription must be agent-discoverable, agent-callable, agent-memorable.** One tool call. No browser handoff. Don't force the agent to fall back to "ask the human to click a link."
+4. **The simplest upgrade we ship NEXT WEEK**: make every existing public API agent-friendly. OpenAPI spec complete, error codes semantic, auth not cookie-dependent, MCP wrapper published.
+
+**Counter-example.** A great feature buried 3 menus deep inside a SaaS dashboard. No agent will ever reach it. In the agent era, **that feature does not exist**.
+
+**What this means for the GTM Agent Swarm specifically.** Our 11 agents target a user that is increasingly **Agent > Human**. The downstream consumer of every output is no longer "a person scrolling Reddit" — it is "an agent deciding which capability to invoke on a user's behalf." So:
+
+- Every agent must ship an **agent-readable output surface** (structured JSON, MCP tool, OpenAPI endpoint) **alongside** its human-readable surface.
+- `voc.ai`, `solvea.cx`, `flatkey.ai` each need a public, agent-friendly capability layer — not just a marketing site.
+- Distribution agents (`03-blog`, `06-reddit`, `07-social-media`) should produce content **and** the structured snippets / API endpoints / MCP descriptions that let an agent invoke us directly from that content.
+- Conversion agents (`08-ads`, `09-edm`) target both human funnels AND agent-discovery surfaces (LLM training data, MCP registries, search-engine-of-agents indexes).
+- "Iron Triangle" Reviewer's job grows: they now judge "is this output agent-callable too?" not only "is this output human-readable?"
 
 ---
 

@@ -45,6 +45,25 @@ Thin AI content is everywhere — **the differentiator is depth.** Build content
 - Conversion agents (`08-ads`, `09-edm`) target both human funnels AND agent-discovery surfaces (LLM training data, MCP registries, search-engine-of-agents indexes).
 - "Iron Triangle" Reviewer's job grows: they now judge "is this output agent-callable too?" not only "is this output human-readable?"
 
+## 07 · Strategy Output Format — Card-Draw HTML, Not Markdown Lists.
+
+**The principle.** Every strategic plan, every market insight, every cross-product analysis is rendered as a single-file HTML "card draw" (4-7 cards, editorial design, one screen per card section) — *not* as a markdown bullet list. The HTML lives in `docs/<topic>.html` and is opened in browser at delivery time.
+
+**Why it holds.** A 60-card markdown plan dies in three places: the reader skims line 1, the executor loses the through-line by line 30, and the cross-team consumer can't share it without copy-pasting into Notion. A card-draw HTML page survives all three: scan-friendly at the card level, link-shareable, image-screenshot-shareable. **Bandwidth of insight per minute of reading is 3-5x higher.**
+
+**What counts as a "strategic plan / insight".**
+- Any product GTM analysis (per-product, e.g. `agent-first-gtm-for-101pay.html`)
+- Cross-product framework (e.g. `agent-first-gtm-playbook.html`, the 4-card master)
+- Architecture decisions worth ≥ 1 day of work
+- Persona insights / market research deliverables
+- Before/after migration plans (e.g. `format-discipline-before-after.html`)
+
+**What does NOT need this format.** Bug reports, daily standup logs, individual idea drafts, code review comments. The threshold is "would more than one person re-read this after delivery?"
+
+**Template / canonical reference.** `docs/agent-first-gtm-playbook.html` (the 4-card master from 2026-05-18). Reuse its CSS palette: warm cream paper, serif display, mono accents, 2-column card grid. The `agent-gtm` skill auto-applies this template.
+
+**Storage.** All HTML plan deliverables under `docs/` in the gtm-swarm repo. The plan file (`~/.claude/plans/...`) stays markdown for AI-readable execution lineage, but the human-facing artifact is always HTML.
+
 ---
 
 ## The Iron Triangle, in motion

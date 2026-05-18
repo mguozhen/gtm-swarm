@@ -15,6 +15,22 @@
       "category": "",
       "tagline": "",
       "status": "active"
+    },
+    "101pay": {
+      "slug": "101pay",
+      "name": "101pay",
+      "url": "https://101pay.ai",
+      "category": "",
+      "tagline": "",
+      "status": "active"
+    },
+    "smartcrawler": {
+      "slug": "smartcrawler",
+      "name": "smartcrawler",
+      "url": "https://smartcrawler.io",
+      "category": "",
+      "tagline": "",
+      "status": "active"
     }
   },
   "default": "voc"

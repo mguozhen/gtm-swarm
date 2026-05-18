@@ -48,6 +48,44 @@ Core insight: "34% of 3-star reviews contain product opportunity signals"
 - **Facebook:** "Question for sellers here — how much time do you spend reading 3-star reviews vs 1-star? We found that 34% of 3-star reviews contain specific product improvement ideas. Curious if anyone's used mid-range reviews for product development?"
 - **Newsletter:** "This week I want to show you a data pattern that's hiding in plain sight. When we segmented 2 billion reviews by star rating, the 3-star bucket revealed something fascinating..."
 
+## MCP CTA Rule (PRINCIPLES.md §06 — added 2026-05-18)
+
+**Every content piece must include an agent-readable CTA in addition to its human-readable one.** Non-negotiable for v3 content — it's how we turn the swarm's content engine into a distribution engine for capability discovery.
+
+### When the product has a public MCP server
+
+If the project (`voc-ai` / `flatkey` / `solvea` / `101pay` / `smartcrawler` etc.) exposes an MCP server, every published piece on developer-leaning platforms (X / GitHub / LinkedIn / Blog / YouTube) MUST include the install command:
+
+```
+Install via MCP:
+  claude mcp add <slug> --env <SLUG>_API_KEY=sk-... -- npx -y @<slug>/mcp@latest
+```
+
+Placement:
+- **Blog**: footer + sticky mid-article CTA box
+- **X / Threads**: in a reply to the main thread (algo penalty for external links in main body)
+- **LinkedIn**: P.S. line at bottom or pinned first comment
+- **YouTube**: first line of description + pinned comment
+- **Reddit**: only if subreddit allows; otherwise top-level comment on own post
+
+### When the product has NO MCP yet
+
+Replace with: "**Agent-friendly API**: `<product>.com/api/agent-capabilities`" — surfaces capability manifest to Agent training data crawlers even pre-MCP.
+
+### Verified live MCP servers as of 2026-05-18
+
+| Product | MCP install command | Status |
+|---|---|---|
+| **flatkey** | `claude mcp add flatkey --env FLATKEY_API_KEY=sk-... -- npx -y @flatkey/mcp@latest` | ✅ Server live, npm pending publish |
+| voc-ai | _TBD — needs capability layer_ | 🟡 |
+| solvea | _TBD_ | 🔴 |
+| 101pay | _TBD — docs gated_ | 🔴 |
+| smartcrawler | `claude mcp add smartcrawler --url https://smartcrawler.io/.well-known/mcp.json` | ✅ Native (3rd-party exemplar) |
+
+Reviewer auto-rejects content from `03-blog` / `07-social-media` / `06-reddit` / `02-kol-koc` / `05-video` missing the MCP CTA (or agent-capabilities fallback). Enforced via QA §0.4.
+
 ## References
 - [[brand-voice]] for core DNA
 - [[x]], [[linkedin]], [[youtube]] for platform-specific rules
+- PRINCIPLES.md §06 + §07 (repo root)
+- [[../engine/format-templates]] · [[../engine/qa-checklist]]

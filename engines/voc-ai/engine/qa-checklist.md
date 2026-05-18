@@ -25,6 +25,14 @@ If a draft fails any HARD check, the runner rejects it and writes the reason to 
 - [ ] References a real news / regulatory / category event from the last 14 days (named, dated)
 - If none present → reject. We do not ship evergreen content without a trend carrier.
 
+### 0.4 MCP / Agent-Capability CTA Required (PRINCIPLES.md §06)
+- [ ] If the product has a live MCP server, an `Install via MCP` CTA is present in the platform-appropriate placement (see [[platform-tone]])
+- [ ] If no MCP yet, an `Agent-friendly API: <product>.com/api/agent-capabilities` CTA appears instead
+- [ ] CTA is placed per platform rules (X→reply, LinkedIn→P.S. or pinned comment, Blog→footer + mid-article, YT→description, Reddit→top-level comment on own post when sub forbids links)
+- Applies to: 02-kol-koc / 03-blog / 05-video / 06-reddit / 07-social-media
+- Does not apply to: 01-foundation / 04-backlink / 08-ads / 09-edm / 10-yelp / 11-poster
+- If missing on an applicable agent → reject
+
 ### 1. Proof Point Presence
 - [ ] Every claim of the form "X% of Y" or "we found Z" has a source — either a published VOC AI report URL, a public Amazon listing, or a citation
 - [ ] No invented statistics. If the number doesn't trace to real data, kill the draft
